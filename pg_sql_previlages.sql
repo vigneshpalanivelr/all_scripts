@@ -130,4 +130,17 @@ ORDER BY object_type;
 $$ LANGUAGE SQL;
 
 
-
+--FUNCTION	: To find ALL previlages for ALL Users
+--USAGE		: SELECT * FROM all_user_privs();
+CREATE OR REPLACE FUNCTION all_user_privs() RETURNS TABLE(username text, object_type text,object_name name, PRIVILEGES text[]) AS
+$$
+DECLARE
+	_row text;
+BEGIN
+	FOR _row IN
+        SELECT r.rolname FROM pg_catalog.pg_roles r WHERE r.rolname NOT IN ('information_schema','pg_catalog') AND r.rolname !~ '^pg_' AND r.rolname !~ '^rds' ORDER BY 1
+    LOOP
+		RETURN QUERY SELECT * FROM all_privs(_row);
+    END LOOP;
+END
+$$ LANGUAGE plpgsql;
