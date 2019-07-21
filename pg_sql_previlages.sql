@@ -59,4 +59,16 @@ WHERE n.nspname NOT IN ('information_schema','pg_catalog')
 $$ LANGUAGE SQL;
 
 
+--FUNCTION	: To find tablespace level previlages for provided user
+--USAGE		: SELECT * FROM tablespace_privs('<user_name>');
+--EXAMPLE	: SELECT * FROM tablespace_privs('postgres');
+CREATE OR REPLACE FUNCTION tablespace_privs(text) RETURNS TABLE(username text,spcname name,PRIVILEGES text[]) AS
+$$
+SELECT $1, spcname, ARRAY[
+	(CASE WHEN has_tablespace_privilege($1,spcname,'CREATE') THEN 'CREATE' ELSE NULL END)] 
+FROM pg_tablespace 
+WHERE has_tablespace_privilege($1,spcname,'CREATE');
+$$ LANGUAGE SQL;
+
+
 
