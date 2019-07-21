@@ -108,4 +108,26 @@ WHERE n.nspname NOT IN ('information_schema','pg_catalog','sys')
 $$ LANGUAGE SQL;
 
 
+--FUNCTION	: To find all previlages for provided user
+--USAGE		: SELECT * FROM all_privs('<user_name>');
+--EXAMPLE	: SELECT * FROM all_privs('postgres');
+CREATE OR REPLACE FUNCTION all_privs(text) RETURNS TABLE(username text, object_type text, OBJECT_NAME name, PRIVILEGES text[]) AS
+$$
+SELECT * FROM (
+	SELECT username,'Database' AS object_type ,dbname::name AS OBJECT_NAME ,PRIVILEGES FROM database_privs($1)
+	UNION ALL
+	SELECT username,'Schema' AS object_type,schemaname::name AS OBJECT_NAME,PRIVILEGES FROM schema_privs($1)
+	UNION ALL
+	SELECT username,'Table' AS object_type ,relname::name AS OBJECT_NAME ,PRIVILEGES FROM table_privs($1)
+	UNION ALL
+	SELECT username,'View' AS object_type ,viewname::name AS OBJECT_NAME ,PRIVILEGES FROM view_privs($1)
+	UNION ALL
+	SELECT username,'View' AS object_type ,sequence::name AS OBJECT_NAME ,PRIVILEGES FROM sequence_privs($1)
+	UNION ALL
+	SELECT username,'View' AS object_type ,spcname::name AS OBJECT_NAME ,PRIVILEGES FROM tablespace_privs($1)
+) AS user_previlages
+ORDER BY object_type;
+$$ LANGUAGE SQL;
+
+
 
