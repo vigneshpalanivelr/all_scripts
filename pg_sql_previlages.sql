@@ -38,4 +38,25 @@ WHERE c.nspname NOT IN ('information_schema','pg_catalog')
 $$ LANGUAGE SQL;
 
 
+--FUNCTION	: To find table level previlages for provided user
+--USAGE		: SELECT * FROM table_privs('<user_name>');
+--EXAMPLE	: SELECT * FROM table_privs('postgres');
+CREATE OR REPLACE FUNCTION table_privs(text) RETURNS TABLE(username text, relname regclass, PRIVILEGES text[]) AS
+$$
+SELECT $1,c.oid::regclass, ARRAY(SELECT privs FROM UNNEST(ARRAY [ 
+	(CASE WHEN has_table_privilege($1,c.oid,'SELECT') THEN 'SELECT' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'INSERT') THEN 'INSERT' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'UPDATE') THEN 'UPDATE' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'DELETE') THEN 'DELETE' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'TRUNCATE') THEN 'TRUNCATE' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'REFERENCES') THEN 'REFERENCES' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'TRIGGER') THEN 'TRIGGER' ELSE NULL END)]) foo(privs) WHERE privs IS NOT NULL) 
+FROM pg_class c JOIN pg_namespace n ON c.relnamespace=n.oid 
+WHERE n.nspname NOT IN ('information_schema','pg_catalog')  
+	AND c.relkind='r' 
+	AND has_table_privilege($1,c.oid,'SELECT, INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES,TRIGGER') 
+	AND has_schema_privilege($1,c.relnamespace,'USAGE')
+$$ LANGUAGE SQL;
+
+
 
