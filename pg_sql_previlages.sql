@@ -24,4 +24,18 @@ WHERE  has_database_privilege($1,c.oid,'CONNECT,CREATE,TEMPORARY,TEMP')
 $$ LANGUAGE SQL;
 
 
+--FUNCTION	: To find schema level previlages for provided user
+--USAGE		: SELECT * FROM schema_privs('<user_name>');
+--EXAMPLE	: SELECT * FROM schema_privs('postgres');
+CREATE OR REPLACE FUNCTION schema_privs(text) RETURNS TABLE(username text, schemaname name, PRIVILEGES text[]) AS
+$$
+SELECT $1, c.nspname, ARRAY(SELECT privs FROM UNNEST(ARRAY[
+	(CASE WHEN has_schema_privilege($1,c.oid,'CREATE') THEN 'CREATE' ELSE NULL END),
+	(CASE WHEN has_schema_privilege($1,c.oid,'USAGE') THEN 'USAGE' ELSE NULL END)])foo(privs) WHERE privs IS NOT NULL)
+FROM pg_namespace c 
+WHERE c.nspname NOT IN ('information_schema','pg_catalog')
+	AND has_schema_privilege($1,c.oid,'CREATE,USAGE');
+$$ LANGUAGE SQL;
+
+
 
