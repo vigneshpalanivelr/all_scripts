@@ -1,0 +1,1 @@
+# postgresql_previlages_sql
