@@ -92,4 +92,20 @@ WHERE n.nspname NOT IN ('information_schema','pg_catalog','sys')
 $$ LANGUAGE SQL;
 
 
+--FUNCTION	: To find sequence level previlages for provided user
+--USAGE		: SELECT * FROM sequence_privs('<user_name>');
+--EXAMPLE	: SELECT * FROM sequence_privs('postgres');
+CREATE OR REPLACE FUNCTION sequence_privs(text) RETURNS TABLE(username text, SEQUENCE regclass, PRIVILEGES text[]) AS
+$$
+SELECT $1, c.oid::regclass, ARRAY(SELECT privs FROM UNNEST(ARRAY [
+	(CASE WHEN has_table_privilege($1,c.oid,'SELECT') THEN 'SELECT' ELSE NULL END),
+	(CASE WHEN has_table_privilege($1,c.oid,'UPDATE') THEN 'UPDATE' ELSE NULL END)]) foo(privs) WHERE privs IS NOT NULL) 
+FROM pg_class c JOIN pg_namespace n ON c.relnamespace=n.oid 
+WHERE n.nspname NOT IN ('information_schema','pg_catalog','sys') 
+	AND c.relkind='S' 
+	AND has_table_privilege($1,c.oid,'SELECT,UPDATE')  
+	AND has_schema_privilege($1,c.relnamespace,'USAGE')
+$$ LANGUAGE SQL;
+
+
 
