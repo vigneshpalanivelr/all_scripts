@@ -12,7 +12,8 @@ ALTER TABLE public.show_functions OWNER TO <username>;
 --FUNCTION	: To find database level previlages for provided user
 --USAGE		: SELECT * FROM database_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM database_privileges('postgres');
-CREATE OR REPLACE FUNCTION database_privileges(text) RETURNS TABLE(username text,dbname name,PRIVILEGES  text[]) AS
+CREATE TYPE database_privileges_type AS (username text,dbname name,PRIVILEGES  text[]);
+CREATE OR REPLACE FUNCTION database_privileges(text) RETURNS SETOF database_privileges_type AS
 $$
 SELECT $1, datname, ARRAY(SELECT privileges FROM UNNEST(ARRAY[
 	(CASE WHEN has_database_privilege($1,c.oid,'CONNECT') THEN 'CONNECT' ELSE NULL END),
@@ -30,7 +31,8 @@ COMMENT ON FUNCTION database_privileges(text) IS 'This will list all the databas
 --FUNCTION	: To find schema level previlages for provided user
 --USAGE		: SELECT * FROM schema_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM schema_privileges('postgres');
-CREATE OR REPLACE FUNCTION schema_privileges(text) RETURNS TABLE(username text, schemaname name, PRIVILEGES text[]) AS
+CREATE TYPE schema_privileges_type AS (username text, schemaname name, PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION schema_privileges(text) RETURNS SETOF schema_privileges_type AS
 $$
 SELECT $1, c.nspname, ARRAY(SELECT privileges FROM UNNEST(ARRAY[
 	(CASE WHEN has_schema_privilege($1,c.oid,'CREATE') THEN 'CREATE' ELSE NULL END),
@@ -46,7 +48,8 @@ COMMENT ON FUNCTION schema_privileges(text) IS 'This will list all the schema pr
 --FUNCTION	: To find table level previlages for provided user
 --USAGE		: SELECT * FROM table_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM table_privileges('postgres');
-CREATE OR REPLACE FUNCTION table_privileges(text) RETURNS TABLE(username text, relname regclass, PRIVILEGES text[]) AS
+CREATE TYPE table_privileges_type AS (username text, relname regclass, PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION table_privileges(text) RETURNS SETOF table_privileges_type AS
 $$
 SELECT $1,c.oid::regclass, ARRAY(SELECT privileges FROM UNNEST(ARRAY [ 
 	(CASE WHEN has_table_privilege($1,c.oid,'SELECT') THEN 'SELECT' ELSE NULL END),
@@ -69,7 +72,8 @@ COMMENT ON FUNCTION table_privileges(text) IS 'This will list all the table priv
 --FUNCTION	: To find tablespace level previlages for provided user
 --USAGE		: SELECT * FROM tablespace_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM tablespace_privileges('postgres');
-CREATE OR REPLACE FUNCTION tablespace_privileges(text) RETURNS TABLE(username text,spcname name,PRIVILEGES text[]) AS
+CREATE TYPE tablespace_privileges_type AS (username text,spcname name,PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION tablespace_privileges(text) RETURNS SETOF tablespace_privileges_type AS
 $$
 SELECT $1, spcname, ARRAY[
 	(CASE WHEN has_tablespace_privilege($1,spcname,'CREATE') THEN 'CREATE' ELSE NULL END)] 
@@ -83,7 +87,8 @@ COMMENT ON FUNCTION tablespace_privileges(text) IS 'This will list all the table
 --FUNCTION	: To find view previlages for provided user
 --USAGE		: SELECT * FROM view_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM view_privileges('postgres');
-CREATE OR REPLACE FUNCTION view_privileges(text) RETURNS TABLE(username text, viewname regclass, PRIVILEGES text[]) AS
+CREATE TYPE view_privileges_type AS (username text, viewname regclass, PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION view_privileges(text) RETURNS SETOF view_privileges_type AS
 $$
 SELECT  $1, c.oid::regclass, ARRAY(SELECT privileges FROM UNNEST(ARRAY [
 	(CASE WHEN has_table_privilege($1,c.oid,'SELECT') THEN 'SELECT' ELSE NULL END),
@@ -106,7 +111,8 @@ COMMENT ON FUNCTION view_privileges(text) IS 'This will list all the view privil
 --FUNCTION	: To find sequence level previlages for provided user
 --USAGE		: SELECT * FROM sequence_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM sequence_privileges('postgres');
-CREATE OR REPLACE FUNCTION sequence_privileges(text) RETURNS TABLE(username text, SEQUENCE regclass, PRIVILEGES text[]) AS
+CREATE TYPE sequence_privileges_type AS (username text, SEQUENCE regclass, PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION sequence_privileges(text) RETURNS SETOF sequence_privileges_type AS
 $$
 SELECT $1, c.oid::regclass, ARRAY(SELECT privileges FROM UNNEST(ARRAY [
 	(CASE WHEN has_table_privilege($1,c.oid,'SELECT') THEN 'SELECT' ELSE NULL END),
@@ -124,7 +130,8 @@ COMMENT ON FUNCTION sequence_privileges(text) IS 'This will list all the sequenc
 --FUNCTION	: To find all previlages for provided user
 --USAGE		: SELECT * FROM all_privileges('<user_name>');
 --EXAMPLE	: SELECT * FROM all_privileges('postgres');
-CREATE OR REPLACE FUNCTION all_privileges(text) RETURNS TABLE(username text, object_type text, OBJECT_NAME name, PRIVILEGES text[]) AS
+CREATE TYPE all_privileges_type AS (username text, object_type text, OBJECT_NAME name, PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION all_privileges(text) RETURNS SETOF all_privileges_type AS
 $$
 SELECT * FROM (
 	SELECT username,'Database' AS object_type ,dbname::name AS OBJECT_NAME ,PRIVILEGES FROM database_privileges($1)
@@ -147,7 +154,8 @@ COMMENT ON FUNCTION all_privileges(text) IS 'This will list all privileges for a
 
 --FUNCTION	: To find ALL previlages for ALL Users
 --USAGE		: SELECT * FROM all_user_privileges();
-CREATE OR REPLACE FUNCTION all_user_privileges() RETURNS TABLE(username text, object_type text,object_name name, PRIVILEGES text[]) AS
+--If Req    : CREATE TYPE all_user_privileges_type AS (username text, object_type text,object_name name, PRIVILEGES text[]);
+CREATE OR REPLACE FUNCTION all_user_privileges() RETURNS SETOF all_privileges_type AS
 $$
 DECLARE
 	_row text;
