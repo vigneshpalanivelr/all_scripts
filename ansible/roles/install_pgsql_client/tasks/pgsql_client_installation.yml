@@ -23,7 +23,7 @@
   yum:
     name: '{{ playbook_dir }}/packages/{{ item.package }}'
     state: present
-  with_items:
+  loop:
     - { package: "postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm"}
     - { package: "postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm" }
 
