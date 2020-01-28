@@ -1,0 +1,12 @@
+---
+
+- hosts: 127.0.0.1
+  connection: localhost
+
+- hosts: 127.0.0.1
+  vars_files:
+    - 'vars/vars.yml'
+
+  roles:
+    - { role: install_pgsql_client,   tags: ['pgsql_install']   }
+    - { role: uninstall_pgsql_client, tags: ['pgsql_uninstall'] }

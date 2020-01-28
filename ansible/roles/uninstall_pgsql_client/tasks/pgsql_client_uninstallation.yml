@@ -1,0 +1,7 @@
+---
+
+- name: Step1 - Un-Installing RPMs
+  become: yes
+  yum:
+    name: postgresql96*
+    state: absent

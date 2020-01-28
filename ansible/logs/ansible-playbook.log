@@ -1,0 +1,64 @@
+2020-01-28 11:56:50,842 p=13818 u=root n=ansible | [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+2020-01-28 11:56:51,298 p=13818 u=root n=ansible | PLAY [127.0.0.1] *******************************************************************************************************************************************************
+2020-01-28 11:56:51,324 p=13818 u=root n=ansible | TASK [Gathering Facts] *************************************************************************************************************************************************
+2020-01-28 11:56:52,538 p=13818 u=root n=ansible | ok: [127.0.0.1]
+2020-01-28 11:56:52,544 p=13818 u=root n=ansible | PLAY [127.0.0.1] *******************************************************************************************************************************************************
+2020-01-28 11:56:52,558 p=13818 u=root n=ansible | TASK [Gathering Facts] *************************************************************************************************************************************************
+2020-01-28 11:56:53,119 p=13818 u=root n=ansible | ok: [127.0.0.1]
+2020-01-28 11:56:53,131 p=13818 u=root n=ansible | TASK [uninstall_pgsql_client : include_tasks] **************************************************************************************************************************
+2020-01-28 11:56:53,155 p=13818 u=root n=ansible | included: /root/python_sql_scripts/ansible/roles/uninstall_pgsql_client/tasks/pgsql_client_uninstallation.yml for 127.0.0.1
+2020-01-28 11:56:53,169 p=13818 u=root n=ansible | TASK [uninstall_pgsql_client : Step1 - Un-Installing RPMs] *************************************************************************************************************
+2020-01-28 11:56:56,403 p=13818 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:56:56,405 p=13818 u=root n=ansible | PLAY RECAP *************************************************************************************************************************************************************
+2020-01-28 11:56:56,405 p=13818 u=root n=ansible | 127.0.0.1                  : ok=4    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2020-01-28 11:57:03,362 p=13959 u=root n=ansible | [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+2020-01-28 11:57:03,758 p=13959 u=root n=ansible | PLAY [127.0.0.1] *******************************************************************************************************************************************************
+2020-01-28 11:57:03,777 p=13959 u=root n=ansible | TASK [Gathering Facts] *************************************************************************************************************************************************
+2020-01-28 11:57:04,786 p=13959 u=root n=ansible | ok: [127.0.0.1]
+2020-01-28 11:57:04,793 p=13959 u=root n=ansible | PLAY [127.0.0.1] *******************************************************************************************************************************************************
+2020-01-28 11:57:04,806 p=13959 u=root n=ansible | TASK [Gathering Facts] *************************************************************************************************************************************************
+2020-01-28 11:57:05,388 p=13959 u=root n=ansible | ok: [127.0.0.1]
+2020-01-28 11:57:05,401 p=13959 u=root n=ansible | TASK [install_pgsql_client : include_tasks] ****************************************************************************************************************************
+2020-01-28 11:57:05,546 p=13959 u=root n=ansible | included: /root/python_sql_scripts/ansible/roles/install_pgsql_client/tasks/pgsql_client_installation.yml for 127.0.0.1
+2020-01-28 11:57:05,559 p=13959 u=root n=ansible | TASK [install_pgsql_client : Step1 - Creating Directory for Temporary Downloads] ***************************************************************************************
+2020-01-28 11:57:05,974 p=13959 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:05,985 p=13959 u=root n=ansible | TASK [install_pgsql_client : Step2 - Download PostgreSQL from PostgreSQL Repos] ****************************************************************************************
+2020-01-28 11:57:08,211 p=13959 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:08,222 p=13959 u=root n=ansible | TASK [install_pgsql_client : Step3 - Download PostgreSQL Libs from PostgreSQL Repos] ***********************************************************************************
+2020-01-28 11:57:10,936 p=13959 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:10,948 p=13959 u=root n=ansible | TASK [install_pgsql_client : Step4 - Installing RPMs] ******************************************************************************************************************
+2020-01-28 11:57:14,180 p=13959 u=root n=ansible | changed: [127.0.0.1] => (item={'package': 'postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'})
+2020-01-28 11:57:17,386 p=13959 u=root n=ansible | changed: [127.0.0.1] => (item={'package': 'postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'})
+2020-01-28 11:57:17,405 p=13959 u=root n=ansible | TASK [install_pgsql_client : Step5 - Deleting Temporary Directory Created in Step1] ************************************************************************************
+2020-01-28 11:57:17,728 p=13959 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:17,729 p=13959 u=root n=ansible | PLAY RECAP *************************************************************************************************************************************************************
+2020-01-28 11:57:17,729 p=13959 u=root n=ansible | 127.0.0.1                  : ok=8    changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+2020-01-28 11:57:38,481 p=14184 u=root n=ansible | [WARNING]: provided hosts list is empty, only localhost is available. Note that the implicit localhost does not match 'all'
+
+2020-01-28 11:57:38,887 p=14184 u=root n=ansible | PLAY [127.0.0.1] *******************************************************************************************************************************************************
+2020-01-28 11:57:38,906 p=14184 u=root n=ansible | TASK [Gathering Facts] *************************************************************************************************************************************************
+2020-01-28 11:57:39,935 p=14184 u=root n=ansible | ok: [127.0.0.1]
+2020-01-28 11:57:39,941 p=14184 u=root n=ansible | PLAY [127.0.0.1] *******************************************************************************************************************************************************
+2020-01-28 11:57:39,955 p=14184 u=root n=ansible | TASK [Gathering Facts] *************************************************************************************************************************************************
+2020-01-28 11:57:40,515 p=14184 u=root n=ansible | ok: [127.0.0.1]
+2020-01-28 11:57:40,526 p=14184 u=root n=ansible | TASK [install_pgsql_client : include_tasks] ****************************************************************************************************************************
+2020-01-28 11:57:40,664 p=14184 u=root n=ansible | included: /root/python_sql_scripts/ansible/roles/install_pgsql_client/tasks/pgsql_client_installation.yml for 127.0.0.1
+2020-01-28 11:57:40,676 p=14184 u=root n=ansible | TASK [install_pgsql_client : Step1 - Creating Directory for Temporary Downloads] ***************************************************************************************
+2020-01-28 11:57:41,075 p=14184 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:41,086 p=14184 u=root n=ansible | TASK [install_pgsql_client : Step2 - Download PostgreSQL from PostgreSQL Repos] ****************************************************************************************
+2020-01-28 11:57:43,279 p=14184 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:43,291 p=14184 u=root n=ansible | TASK [install_pgsql_client : Step3 - Download PostgreSQL Libs from PostgreSQL Repos] ***********************************************************************************
+2020-01-28 11:57:46,325 p=14184 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:46,337 p=14184 u=root n=ansible | TASK [install_pgsql_client : Step4 - Installing RPMs] ******************************************************************************************************************
+2020-01-28 11:57:48,851 p=14184 u=root n=ansible | ok: [127.0.0.1] => (item={'package': 'postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'})
+2020-01-28 11:57:50,923 p=14184 u=root n=ansible | ok: [127.0.0.1] => (item={'package': 'postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'})
+2020-01-28 11:57:50,938 p=14184 u=root n=ansible | TASK [install_pgsql_client : Step5 - Deleting Temporary Directory Created in Step1] ************************************************************************************
+2020-01-28 11:57:51,234 p=14184 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:51,245 p=14184 u=root n=ansible | TASK [uninstall_pgsql_client : include_tasks] **************************************************************************************************************************
+2020-01-28 11:57:51,269 p=14184 u=root n=ansible | included: /root/python_sql_scripts/ansible/roles/uninstall_pgsql_client/tasks/pgsql_client_uninstallation.yml for 127.0.0.1
+2020-01-28 11:57:51,282 p=14184 u=root n=ansible | TASK [uninstall_pgsql_client : Step1 - Un-Installing RPMs] *************************************************************************************************************
+2020-01-28 11:57:54,057 p=14184 u=root n=ansible | changed: [127.0.0.1]
+2020-01-28 11:57:54,059 p=14184 u=root n=ansible | PLAY RECAP *************************************************************************************************************************************************************
+2020-01-28 11:57:54,059 p=14184 u=root n=ansible | 127.0.0.1                  : ok=10   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
