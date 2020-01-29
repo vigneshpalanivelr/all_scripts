@@ -1,0 +1,55 @@
+---
+
+- name: step1 - Installing git-core
+  become: yes
+  yum:
+    name: git-core
+    state: absent
+
+- name: step2 - Installing maven
+  become: yes
+  yum:
+    name: maven
+    state: absent
+
+- name: step3 - Installing tree
+  become: yes
+  yum:
+    name: tree
+    state: absent
+
+- name: step4 - Installing wget
+  become: yes
+  yum:
+    name: wget
+    state: absent
+
+- name: step5 - Installing unzip
+  become: yes
+  yum:
+    name: unzip
+    state: absent
+
+- name: step6 - Installing awscli
+  become: yes
+  yum:
+    name: awscli
+    state: absent
+
+- name: step7 - Installing httpd
+  become: yes
+  yum:
+    name: httpd
+    state: absent
+
+- name: step8 - Installing telnet
+  become: yes
+  yum:
+    name: telnet
+    state: absent
+
+- name: step9 - Installing python2
+  become: yes
+  yum:
+    name: python2
+    state: absent

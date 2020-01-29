@@ -8,5 +8,7 @@
     - 'vars/vars.yml'
 
   roles:
-    - { role: install_pgsql_client,   tags: ['pgsql_install']   }
-    - { role: uninstall_pgsql_client, tags: ['pgsql_uninstall'] }
+    - { role: install_pgsql_client,       tags: ['pgsql_install']   }
+    - { role: install_list_of_packages,   tags: ['list_install']    }
+    - { role: uninstall_pgsql_client,     tags: ['pgsql_uninstall'] }
+    - { role: uninstall_list_of_packages, tags: ['list_uninstall']  }
