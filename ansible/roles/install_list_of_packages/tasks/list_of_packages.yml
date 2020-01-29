@@ -30,26 +30,26 @@
     name: unzip
     state: present
 
-- name: step6 - Installing awscli
-  become: yes
-  yum:
-    name: awscli
-    state: present
-
-- name: step7 - Installing httpd
+- name: step6 - Installing httpd
   become: yes
   yum:
     name: httpd
     state: present
 
-- name: step8 - Installing telnet
+- name: step7 - Installing telnet
   become: yes
   yum:
     name: telnet
     state: present
 
-- name: step9 - Installing python2
+- name: step8 - Installing python2
   become: yes
   yum:
     name: python2
     state: present
+
+#- name: step - Installing awscli
+#  become: yes
+#  yum:
+#    name: awscli
+#    state: present
