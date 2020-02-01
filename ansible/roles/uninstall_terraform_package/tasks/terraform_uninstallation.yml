@@ -7,6 +7,7 @@
   register : file_list_to_delete
 
 - name: Remove the terraform binaries
+  become: yes
   file:
     path: "{{ item.path }}"
     state: absent
