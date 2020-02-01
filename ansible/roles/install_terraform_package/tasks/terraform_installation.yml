@@ -1,0 +1,8 @@
+---
+
+- name: Download and Unzip Terraform package form Hashicrop
+  become: yes
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/0.12.7/terraform_0.12.7_linux_amd64.zip
+    dest: /usr/bin/
+    remote_src: True

@@ -1,0 +1,14 @@
+---
+
+- name: Store matched files in register variable
+  find:
+    path: /usr/bin/
+    patterns: "packer*"
+  register: file_list_to_delete
+
+- name: Remove the packer binaries
+  become: yes
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ file_list_to_delete.files }}"
