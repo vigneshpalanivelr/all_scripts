@@ -11,8 +11,8 @@
     - { role: install_pgsql_client,		tags: ['pgsql_install']		}
     - { role: install_list_of_packages,		tags: ['list_install']		}
     - { role: install_packer_package,		tags: ['packer_install']	}
-    - { role: install_terraform_package,	tags: [terraform_install]	}
+    - { role: install_terraform_package,	tags: ['terraform_install']	}
     - { role: uninstall_pgsql_client,		tags: ['pgsql_uninstall']	}
     - { role: uninstall_list_of_packages,	tags: ['list_uninstall']	}
     - { role: uninstall_packer_package,		tags: ['packer_uninstall']	}
-    - { role: uninstall_terraform_package,	tags: [terraform_uninstall]	}
+    - { role: uninstall_terraform_package,	tags: ['terraform_uninstall']	}
