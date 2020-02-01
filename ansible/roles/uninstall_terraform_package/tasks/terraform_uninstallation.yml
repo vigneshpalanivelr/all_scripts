@@ -1,0 +1,13 @@
+---
+
+- name: Store matched files in variable to remove
+  find:
+    path: /usr/bin/
+    patterns: "terraform*"
+  register : file_list_to_delete
+
+- name: Remove the terraform binaries
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ file_list_to_delete.files }}"
