@@ -1,0 +1,14 @@
+---
+
+- name: Allow "{{ group_name }}" group to have passwordless sudo in /etc/sudoers
+  become: yes
+  lineinfile:
+    dest: /etc/sudoers
+    # State is set to Absent to remove if the Searching Line is found
+    state: present
+    backup: yes
+    # String to Search
+    regexp: '^%{{ group_name }}'
+    line: '%{{ group_name }} ALL=(ALL) NOPASSWD: ALL'
+    # Command to Validate the Configuration and %s is a working copy of the file
+    validate: visudo -cf %s

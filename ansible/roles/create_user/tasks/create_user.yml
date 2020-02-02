@@ -1,6 +1,7 @@
 ---
 
 - name: Creating user "{{ username }}" with admin access
+  become: yes
   user: 
     name={{ username }}
     password={{ password | password_hash('sha512') }}
@@ -9,12 +10,14 @@
   when: assign_role == "yes"
 
 - name: Creating users "{{ username }}" without admin access
+  become: yes
   user: 
     name={{ username }}
     password={{ password | password_hash('sha512') }}
   when: assign_role == "no"
 
 - name: Expiring password for user "{{ username }}"
+  become: yes
   shell: 
     chage -d 0 "{{ username }}"
 
