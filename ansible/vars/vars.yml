@@ -5,3 +5,8 @@ application_user: postgres
 application_user_group: postgres_grp
 appplication_port: 5432
 company: MIT
+
+# Ec2 Username and password
+ec2_user_name: “{{ username }}”
+ec2_user_password: “{{ password }}”
+is_root: “{{ root }}”
