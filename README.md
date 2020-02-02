@@ -1,4 +1,4 @@
-# postgresql_previlages_sql
+# Scripts Usage
 - Configuration file for Ansible
 	```
 	- /etc/ansible/ansible.cfg
@@ -32,4 +32,14 @@
 - Delete a Group
 	```
 	ansible-playbook site.yml --extra-vars "group_name=root_group action=delete_group" --tags=delete_group
+	```
+
+- Add to sudoers
+	```
+	ansible-playbook site.yml --extra-vars "group_name=root_group action=add_sudoers" --tags=add_sudoers
+	```
+
+- Remove from sudoers
+	```
+	ansible-playbook site.yml --extra-vars "group_name=root_group action=remove_sudoers" --tags=remove_sudoers
 	```
