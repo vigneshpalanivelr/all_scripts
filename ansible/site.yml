@@ -21,5 +21,7 @@
     - { role: uninstall_terraform_package,	tags: ['terraform_uninstall']	}
     - { role: create_group,	group_name: "{{ ec2_group_name }}", when: action == "create_group", tags: ['create_group'] }
     - { role: create_user,	password: "{{ ec2_user_password }}", username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}", when: action == "create_user", tags: ['create_user']}
+    - { role: add_sudoers, 	group_name: "{{ ec2_group_name }}", when: action == "add_sudoers", tags: ['add_sudoers']}
     - { role: delete_user,	username: "{{ ec2_user_name }}", when: action == "delete_user", tags: ['delete_user']}
     - { role: delete_group,	group_name: "{{ ec2_group_name }}", when: action == "delete_group", tags: ['delete_group']}
+    - { role: remove_sudoers,	group_name: "{{ ec2_group_name }}", when: action == "remove_sudoers", tags: ['remove_sudoers']}

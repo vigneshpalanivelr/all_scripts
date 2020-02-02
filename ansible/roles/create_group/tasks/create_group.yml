@@ -1,6 +1,7 @@
 ---
 
 - name: Create/Make sure group  "{{ group_name }}" is present
+  become: yes
   group:
     name: "{{ group_name }}"
     state: present
