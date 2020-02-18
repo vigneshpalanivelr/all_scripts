@@ -42,7 +42,7 @@ def add_sudo_file(sudoers_dir, sudo_group):
 		os.mkdir(sudoers_dir)
 	with open(sudoers_dir+'/my-sudoers-config', 'w') as sudoers:
 		for item in sudo_group:
-			sudoers.write("%{item} \tALL=(ALL) \tNOPASSWD=ALL\n".format(item=item))
+			sudoers.write("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item))
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Script to Update ssh and sudoers from User-Data')
