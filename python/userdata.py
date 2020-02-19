@@ -1,4 +1,6 @@
 #!/usr/bin/python2
+# pip install pyyaml --user
+# pip2 install requests --user
 
 import yaml
 import email
@@ -32,13 +34,3 @@ def get_cloud_config_data(URL):
                                         print yaml_exception
                 else:
                         print "unable to get User-Data"
-
-if __name__ == '__main__':
-        parser = argparse.ArgumentParser(description='Script to read EC2 User-Data')
-        parser.add_argument('URL'       ,action='store'	,default='http://169.254.169.254/latest/user-data'	,help='URL where the data resides')
-	
-        #arguments       = parser.parse_args(['http://169.254.169.254/latest/user-data'])
-        arguments       = parser.parse_args()
-        URL             = arguments.URL
-	
-        get_cloud_config_data(URL)
