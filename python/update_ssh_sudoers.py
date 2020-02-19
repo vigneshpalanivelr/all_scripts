@@ -4,6 +4,7 @@ import os
 import sys
 import argparse
 import fileinput
+import userdata_template
 import userdata_multipart
 	
 def get_all_groups(groups):
@@ -78,7 +79,8 @@ if __name__ == '__main__':
 	
 	
 	try:
-		data = userdata.get_cloud_config_data(URL)
+		data = userdata_multipart.get_cloud_config_data(URL)
+		# data = userdata_template.get_cloud_config_data(URL)
 		try:
 			ssh_group_line, sudo_group = get_all_groups(['ssh_groups','sudo_groups'])
 			try:
