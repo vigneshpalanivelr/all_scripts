@@ -1,5 +1,5 @@
 #!/usr/bin/python2
-# pip install pyyaml --user
+# pip2 install pyyaml --user
 # pip2 install requests --user
 
 import yaml
@@ -29,7 +29,7 @@ def get_cloud_config_data(URL):
 				print result_data 
                                 try:
                                         data = yaml.load(result_data,yaml.SafeLoader)
-                                        print data
+                                        return data
                                 except yaml.YAMLError as yaml_exception:
                                         print yaml_exception
                 else:
