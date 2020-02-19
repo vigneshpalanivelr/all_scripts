@@ -1,12 +1,10 @@
 #!/usr/bin/python2
-
-import userdata
 import re
-import fileinput
 import os
-import argparse
 import sys
-
+import argparse
+import fileinput
+import userdata_multipart
 	
 def get_all_groups(groups):
 	for i in groups:
