@@ -25,3 +25,4 @@
     - { role: delete_user,	username: "{{ ec2_user_name }}", when: action == "delete_user", tags: ['delete_user']}
     - { role: delete_group,	group_name: "{{ ec2_group_name }}", when: action == "delete_group", tags: ['delete_group']}
     - { role: remove_sudoers,	group_name: "{{ ec2_group_name }}", when: action == "remove_sudoers", tags: ['remove_sudoers']}
+    - { role: configure_cw_metric,              when: action == "configure_cw", tags: ['cw_alarms']}
