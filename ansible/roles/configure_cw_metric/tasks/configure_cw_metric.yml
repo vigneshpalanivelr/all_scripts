@@ -1,0 +1,32 @@
+---
+
+- name: Installing Pre-Requestics for CW Metric Configuration
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+    debug :
+      msg: Installing {{ item }}
+  loop:
+    - perl-Switch
+    - perl-DateTime
+    - perl-Sys-Syslog
+    - perl-LWP-Protocol-https
+    - perl-Digest-SHA
+    - zip
+    - unzip
+
+- name: Download and Unzip Monitoring Script from AWS
+  become: yes
+  unarchive:
+    src: https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
+    dest: /usr/local/sbin/custom-scripts/
+    remote_src: True
+
+- name: Schedule cronjob for CloudWatch metric every 5mins
+  become: yes
+  cron: minute="*/5"
+        name="CloudWatch Custom Metric for every 5mins"
+        cron_file="mysqlbackup-WeeklyBackups"
+        user="root"
+        job="/usr/local/sbin/custom-scripts/aws-scripts-mon/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
