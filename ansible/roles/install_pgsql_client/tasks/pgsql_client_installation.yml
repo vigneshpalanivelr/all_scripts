@@ -1,34 +1,37 @@
 ---
 
-- name: Step1 - Creating Directory for Temporary Downloads
-  file:
-    path: '{{ playbook_dir }}/packages'
-    state: directory
-    mode: 0775
-
-- name: Step2 - Download PostgreSQL from PostgreSQL Repos
+- name: Step1 - Download PostgreSQL from PostgreSQL Repos
+  become: yes
   get_url:
     url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-8-x86_64/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm
-    dest: '{{ playbook_dir }}/packages/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    #dest: '{{ playbook_dir }}/packages/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    dest: '/usr/local/sbin/custom-scripts/rpms/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
     mode: 0775
 
-- name: Step3 - Download PostgreSQL Libs from PostgreSQL Repos
+- name: Step2 - Download PostgreSQL Libs from PostgreSQL Repos
+  become: yes
   get_url:
     url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-8-x86_64/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm
-    dest: '{{ playbook_dir }}/packages/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    #dest: '{{ playbook_dir }}/packages/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    dest: '/usr/local/sbin/custom-scripts/rpms/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
     mode: 0775
 
-- name: Step4 - Installing RPMs
+- name: Step3 - Installing RPMs
   become: yes
   yum:
-    name: '{{ playbook_dir }}/packages/{{ item.package }}'
+    #name: '{{ playbook_dir }}/packages/{{ item.package }}'
+    name: '/usr/local/sbin/custom-scripts/rpms/{{ item.package }}'
     state: present
   loop:
     - { package: "postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm"}
     - { package: "postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm" }
 
-- name: Step5 - Deleting Temporary Directory Created in Step1
+- name: Step4 - Deleting RPMs downloaded in Step1
+  become: yes
   file:
-    path: '{{ playbook_dir }}/packages'
+    #path: '{{ playbook_dir }}/packages'
+    path: '{{ item.package }}'
     state: absent
-    mode: 0775
+  loop:
+    - { package: '/usr/local/sbin/custom-scripts/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'}
+    - { package: '/usr/local/sbin/custom-scripts/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'}

@@ -1,2 +1,5 @@
-[localhost]
-127.0.0.1 ansible_connection=local
+#[localhost]
+#127.0.0.1 ansible_connection=local
+
+[test-instance]
+172.31.36.40 ansible_connection=ssh ansible_user=vignesh ansible_ssh_pass=vignesh
