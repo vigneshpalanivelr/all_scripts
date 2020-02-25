@@ -1,12 +1,29 @@
 ---
 
-- name: Installing Pre-Requestics for CW Metric Configuration
+- name: Step1 - Creating Directory for Temporary Downloads
+  become: yes
+  file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0775
+  loop:
+    - '{{ playbook_dir }}/packages'
+    - /usr/local/sbin/custom-scripts
+
+- name: Step2 - Download perl-Switch from rpmforge Repos
+  become: yes
+  get_url:
+    url: ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm
+    dest: '{{ playbook_dir }}/packages/perl-Switch-2.14-1.rh7.rf.noarch.rpm'
+    mode: 0775
+
+- name: Step3 -Installing Pre-Requestics for CW Metric Configuration
   become: yes
   yum:
     name: "{{ item }}"
     state: present
   loop:
-    - perl-Switch
+    - '{{ playbook_dir }}/packages/perl-Switch-2.14-1.rh7.rf.noarch.rpm'
     - perl-DateTime
     - perl-Sys-Syslog
     - perl-LWP-Protocol-https
@@ -14,17 +31,24 @@
     - zip
     - unzip
 
-- name: Download and Unzip Monitoring Script from AWS
+- name: Step4 - Download and Unzip Monitoring Script from AWS
   become: yes
   unarchive:
     src: https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
     dest: /usr/local/sbin/custom-scripts/
     remote_src: True
 
-- name: Schedule cronjob for CloudWatch metric every 5mins
+- name: Step5 - Schedule cronjob for CloudWatch metric every 5mins
   become: yes
   cron: minute="*/5"
         name="CloudWatch Custom Metric for every 5mins"
         cron_file="mysqlbackup-WeeklyBackups"
         user="root"
         job="/usr/local/sbin/custom-scripts/aws-scripts-mon/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
+
+- name: Step5 - Deleting Temporary Directory Created in Step1
+  become: yes
+  file:
+    path: '{{ playbook_dir }}/packages'
+    state: absent
+    mode: 0775
