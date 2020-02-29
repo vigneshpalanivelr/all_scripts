@@ -1,6 +1,7 @@
 ---
 
 - name: Step1 - Download perl-Switch from rpmforge Repos
+  become: yes
   get_url:
     url: ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm
     dest: '/usr/local/sbin/custom-scripts/rpms/perl-Switch-2.14-1.rh7.rf.noarch.rpm'
