@@ -1,23 +1,29 @@
 ---
 
 - name: Step1 - Creating Directory for Temporary Downloads
-  become: yes
   file:
     path: '{{ item }}'
     state: directory
     mode: 0775
   loop:
     - '{{ playbook_dir }}/packages'
+
+- name: Step2 - Creating Scripts Directory
+  become: yes
+  file:
+    path: '{{ item }}'
+    state: directory
+    mode: 0775
+  loop:
     - /usr/local/sbin/custom-scripts
 
-- name: Step2 - Download perl-Switch from rpmforge Repos
-  become: yes
+- name: Step3 - Download perl-Switch from rpmforge Repos
   get_url:
     url: ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm
     dest: '{{ playbook_dir }}/packages/perl-Switch-2.14-1.rh7.rf.noarch.rpm'
     mode: 0775
 
-- name: Step3 -Installing Pre-Requestics for CW Metric Configuration
+- name: Step4 -Installing Pre-Requestics for CW Metric Configuration
   become: yes
   yum:
     name: "{{ item }}"
@@ -31,14 +37,14 @@
     - zip
     - unzip
 
-- name: Step4 - Download and Unzip Monitoring Script from AWS
+- name: Step5 - Download and Unzip Monitoring Script from AWS
   become: yes
   unarchive:
     src: https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
     dest: /usr/local/sbin/custom-scripts/
     remote_src: True
 
-- name: Step5 - Schedule cronjob for CloudWatch metric every 5mins
+- name: Step6 - Schedule cronjob for CloudWatch metric every 5mins
   become: yes
   cron:
     minute: '*/5'
@@ -47,7 +53,7 @@
     user: root
     state: present
 
-- name: Step6 - Deleting Temporary Directory Created in Step1
+- name: Step7 - Deleting Temporary Directory Created in Step1
   become: yes
   file:
     path: '{{ playbook_dir }}/packages'
