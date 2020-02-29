@@ -1,6 +1,13 @@
 ---
 
-- name: Installing the Basic Packages
+- name: Step1 - Configure Repo for Maven
+  become: yes
+  get_url:
+    url: http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
+    dest: '/etc/yum.repos.d/epel-maven.repo'
+    mode: 0644
+
+- name: Step2 - Installing the Basic Packages
   become: yes
   yum:
     name: "{{ item }}"
