@@ -1,55 +1,16 @@
 ---
 
-- name: step1 - Installing git-core
+- name: Installing the Basic Packages
   become: yes
   yum:
-    name: git-core
+    name: "{{ item }}"
     state: present
-
-- name: step2 - Installing maven
-  become: yes
-  yum:
-    name: maven
-    state: present
-
-- name: step3 - Installing tree
-  become: yes
-  yum:
-    name: tree
-    state: present
-
-- name: step4 - Installing wget
-  become: yes
-  yum:
-    name: wget
-    state: present
-
-- name: step5 - Installing unzip
-  become: yes
-  yum:
-    name: unzip
-    state: present
-
-- name: step6 - Installing httpd
-  become: yes
-  yum:
-    name: httpd
-    state: present
-
-- name: step7 - Installing telnet
-  become: yes
-  yum:
-    name: telnet
-    state: present
-
-- name: step8 - Installing python2
-  become: yes
-  yum:
-    name: python2
-    state: present
-
-#- name: step - Installing awscli
-#  become: yes
-#  yum:
-#    name: awscli
-#    state: present
+  loop:
+    - maven
+    - tree
+    - httpd
+    - telnet
+    - git-core
+    - wget
+    - zip
+    - unzip
