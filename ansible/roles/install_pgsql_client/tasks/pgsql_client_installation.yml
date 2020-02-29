@@ -2,26 +2,30 @@
 
 - name: Step1 - Creating Directory for Temporary Downloads
   file:
-    path: '{{ playbook_dir }}/packages'
+    #path: '{{ playbook_dir }}/packages'
+    path: '/tmp/packages'
     state: directory
     mode: 0775
 
 - name: Step2 - Download PostgreSQL from PostgreSQL Repos
   get_url:
     url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-8-x86_64/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm
-    dest: '{{ playbook_dir }}/packages/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    #dest: '{{ playbook_dir }}/packages/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    dest: '/tmp/packages/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
     mode: 0775
 
 - name: Step3 - Download PostgreSQL Libs from PostgreSQL Repos
   get_url:
     url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-8-x86_64/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm
-    dest: '{{ playbook_dir }}/packages/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    #dest: '{{ playbook_dir }}/packages/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
+    dest: '/tmp/packages/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
     mode: 0775
 
 - name: Step4 - Installing RPMs
   become: yes
   yum:
-    name: '{{ playbook_dir }}/packages/{{ item.package }}'
+    #name: '{{ playbook_dir }}/packages/{{ item.package }}'
+    name: '/tmp/packages/{{ item.package }}'
     state: present
   loop:
     - { package: "postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm"}
@@ -29,6 +33,7 @@
 
 - name: Step5 - Deleting Temporary Directory Created in Step1
   file:
-    path: '{{ playbook_dir }}/packages'
+    #path: '{{ playbook_dir }}/packages'
+    path: '/tmp/packages'
     state: absent
     mode: 0775
