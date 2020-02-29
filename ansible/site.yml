@@ -1,28 +1,28 @@
 ---
 
-- hosts: 127.0.0.1
+- hosts: all
   connection: localhost
   vars:
-    ec2_user_name: "{{ username }}"
-    ec2_user_password: "{{ password }}"
-    ec2_group_name: "{{ group_name }}"
-    tag_role: "{{ tag_group }}"
+    ec2_user_name		: "{{ username }}"
+    ec2_user_password	: "{{ password }}"
+    ec2_group_name		: "{{ group_name }}"
+    tag_role			: "{{ tag_group }}"
   vars_files:
     - 'vars/vars.yml'
 
   roles:
-    - { role: install_pgsql_client,         tags: ['pgsql_install']		    }
-    - { role: install_list_of_packages,		tags: ['list_install']		    }
-    - { role: install_packer_package,		tags: ['packer_install']	    }
-    - { role: install_terraform_package,	tags: ['terraform_install']	    }
-    - { role: uninstall_pgsql_client,		tags: ['pgsql_uninstall']	    }
-    - { role: uninstall_list_of_packages,	tags: ['list_uninstall']	    }
-    - { role: uninstall_packer_package,		tags: ['packer_uninstall']	    }
-    - { role: uninstall_terraform_package,	tags: ['terraform_uninstall']	}
-    - { role: create_group,	group_name: "{{ ec2_group_name }}", when: action == "create_group", tags: ['create_group'] }
-    - { role: create_user,	password: "{{ ec2_user_password }}", username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}", when: action == "create_user", tags: ['create_user']}
-    - { role: add_sudoers, 	group_name: "{{ ec2_group_name }}", when: action == "add_sudoers", tags: ['add_sudoers']}
-    - { role: delete_user,	username: "{{ ec2_user_name }}", when: action == "delete_user", tags: ['delete_user']}
-    - { role: delete_group,	group_name: "{{ ec2_group_name }}", when: action == "delete_group", tags: ['delete_group']}
-    - { role: remove_sudoers,	group_name: "{{ ec2_group_name }}", when: action == "remove_sudoers", tags: ['remove_sudoers']}
-    - { role: configure_cw_metric,              when: action == "configure_cw", tags: ['cw_alarms']}
+    - { role: install_pgsql_client			,tags: ['pgsql_install']		,when: ins_pgsql == "create_group"		}
+    - { role: install_list_of_packages		,tags: ['list_install']			,when: ins_all == "create_group"		}
+    - { role: install_packer_package		,tags: ['packer_install']		,when: ins_packer == "create_group"		}
+    - { role: install_terraform_package		,tags: ['terraform_install']	,when: ins_tf == "create_group"			}
+    - { role: uninstall_pgsql_client		,tags: ['pgsql_uninstall']	    ,when: uin_pgsql == "create_group"		}
+    - { role: uninstall_list_of_packages	,tags: ['list_uninstall']	    ,when: uin_all == "create_group"		}
+    - { role: uninstall_packer_package		,tags: ['packer_uninstall']	    ,when: uin_packer == "create_group"		}
+    - { role: uninstall_terraform_package	,tags: ['terraform_uninstall']	,when: uin_tf == "create_group"			}
+    - { role: configure_cw_metric			,tags: ['cw_alarms']			,when: cre_cw == "configure_cw"			}
+    - { role: create_group					,tags: ['create_group']			,when: cre_grp == "create_group"		,group_name: "{{ ec2_group_name }}"		}
+    - { role: create_user					,tags: ['create_user']			,when: cre_usr == "create_user"			,password: "{{ ec2_user_password }}"	,	username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}"}
+    - { role: add_sudoers					,tags: ['delete_user'] 			,when: add_sudo == "add_sudoers"		,group_name: "{{ ec2_group_name }}"		}
+    - { role: delete_user					,tags: ['delete_user']			,when: del_usr == "delete_user"			,username: "{{ ec2_user_name }}"		}
+    - { role: delete_group					,tags: ['delete_group']			,when: del_grp == "delete_group"		,group_name: "{{ ec2_group_name }}"		}
+    - { role: remove_sudoers				,tags: ['remove_sudoers']		,when: del_suso == "remove_sudoers"		,group_name: "{{ ec2_group_name }}"		}
