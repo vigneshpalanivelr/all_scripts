@@ -56,8 +56,11 @@
   command: /bin/date +%s
   register: before_reboot
 
-- local_action: command echo item
-  with_items: before_reboot.stdout_lines
+# Print the shell task's stdout.
+- debug: msg={{ before_reboot.stdout }}
+
+# Print all contents of the shell task's output.
+- debug: var=before_reboot
 
 - name: Rebooting ...
   become: yes
