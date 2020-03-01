@@ -1,7 +1,22 @@
 ---
 
-application: postgres
-application_user: postgres
-application_user_group: postgres_grp
-appplication_port: 5432
-company: MIT
+application		: postgres
+application_user	: postgres
+application_user_group	: postgres_grp
+appplication_port	: 5432
+company			: MIT
+
+block_volumes	:
+  mounted	:
+    root	:
+      mount_point	: /
+      mp_name		: /dev/sda
+  not_mounted	:
+    home	:
+      mp_name		: /dev/sdb
+      mount_point	: /home
+    audit	:
+      mp_name		: /dev/sdc
+      mount_point	: /var/log/audit
+  swap		:
+    mp_name		: /dev/sdd
