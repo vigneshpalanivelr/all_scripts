@@ -53,14 +53,16 @@
 
 - name: Current Time
   become: yes
-  command: /bin/date +'%d-%h-%Y %T %r'
+  command: /bin/date +'%s'
   register: before_reboot
 
 # Print the shell task's stdout.
 - debug: 
-    msg={{ before_reboot.stdout }}
+    msg={{ before_reboot.start }}
 
 # Print all contents of the shell task's output.
+# command: /bin/date +'%d-%h-%Y %T %r'
+# command: /bin/date +'%s'
 # - debug: 
 #     var=before_reboot
 ##########  Output  ##########
@@ -97,7 +99,7 @@
     timeout: 120
 
 - name: Verify the reboot
-  shell: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout }} ))
+  shell: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout_lines }} ))
   register: after_reboot
 
 - debug: 
