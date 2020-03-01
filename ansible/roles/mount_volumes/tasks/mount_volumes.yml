@@ -99,8 +99,9 @@
     timeout: 120
 
 - name: Verify the reboot
-  command: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout_lines[0] }} ))
-  register: after_reboot
+  command: /bin/date +'%s'
+  register: before_reboot
+  shell: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout_lines[0] }} ))
 
 - debug: 
-    msg={{ after_reboot.stdout }}
+    msg= Rebooted at \: {{ after_reboot.stdout }}
