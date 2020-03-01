@@ -57,8 +57,7 @@
   register: before_reboot
 
 - local_action: command echo item
-  loop: before_reboot.stdout_lines
-  wantlist=True
+  with_items: before_reboot.stdout_lines
 
 - name: Rebooting ...
   become: yes
