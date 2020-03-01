@@ -56,6 +56,9 @@
   command: /bin/date +%s
   register: before_reboot
 
+- local_action: command echo item
+  loop: before_reboot.stdout_lines
+
 - name: Rebooting ...
   become: yes
   reboot:
@@ -63,7 +66,7 @@
   ignore_errors: yes
 #  ignore_unreachable: true
 
-- name: Waiting "{{ ansible_ssh_host }}" to come back...
+- name: Waiting '{{ inventory_hostname  }}' to come back...
   wait_for_connection: 
     timeout: 120
 
