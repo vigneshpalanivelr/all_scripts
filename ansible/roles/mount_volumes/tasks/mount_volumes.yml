@@ -53,14 +53,37 @@
 
 - name: Current Time
   become: yes
-  command: /bin/date +%s
+  command: /bin/date +'%d-%h-%Y %T %r'
   register: before_reboot
 
 # Print the shell task's stdout.
-- debug: msg={{ before_reboot.stdout }}
+- debug: 
+    msg={{ before_reboot.stdout }}
 
 # Print all contents of the shell task's output.
-- debug: var=before_reboot
+# - debug: 
+#     var=before_reboot
+##########  Output  ##########
+# {
+# "before_reboot": {
+#     "changed": true,
+#     "cmd": [
+#         "/bin/date",
+#         "+%s"
+#     ],
+#     "delta": "0:00:00.003123",
+#     "end": "2020-03-01 18:59:03.275855",
+#     "failed": false,
+#     "rc": 0,
+#     "start": "2020-03-01 18:59:03.272732",
+#     "stderr": "",
+#     "stderr_lines": [],
+#     "stdout": "1583089143",
+#     "stdout_lines": [
+#         "1583089143"
+#     ]}
+# }
+##########  Output  ##########
 
 - name: Rebooting ...
   become: yes
@@ -75,3 +98,7 @@
 
 - name: Verify the reboot
   shell: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout }} ))
+  register: after_reboot
+
+- debug: 
+    msg={{ after_reboot.stdout }}
