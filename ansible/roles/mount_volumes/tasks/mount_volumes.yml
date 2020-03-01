@@ -52,5 +52,6 @@
     state: present
 
 - name: Rebooting ...
+  become: yes
   reboot:
     reboot_timeout: 60
