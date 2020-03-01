@@ -19,6 +19,7 @@
     fstype: xfs
     dev: '{{ item.value.mp_name }}'
   loop: '{{ block_volumes.mounted | dict2items }}'
+  ignore_errors: yes
 
 - name: Mount BlockDevices
   mount:
@@ -31,9 +32,11 @@
 
 - name: Format SWAP
   command: mkswap -f {{ block_volumes.swap.mp_name }}
+  ignore_errors: yes
 
 - name: Enable SWAP
   command: swapon {{ block_volumes.swap.mp_name }}
+  ignore_errors: yes
 
 - name: Add swap to fstab
   lineinfile:
