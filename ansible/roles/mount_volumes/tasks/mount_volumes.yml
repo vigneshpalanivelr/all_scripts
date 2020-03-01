@@ -1,0 +1,102 @@
+---
+
+- name: Check MountPoint Folders
+  become: yes
+  file:
+    path: '{{ item.value.mount_point }}'
+    state: directory
+    dest: '{{ item }}'
+    mode: 0755
+  loop: '{{ block_volumes.not_mounted | dict2items }}'
+
+- name: Format New Volumes
+  become: yes
+  filesystem:
+    fstype: xfs
+    dev: '{{ item.value.mp_name }}'
+  loop: '{{ block_volumes.not_mounted | dict2items }}'
+
+- name: Format Exsisting Volumes
+  become: yes
+  filesystem:
+    fstype: xfs
+    dev: '{{ item.value.mp_name }}'
+  loop: '{{ block_volumes.mounted | dict2items }}'
+  ignore_errors: yes
+
+- name: Mount BlockDevices
+  become: yes
+  mount:
+    name: '{{ item.value.mount_point }}'
+    src: '{{ item.value.mp_name }}'
+    opts: noatime
+    fstype: xfs
+    state: mounted
+  loop: '{{ block_volumes.not_mounted | dict2items }}'
+
+- name: Format SWAP
+  become: yes
+  command: mkswap -f {{ block_volumes.swap.mp_name }}
+  ignore_errors: yes
+
+- name: Enable SWAP
+  become: yes
+  command: swapon {{ block_volumes.swap.mp_name }}
+  ignore_errors: yes
+
+- name: Add swap to fstab
+  become: yes
+  lineinfile:
+    dest: /etc/fstab
+    line: '{{ block_volumes.swap.mp_name }} swap swap defaults 0 0'
+    state: present
+
+- name: Current Time
+  become: yes
+  command: /bin/date +'%s'
+  register: before_reboot
+
+# Print the shell task's stdout.
+- debug: 
+    msg={{ before_reboot.start }}
+
+# Print all contents of the shell task's output.
+# command: /bin/date +'%d-%h-%Y %T %r'
+# command: /bin/date +'%s'
+# - debug: 
+#     var=before_reboot
+##########  Output  ##########
+# {
+# "before_reboot": {
+#     "changed": true,
+#     "cmd": [
+#         "/bin/date",
+#         "+%s"
+#     ],
+#     "delta": "0:00:00.003123",
+#     "end": "2020-03-01 18:59:03.275855",
+#     "failed": false,
+#     "rc": 0,
+#     "start": "2020-03-01 18:59:03.272732",
+#     "stderr": "",
+#     "stderr_lines": [],
+#     "stdout": "1583089143",
+#     "stdout_lines": [
+#         "1583089143"
+#     ]}
+# }
+##########  Output  ##########
+
+- name: Rebooting ...
+  become: yes
+  reboot:
+    reboot_timeout: 0
+  ignore_errors: yes
+#  ignore_unreachable: true
+
+- name: Waiting '{{ inventory_hostname  }}' to come back...
+  wait_for_connection: 
+    timeout: 120
+
+- name: Verify the reboot
+  shell: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout_lines[0] }} ))
