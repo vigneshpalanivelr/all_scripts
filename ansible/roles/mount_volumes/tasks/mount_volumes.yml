@@ -58,15 +58,13 @@
 
 - name: Rebooting ...
   become: yes
-  command: /sbin/shutdown now "Ansible-triggered Reboot"
-  async: 0
-  poll: 0
-#  reboot:
-#    reboot_timeout: 0
-#  ignore_errors: yes
+  reboot:
+    reboot_timeout: 0
+  ignore_unreachable: true
 
 - name: Waiting "{{ ansible_ssh_host }}" to come back...
-  local_action: wait_for host={{ ansible_ssh_host }} state=started delay=10 timeout=300
+  wait_for_connection: 
+    timeout: 120
 
 - name: Verify the reboot
   shell: (( `date +%s` - `awk -F . '{print $1}' /proc/uptime` > {{ before_reboot.stdout }} ))
