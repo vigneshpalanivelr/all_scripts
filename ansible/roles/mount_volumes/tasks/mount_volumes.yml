@@ -53,4 +53,4 @@
 
 - name: Reboot the node
   become: yes
-  shell: /sbin/reboot now
+  shell: /sbin/reboot -r now
