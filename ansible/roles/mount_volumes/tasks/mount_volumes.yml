@@ -51,6 +51,6 @@
     line: '{{ block_volumes.swap.mp_name }} swap swap defaults 0 0'
     state: present
 
-- name: Reboot the node
-  become: yes
-  shell: /sbin/reboot -r now
+- name: Rebooting ...
+  reboot:
+    reboot_timeout: 60
