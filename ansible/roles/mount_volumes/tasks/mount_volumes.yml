@@ -60,7 +60,8 @@
   become: yes
   reboot:
     reboot_timeout: 0
-  ignore_unreachable: true
+  ignore_errors: yes
+#  ignore_unreachable: true
 
 - name: Waiting "{{ ansible_ssh_host }}" to come back...
   wait_for_connection: 
