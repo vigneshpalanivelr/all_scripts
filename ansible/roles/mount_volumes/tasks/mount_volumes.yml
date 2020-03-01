@@ -54,4 +54,4 @@
 - name: Rebooting ...
   become: yes
   reboot:
-    reboot_timeout: 60
+    reboot_timeout: 0
