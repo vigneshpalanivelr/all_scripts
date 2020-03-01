@@ -1,0 +1,10 @@
+---
+
+- name: Step1 -Remove  Schedule cronjob for CloudWatch metric every 5mins
+  become: yes
+  cron:
+    minute: '*/5'
+    name: CloudWatch Custom Metric for every 5mins
+    job: /usr/local/sbin/custom-scripts/aws-scripts-mon/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron
+    user: root
+    state: absent

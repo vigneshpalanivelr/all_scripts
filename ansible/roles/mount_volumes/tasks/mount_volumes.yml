@@ -1,0 +1,42 @@
+---
+
+- name: Check MountPoint Folders
+  file:
+    path: '{{ item.value.mount_point }}'
+	state: directory
+	dest: '{{ item }}'
+	mode: 0755
+  loop: '{{ block_volumes.not_mounted }}'
+
+- name: Format New Volumes
+  filesystem:
+    fstype: xfs
+	mp_name: '{{ item.value.mp_name }}'
+  loop: '{{ block_volumes.not_mounted }}'
+
+- name: Format Exsisting Volumes
+  filesystem:
+    fstype: xfs
+	mp_name: '{{ item.value.mp_name }}'
+  loop: '{{ block_volumes.mounted }}'
+
+- name: Mount BlockDevices
+  mount:
+    name: '{{ item.value.mount_point }}'
+	src: '{{ item.value.mp_name }}'
+	opts: noatime
+	fstype: xfs
+	state: mounted
+  loop: '{{ block_volumes.not_mounted }}'
+
+- name: Format SWAP
+  command: mkswap -f {{ block_volumes.swap.mp_name }}
+
+- name: Enable SWAP
+  command: swapon {{ block_volumes.swap.mp_name }}
+
+- name: Add to fstab
+  lineinfile:
+    dest: /etc/fstab
+	line: '{{ item.value.mp_name }} swap swap defaults 0 0'
+	state: present
