@@ -4,9 +4,14 @@ import os
 import sys
 import argparse
 import fileinput
+
+#import custom modules
+# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv'))
+sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv')
+print sys.path
 import userdata_template
 import userdata_multipart
-	
+
 def get_all_groups(groups):
 	for i in groups:
 		for j in data[i]:
@@ -51,8 +56,8 @@ def change_sudoers(sudoers_file, ssh_group_line):
 def add_sudo_file(sudoers_dir, sudo_group):
 	if not os.path.exists(sudoers_dir):
 		os.mkdir(sudoers_dir)
-	with open(sudoers_dir+'/my-sudoers-config', 'a+') as sudoers:
-		for item in sudo_group:
+	for item in sudo_group:
+		with open(sudoers_dir+'/my-sudoers-config', 'a+') as sudoers:
 			if not any("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item) == x for x in sudoers):
 				sudoers.write("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item))
 
