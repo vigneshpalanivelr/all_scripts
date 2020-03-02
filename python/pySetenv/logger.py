@@ -1,3 +1,4 @@
+#!/usr/bin/python2
 import logging
 
 def setupLogger(loggerName, logFile, loglevel=logging.INFO)
