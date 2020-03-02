@@ -4,9 +4,14 @@ import os
 import sys
 import argparse
 import fileinput
+
+#import custom modules
+# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv'))
+sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv')
+print sys.path
 import userdata_template
 import userdata_multipart
-	
+
 def get_all_groups(groups):
 	for i in groups:
 		for j in data[i]:
