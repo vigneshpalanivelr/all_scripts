@@ -80,24 +80,27 @@ class packageInstalation(object):
 	def installPakgs(self, pkg2Install):
 		try:
 			for pkg,ver in pkg2Install.iteritems():
-				if not ver: 
-					ver = None
-					install		= self.yBase.install(name=pkg, version=ver)
-					resolveDep	= self.yBase.resolveDeps()
-					self.yBase.buildTransaction()
-					if install:
-						execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
+				try: 
+					if not ver: 
+						ver = None
+						install		= self.yBase.install(name=pkg, version=ver)
+						resolveDep	= self.yBase.resolveDeps()
+						self.yBase.buildTransaction()
+						if install:
+							execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
+						else:
+							execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(pkg, self.pkgCache[pkg]['version'],'AlreadyInstalled...!'))
+					elif self.pkgCache.has_key(pkg):
+						if self.pkgCache[pkg]['version'] == ver:
+							execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(pkg, self.pkgCache[pkg]['version'],'AlreadyInstalled...!'))
 					else:
-						execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(pkg, self.pkgCache[pkg]['version'],'AlreadyInstalled...!'))
-				elif self.pkgCache.has_key(pkg):
-					if self.pkgCache[pkg]['version'] == ver:
-						execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(pkg, self.pkgCache[pkg]['version'],'AlreadyInstalled...!'))
-				else:
-					install		= self.yBase.install(name=pkg, version=ver)
-					resolveDep	= self.yBase.resolveDeps()
-					self.yBase.buildTransaction()
-					if install:
-						execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
+						install		= self.yBase.install(name=pkg, version=ver)
+						resolveDep	= self.yBase.resolveDeps()
+						self.yBase.buildTransaction()
+						if install:
+							execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
+				except Exception as pkgInstallationError:
+					execLog.error(str(pkgInstallationError).rstrip() + pkg + str(ver))
 			# Real Installation Takes Place
 			self.yBase.processTransaction()
 			return True
@@ -112,7 +115,7 @@ if __name__ == '__main__':
 	parser.add_argument('packageDict'		,action='store'		,type=json.loads	,help='Packages dict to install')
 	
 	# Have to provide packageDict in below mentioned str format '""'
-	# arguments	= parser.parse_args(['{"wget":"1.14","tree":"1.6.0","telnet":"0.17","git":""}'])
+	# arguments	= parser.parse_args(['{  "wget": "1.14",  "tree": "1.6.0",  "telnet": "0.17",  "git": "",  "unzip": "",  "zip": "",  "python": "",  "python3": ""}'])
 	arguments	= parser.parse_args()
 	packageDict		= arguments.packageDict
 	
