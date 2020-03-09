@@ -4,7 +4,8 @@ import argparse
 
 #import custom modules
 # sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv'))
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv')
+sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv/variables')
+sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv/packages')
 print sys.path
 
 def allUserActions(object, action, name):
