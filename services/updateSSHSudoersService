@@ -48,7 +48,7 @@ case "$1" in
         echo -e "\nFunction : Start : Starting updateSSHSudoers from Cloud-Init...\n"
         # every time about starting up instance
         /usr/local/sbin/custom-scripts/updateSSHSudoers.py
-		echo -e "\nFunction : SSHD  : Reloaded\n"
+        echo -e "\nFunction : SSHD  : Reloaded\n"
         /bin/systemctl reload sshd
         ;;
 
