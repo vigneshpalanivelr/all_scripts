@@ -45,19 +45,20 @@
 case "$1" in
     start)
         # Printing the message
-        echo -e "Starting updateSSHSudoers from Cloud-Init"
+        echo -e "\nFunction : Start : Starting updateSSHSudoers from Cloud-Init...\n"
         # every time about starting up instance
         /usr/local/sbin/custom-scripts/updateSSHSudoers.py
+		echo -e "\nFunction : SSHD  : Reloaded\n"
         /bin/systemctl reload sshd
         ;;
 
     stop)
-        echo -e "This service will run at only Once, Cannot be stopped !!"
+        echo -e "\nFunction : Stop  : This service will run at only Once, Cannot be stopped !!\n"
         exit 0
         ;;
 
     status)
-        echo -e "This service already ran at boot time."
+        echo -e "\nFunction : Stat  : This service already ran at boot time.\n\n"
         ;;
 
     restart)
@@ -74,4 +75,3 @@ case "$1" in
         exit 3
         ;;
 esac
-
