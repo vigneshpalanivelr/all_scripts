@@ -6,6 +6,15 @@ application_user_group	: postgres_grp
 appplication_port	    : 5432
 company			        : MIT
 
+scriptHomeDir           : /usr/local/sbin
+scriptsDir              : custom-scripts
+logsDir                 : logs
+rpmDir                  : rpms
+srcPythonDir            : ../python/
+srcServicesDir          : ../services/
+
+serviceFiles		: ['updateSSHSudoersService']
+
 block_volumes	:
   mounted		:
     root			:
