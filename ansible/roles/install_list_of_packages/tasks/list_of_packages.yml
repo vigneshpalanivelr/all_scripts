@@ -3,8 +3,8 @@
 - name: Step1 - Configure Repo for Maven
   become: yes
   get_url:
-    url: http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
-    dest: '/etc/yum.repos.d/epel-maven.repo'
+    url: "{{ repositories.maven }}"
+    dest: '{{ yumDir }}/{{ yumRepos.maven }}'
     mode: 0644
 
 - name: Step2 - Installing the Basic Packages
@@ -12,12 +12,4 @@
   yum:
     name: "{{ item }}"
     state: present
-  loop:
-    - maven
-    - tree
-    - httpd
-    - telnet
-    - git-core
-    - wget
-    - zip
-    - unzip
+  loop: "{{ common_pks }}"

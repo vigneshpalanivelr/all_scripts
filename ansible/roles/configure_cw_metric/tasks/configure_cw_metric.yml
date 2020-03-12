@@ -1,46 +1,63 @@
 ---
 
-- name: Step1 - Download perl-Switch from rpmforge Repos
-  become: yes
-  get_url:
-    url: ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm
-    dest: '/usr/local/sbin/custom-scripts/rpms/perl-Switch-2.14-1.rh7.rf.noarch.rpm'
-    mode: 0775
-
-- name: Step2 -Installing Pre-Requestics for CW Metric Configuration
+- name: Step1 - Install common packages
   become: yes
   yum:
     name: "{{ item }}"
     state: present
-  loop:
-    - '/usr/local/sbin/custom-scripts/rpms/perl-Switch-2.14-1.rh7.rf.noarch.rpm'
-    - perl-DateTime
-    - perl-Sys-Syslog
-    - perl-LWP-Protocol-https
-    - perl-Digest-SHA
-    - zip
-    - unzip
+    skip_broken: yes
+  loop: "{{ common_pks }}"
+
+- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-7
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ RHEL_7_cw_pks }}"
+  when: RHELver == "7"
+  ignore_errors: yes
+
+- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Preq for CPANM
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ RHEL_6_cw_pks }}"
+  when: RHELver == "6"
+
+- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Installing CPANM
+  shell:
+    cmd: curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+    warn: False
+  when: RHELver == "6"
+
+- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Installing Perl Modules
+  become: yes
+  cpanm:
+    name: "{{ item }}"
+  loop: "{{ RHEL_6_cpanm_pks }}"
+  when: RHELver == "6"
 
 - name: Step3 - Download and Unzip Monitoring Script from AWS
   become: yes
   unarchive:
-    src: https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
-    dest: /usr/local/sbin/custom-scripts/
+    src: "{{ AWS_cw_script.url }}"
+    dest: "{{ scriptHomeDir }}/{{ scriptsDir }}/"
     remote_src: True
 
 - name: Step4 - Schedule cronjob for CloudWatch metric every 5mins
   become: yes
   cron:
-    minute: '*/5'
+    minute: '*/{{ AWS_cw_script.cw_cron }}'
     name: CloudWatch Custom Metric for every 5mins
-    job: /usr/local/sbin/custom-scripts/aws-scripts-mon/aws-scripts-mon/mon-put-instance-data.pl --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron
+    job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
     state: present
+  register: CWStat
 
-- name: Step5 - Deleting Temporary Directory Created in Step1
-  become: yes
-  file:
-    path: '{{ item.package }}'
-    state: absent
-  loop:
-    - { package: '/usr/local/sbin/custom-scripts/rpms/perl-Switch-2.14-1.rh7.rf.noarch.rpm'}
+- name: CW cron schedule output
+  debug:
+    var: CWStat
+
+#Ref : https://stackoverflow.com/questions/42163232/using-cpanm-module-in-ansible
+#Ref : https://metacpan.org/pod/App::cpanminus

@@ -4,11 +4,26 @@
   become: yes
   lineinfile:
     dest: /etc/sudoers
-    # State is set to Absent to remove if the Searching Line is found
     state: present
     backup: yes
-    # String to Search
     regexp: '^%{{ group_name }}'
     line: '%{{ group_name }} ALL=(ALL) NOPASSWD: ALL'
-    # Command to Validate the Configuration and %s is a working copy of the file
     validate: visudo -cf %s
+  register: addSudoers
+
+- name: Restart sshd service for new user to be added
+  service:
+    name: sshd
+    state: reloaded
+  register: serviceReload
+
+- name: Add sudo Details
+  debug:
+    var: addSudoers
+
+- name: SSHD Restart Status
+  debug:
+    msg:
+      - SSHD - Current Status {{ serviceReload.status.SubState }}
+      - SSHD - Stop    Status {{ serviceReload.status.ExecReload }}
+      - SSHD - Start   Status {{ serviceReload.status.ExecStart }}

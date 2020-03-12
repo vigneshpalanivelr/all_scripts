@@ -5,3 +5,8 @@
   group:
     name: "{{ group_name }}"
     state: present
+  register: groupCreation
+
+- name: Group creation Details
+  debug:
+    var: groupCreation
