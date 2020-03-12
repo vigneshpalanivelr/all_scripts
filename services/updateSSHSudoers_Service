@@ -1,0 +1,77 @@
+#!/bin/sh
+#
+#     RedHat system statup script for Cloud-Init
+#     Based on SUSE system statup script for Jenkins
+#     Copyright (C) 2007  Pascal Bleser
+#
+#     This library is free software; you can redistribute it and/or modify it
+#     under the terms of the GNU Lesser General Public License as published by
+#     the Free Software Foundation; either version 2.1 of the License, or (at
+#     your option) any later version.
+#
+#     This library is distributed in the hope that it will be useful, but
+#     WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#     Lesser General Public License for more details.
+#
+#     You should have received a copy of the GNU Lesser General Public
+#     License along with this library; if not, write to the Free Software
+#     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307,
+#     USA.
+#
+#     script : /etc/init.d/updateSSHSudoersService
+#     cmd    : /sbin/chkconfig updateSSHSudoersService on
+#     cmd    : /sbin/chkconfig updateSSHSudoersService off
+#     cmd    : systemctl enable updateSSHSudoersService
+#     cmd    : systemctl disable updateSSHSudoersService
+#     ckh    : chkconfig --list
+###############################################################################
+#
+# description: Cloud-Init Automation Server
+#
+###############################################################################
+### BEGIN INIT INFO
+# Provides:          Cloud-Init
+# Required-Start:    $local_fs $remote_fs $network $time $named
+# Should-Start:      $time sendmail
+# Required-Stop:     $ $remote_fs $network $time $named
+# Should-Stop:       $time sendmail
+# Default-Start:     3 5
+# Default-Stop:      0 1 2 4 6
+# Short-Description: Cloud-Init Automation Server
+# Description:       Cloud-Init Automation Server
+### END INIT INFO
+
+case "$1" in
+    start)
+        # Printing the message
+        echo -e "\nFunction : Start : Starting updateSSHSudoers from Cloud-Init...\n"
+        # every time about starting up instance
+        /usr/local/sbin/custom-scripts/updateSSHSudoers.py
+        echo -e "\nFunction : SSHD  : Reloaded\n"
+        /bin/systemctl reload sshd
+        ;;
+
+    stop)
+        echo -e "\nFunction : Stop  : This service will run at only Once, Cannot be stopped !!\n"
+        exit 0
+        ;;
+
+    status)
+        echo -e "\nFunction : Stat  : This service already ran at boot time.\n\n"
+        ;;
+
+    restart)
+        $0 stop
+        $0 start
+        ;;
+
+    reload)
+        $0 restart
+        ;;
+
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|reload}"
+        exit 3
+        ;;
+esac

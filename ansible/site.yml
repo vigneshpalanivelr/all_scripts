@@ -1,7 +1,7 @@
 ---
 
 - hosts: all
-  connection: localhost
+  connection: test-instance
   vars:
     ec2_user_name		: "{{ username }}"
     ec2_user_password	: "{{ password }}"
@@ -22,6 +22,7 @@
     - { role: mount_volumes				,tags: ['mount_volumes']		,when: mount == "mount_volumes"	}
     - { role: configure_cw_metric			,tags: ['cw_alarms']			,when: cre_cw == "configure_cw"			}
     - { role: create_group					,tags: ['create_group']			,when: cre_grp == "create_group"		,group_name: "{{ ec2_group_name }}"		}
+    - { role: setupCloudInit			,tags: ['setup_cloud_init']	,when: setci == "setup_cloud_init"	}
     - { role: create_user					,tags: ['create_user']			,when: cre_usr == "create_user"			,password: "{{ ec2_user_password }}"	,	username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}"}
     - { role: add_sudoers					,tags: ['delete_user'] 			,when: add_sudo == "add_sudoers"		,group_name: "{{ ec2_group_name }}"		}
     - { role: delete_user					,tags: ['delete_user']			,when: del_usr == "delete_user"			,username: "{{ ec2_user_name }}"		}

@@ -1,0 +1,52 @@
+---
+
+- name: Coping Local to Remote Hosts
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    force: yes
+    mode: 0744
+  loop:
+    - "{{ srcPythonDir }}"
+    - "{{ srcServicesDir }}"
+
+- name: Find the service files present
+  become: yes
+  find:
+    paths: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    recurse: yes
+    patterns: "*Service"
+  register: listOfServices
+
+- name: Display the details of the service files
+  debug:
+    var: listOfServices
+
+- name: Coping to init.d path
+  become: yes
+  copy:
+    src: "{{ item.path }}"
+    dest: /etc/init.d
+    force: yes
+    mode: 0744
+    remote_src: true
+  loop: "{{ listOfServices.files }}"
+
+- name: Adding Files to the LIST
+  vars:
+    Files: []
+  set_fact:
+    Files: "{{ Files + [item.path | basename] }}"
+  loop: "{{ listOfServices.files }}"
+
+- name: Check files stored in list
+  debug:
+    var: Files
+
+- name: Enable Chkconfig Services for automatic start
+  become: yes
+  service:
+    name: "{{ item }}"
+    enabled: yes
+  loop: "{{ Files }}"
