@@ -1,7 +1,7 @@
 ---
 
 - hosts: all
-  connection: test-instance
+  connection: test_instance
   vars:
     ec2_user_name		: "{{ username }}"
     ec2_user_password	: "{{ password }}"
