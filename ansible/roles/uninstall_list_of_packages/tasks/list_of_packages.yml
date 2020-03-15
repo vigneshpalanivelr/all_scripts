@@ -47,9 +47,3 @@
   yum:
     name: telnet
     state: absent
-
-- name: step9 - Installing python2
-  become: yes
-  yum:
-    name: python2
-    state: absent
