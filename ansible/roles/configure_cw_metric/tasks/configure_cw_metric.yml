@@ -51,3 +51,6 @@
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
     state: present
+
+#Ref : https://stackoverflow.com/questions/42163232/using-cpanm-module-in-ansible
+#Ref : https://metacpan.org/pod/App::cpanminus
