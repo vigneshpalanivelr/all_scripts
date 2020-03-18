@@ -55,7 +55,7 @@
     state: present
   register: CWStat
 
-- name: User Details
+- name: CW cron schedule output
   debug:
     var: CWStat
 
