@@ -7,6 +7,7 @@
     ec2_user_password	: "{{ password }}"
     ec2_group_name		: "{{ group_name }}"
     tag_role			: "{{ tag_group }}"
+#    RHELv                       : "{{ RHEL }}"
   vars_files:
     - 'vars/vars.yml'
 
@@ -20,7 +21,7 @@
     - { role: uninstall_packer_package		,tags: ['packer_uninstall']	    ,when: uin_packer == "packer_uninstall"	}
     - { role: uninstall_terraform_package	,tags: ['terraform_uninstall']	,when: uin_tf == "terraform_uninstall"	}
     - { role: mount_volumes				    ,tags: ['mount_volumes']		,when: mount == "mount_volumes"	        }
-    - { role: configure_cw_metric			,tags: ['configure_cw']			,when: cre_cw == "configure_cw"			}
+    - { role: configure_cw_metric			,tags: ['configure_cw']			,when: cre_cw == "configure_cw"		,RHELver : "{{ RHEL }}"}
     - { role: setupCloudInit			    ,tags: ['setup_cloud_init']	    ,when: set_ci == "setup_cloud_init"	    }
     - { role: create_group					,tags: ['create_group']			,when: cre_grp == "create_group"		,group_name : "{{ ec2_group_name }}"		}
     - { role: create_user					,tags: ['create_user']			,when: cre_usr == "create_user"			,password   : "{{ ec2_user_password }}"	    ,	username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}"}
