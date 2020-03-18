@@ -2,23 +2,46 @@
 
 - name: Creating user "{{ username }}" with admin access
   become: yes
-  user: 
-    name={{ username }}
-    password={{ password | password_hash('sha512') }}
-    groups={{ group_name }}
-    append=yes
+  user:
+    name: "{{ username }}"
+    password: "{{ password | password_hash('sha512') }}"
+    groups: "{{ group_name }}"
+    append: yes
+    create_home: yes
+    expires: -1
+    comment: "{{ userComment }}"
   when: assign_role == "yes"
+  register: userCreationG
 
 - name: Creating users "{{ username }}" without admin access
   become: yes
-  user: 
-    name={{ username }}
-    password={{ password | password_hash('sha512') }}
+  user:
+    name: "{{ username }}"
+    password: "{{ password | password_hash('sha512') }}"
+    create_home: yes
+    expires: -1
+    comment: "{{ userComment }}"
   when: assign_role == "no"
+  register: userCreation
 
-- name: Expiring password for user "{{ username }}"
-  become: yes
-  shell: 
-    chage -d 0 "{{ username }}"
+- name: User Details
+  debug:
+    var: userCreationG
+
+- name: Check files stored in list
+  debug:
+    var: userCreation
+
+
+# - name: Expiring password for user "{{ username }}"
+  # become: yes
+  # shell: 
+    # chage -d 0 "{{ username }}"
+
+# - name: User Details
+  # debug:
+    # msg:
+      # - "Group : {{ userCreationG.groups }}"
+      # - "State : {{ userCreationG.state }}"
 
 # Ref : https://thinkingmonster.wordpress.com/it-automation/386-2/ansible-roles/
