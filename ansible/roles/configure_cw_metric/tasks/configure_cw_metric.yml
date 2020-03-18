@@ -5,6 +5,7 @@
   yum:
     name: "{{ item }}"
     state: present
+    skip_broken: yes
   loop: "{{ common_pks }}"
 
 - name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-7
@@ -14,6 +15,7 @@
     state: present
   loop: "{{ RHEL_7_cw_pks }}"
   when: RHELver == "7"
+  ignore_errors: yes
 
 - name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Preq for CPANM
   become: yes
@@ -51,6 +53,11 @@
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
     state: present
+  register: CWStat
+
+- name: User Details
+  debug:
+    var: CWStat
 
 #Ref : https://stackoverflow.com/questions/42163232/using-cpanm-module-in-ansible
 #Ref : https://metacpan.org/pod/App::cpanminus

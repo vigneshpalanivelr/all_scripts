@@ -6,3 +6,9 @@
     name: "{{ username }}"
     state: absent
     remove:  yes
+  register: deleteUser
+
+- name: Delete Details
+  debug:
+    var: deleteUser
+
