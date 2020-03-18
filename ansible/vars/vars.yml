@@ -14,10 +14,11 @@ srcPythonDir            : ../python/
 srcServicesDir          : ../services/
 
 AWS_cw_script           : 
-  url     : https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
-  dir     : aws-scripts-mon
-  get_met : mon-get-instance-stats.pl
-  put_met : mon-put-instance-data.pl
+  url         : https://aws-cloudwatch.s3.amazonaws.com/downloads/CloudWatchMonitoringScripts-1.2.2.zip
+  dir         : aws-scripts-mon
+  get_met     : mon-get-instance-stats.pl
+  put_met     : mon-put-instance-data.pl
+  cw_cron     : 5
 common_pks              : ['zip','unzip']
 RHEL_7_cw_pks           : ['ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm','perl-DateTime','perl-Sys-Syslog','perl-LWP-Protocol-https','perl-Digest-SHA','perl-devel']
 RHEL_6_cw_pks           : ['perl-DateTime','perl-CPAN','perl-Net-SSLeay','perl-IO-Socket-SSL','perl-Digest-SHA','gcc','perl-devel']
