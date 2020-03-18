@@ -5,3 +5,8 @@
   group:
     name: "{{ group_name }}"
     state: absent
+  register: groupDelete
+
+- name: Delete Group
+  debug:
+    var: groupDelete
