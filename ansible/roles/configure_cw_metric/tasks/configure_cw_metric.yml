@@ -46,7 +46,7 @@
 - name: Step4 - Schedule cronjob for CloudWatch metric every 5mins
   become: yes
   cron:
-    minute: '*/{{ cw_cron }}'
+    minute: '*/{{ AWS_cw_script.cw_cron }}'
     name: CloudWatch Custom Metric for every 5mins
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
