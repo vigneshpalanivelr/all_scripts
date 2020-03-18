@@ -24,11 +24,11 @@
   when: assign_role == "no"
   register: userCreation
 
-- name: User Details
+- name: User create Details
   debug:
     var: userCreationG
 
-- name: Check files stored in list
+- name: User create Details
   debug:
     var: userCreation
 
