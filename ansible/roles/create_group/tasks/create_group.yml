@@ -7,6 +7,6 @@
     state: present
   register: groupCreation
 
-- name: Group Detail
+- name: Group creation Detail
   debug:
     var: groupCreation
