@@ -11,6 +11,19 @@
     validate: visudo -cf %s
   register: addSudoers
 
-- name: Sudo Details
+- name: Restart sshd service for new user to be added
+  service:
+    name: sshd
+    state: reloaded
+  register: serviceReload
+
+- name: Add sudo Details
   debug:
     var: addSudoers
+
+- name: SSHD Restart Status
+  debug:
+    msg:
+      - SSHD - Current Status {{ serviceReload.status.SubState }}
+      - SSHD - Stop    Status {{ serviceReload.status.ExecReload }}
+      - SSHD - Start   Status {{ serviceReload.status.ExecStart }}

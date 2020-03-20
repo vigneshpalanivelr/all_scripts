@@ -8,7 +8,6 @@
     remove:  yes
   register: deleteUser
 
-- name: Delete Details
+- name: Delete User Details
   debug:
     var: deleteUser
-
