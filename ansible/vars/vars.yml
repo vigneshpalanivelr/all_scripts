@@ -23,8 +23,10 @@ repositories  :
   epel_7      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   epel_6      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
   maven       : http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
+  packer      : https://releases.hashicorp.com/packer
 
-yumDir        : /etc/yum.repos.d/
+worldAccess   : /usr/bin/
+yumDir        : /etc/yum.repos.d
 yumRepos  :
   maven   : epel-maven.repo
 
