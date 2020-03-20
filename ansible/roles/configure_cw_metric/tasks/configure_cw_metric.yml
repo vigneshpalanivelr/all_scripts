@@ -8,6 +8,15 @@
     skip_broken: yes
   loop: "{{ common_pks }}"
 
+- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-8
+  become: yes
+  yum:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ RHEL_8_cw_pks }}"
+  when: RHELver == "8"
+  ignore_errors: yes
+
 - name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-7
   become: yes
   yum:
@@ -37,6 +46,11 @@
     name: "{{ item }}"
   loop: "{{ RHEL_6_cpanm_pks }}"
   when: RHELver == "6"
+
+- name: create dir
+  file: 
+    path: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    state: directory
 
 - name: Step3 - Download and Unzip Monitoring Script from AWS
   become: yes

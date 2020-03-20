@@ -1,49 +1,13 @@
 ---
 
-- name: step1 - Installing git-core
+- name: Step1 - Un-Installing the Basic Packages
   become: yes
   yum:
-    name: git-core
+    name: "{{ item }}"
     state: absent
+  loop: "{{ common_pks }}"
+  register: listUnInstall
 
-- name: step2 - Installing maven
-  become: yes
-  yum:
-    name: maven
-    state: absent
-
-- name: step3 - Installing tree
-  become: yes
-  yum:
-    name: tree
-    state: absent
-
-- name: step4 - Installing wget
-  become: yes
-  yum:
-    name: wget
-    state: absent
-
-- name: step5 - Installing unzip
-  become: yes
-  yum:
-    name: unzip
-    state: absent
-
-- name: step6 - Installing awscli
-  become: yes
-  yum:
-    name: awscli
-    state: absent
-
-- name: step7 - Installing httpd
-  become: yes
-  yum:
-    name: httpd
-    state: absent
-
-- name: step8 - Installing telnet
-  become: yes
-  yum:
-    name: telnet
-    state: absent
+- name: Output for list Un-Install
+  debug:
+    msg: Message - {{ listUnInstall.msg }}
