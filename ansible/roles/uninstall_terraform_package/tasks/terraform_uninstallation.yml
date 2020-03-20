@@ -12,3 +12,8 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ file_list_to_delete.files }}"
+  register: tfUnInstallation
+
+- name: Output of terraform Un-Installation
+  debug:
+    var: tfUnInstallation

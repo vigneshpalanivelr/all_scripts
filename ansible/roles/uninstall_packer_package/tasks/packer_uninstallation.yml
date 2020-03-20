@@ -12,3 +12,8 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ file_list_to_delete.files }}"
+  register: packUnInstall
+
+- name: Output of packer Un-Installation
+  debug:
+    var: packUnInstall
