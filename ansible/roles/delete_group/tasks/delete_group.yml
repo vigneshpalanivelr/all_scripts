@@ -7,6 +7,6 @@
     state: absent
   register: groupDelete
 
-- name: Delete Details
+- name: Delete Group Details
   debug:
     var: groupDelete

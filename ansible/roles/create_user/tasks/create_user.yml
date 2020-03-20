@@ -24,11 +24,11 @@
   when: assign_role == "no"
   register: userCreation
 
-- name: User create Details
+- name: User creation Details
   debug:
     var: userCreationG
 
-- name: User create Details
+- name: User creation Details
   debug:
     var: userCreation
 
