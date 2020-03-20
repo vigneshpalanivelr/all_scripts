@@ -20,6 +20,7 @@ RHEL_6_cpanm_pks        : ['YAML' , 'LWP::Protocol::https' , 'Sys::Syslog' , 'Sw
 
 repositories  :
   pip         : https://bootstrap.pypa.io/get-pip.py
+  epel_8      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
   epel_7      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   epel_6      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
   maven       : http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
