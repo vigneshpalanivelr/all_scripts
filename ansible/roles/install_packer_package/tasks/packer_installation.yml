@@ -1,8 +1,8 @@
 ---
 
-- name:	Download and Unzip Packer package from Hashicorp
+- name:	Download and Unzip Packer package from Hashicorp Repo
   become: yes
   unarchive:
-    src: https://releases.hashicorp.com/packer/1.5.1/packer_1.5.1_linux_amd64.zip
-    dest: /usr/bin/
+    src: "{{ repositories.packer }}"/"{{ packerVersion }}"/packer_"{{ packerVersion }}"_linux_amd64.zip
+    dest: "{{ worldAccess }}"
     remote_src: True
