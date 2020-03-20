@@ -3,6 +3,11 @@
 - name:	Download and Unzip Packer package from Hashicorp Repo
   become: yes
   unarchive:
-    src: "{{ repositories.packer }}"/"{{ packerVersion }}"/packer_"{{ packerVersion }}"_linux_amd64.zip
+    src: "{{ repositories.hashicorp }}/packer/{{ packerVersion }}/packer_{{ packerVersion }}_linux_amd64.zip"
     dest: "{{ worldAccess }}"
     remote_src: True
+  register: packInstall
+
+- name: Output of packer installation
+  debug:
+    var: packInstall

@@ -13,3 +13,8 @@
     name: "{{ item }}"
     state: present
   loop: "{{ common_pks }}"
+  register: listInstall
+
+- name: Output for List Installation
+  debug:
+    var: listInstall
