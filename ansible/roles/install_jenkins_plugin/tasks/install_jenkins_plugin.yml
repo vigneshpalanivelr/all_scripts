@@ -1,0 +1,86 @@
+---
+
+- name: Find my public ip
+  uri:
+    url: http://ifconfig.me/ip
+    return_content: yes
+  register: publicIP
+
+- name: Set the fact to default
+  set_fact:
+    jenkins_restart_required: no
+
+- name: Print the fact
+  debug:
+    var: jenkins_restart_required
+
+- name: Install Plugins on behalf of jenkins user {{ repositories.jenkins.user }}
+  jenkins_plugin:
+    name: "{{ item }}"
+    url: "http://{{ publicIP.content }}:8080"
+    url_username: "{{ repositories.jenkins.user }}"
+    url_password: "{{ repositories.jenkins.password }}"
+  register: plugin_result
+  until: plugin_result is success
+  retries: 10
+  delay: 2
+  loop: "{{ repositories.jenkins.plugins }}"
+
+- name: Check if Re-Start is required 
+  set_fact:
+    jenkins_restart_required: yes
+  when: item.changed
+  loop: "{{ plugin_result.results }}"
+
+- name: Print if Re-Start is not required
+  debug:
+    msg:
+      - No Changes has been made....
+      - No Re-Start is required
+  when: jenkins_restart_required == false
+
+- name: Restart Jenkins only if required
+  service:
+    name: jenkins
+    state: restarted
+  when: jenkins_restart_required
+
+- name: Print the fact
+  debug:
+    msg:
+      - Jenkins has been restarted...!
+  when: jenkins_restart_required
+
+- name: Wait for Jenkins to start up
+  uri:
+    url: "http://{{ publicIP.content }}:8080"
+    method: GET
+    user: "{{ repositories.jenkins.user }}"
+    password: "{{ repositories.jenkins.password }}"
+    force_basic_auth: yes
+    status_code: [200]
+    timeout: 5
+  register: jenkins_service_status
+  # Keep on trying for 50 sec in 5 sec intervals
+  retries: 10
+  delay: 5
+  until: >
+    'status' in jenkins_service_status
+    and
+    jenkins_service_status['status'] == 200
+  when: jenkins_restart_required
+
+- name: Running Jenkins Details
+  debug:
+    msg: 
+      - Status        = Jenkins is Up and Runnning now...!
+      - Attempts Made = {{ jenkins_service_status.attempts }}
+      - Up Time       = {{ jenkins_service_status.date }}
+      - status code   = {{ jenkins_service_status.status }}
+      - Jenkins URL   = {{ jenkins_service_status.url }}
+  when: jenkins_restart_required
+
+- name: Turning off the Jenkins restart
+  set_fact:
+    jenkins_restart_required: no
+  when: jenkins_restart_required
