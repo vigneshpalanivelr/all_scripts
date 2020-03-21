@@ -12,7 +12,7 @@
 	```
 
 - Manual Commands to execute
-      ```
+	```
     - ansible-playbook site.yml --extra-vars "ins_pgsql=pgsql_install" --tags=pgsql_install
     - ansible-playbook site.yml --extra-vars "ins_pgsql=pgsql_install uin_pgsql=pgsql_uninstall" --tags=pgsql_install --tags=pgsql_uninstall
     
@@ -36,4 +36,4 @@
     - ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_sudo=remove_sudoers" --tags=remove_sudoers
     - ansible-playbook site.yml -i inventory --extra-vars "username=vignesh del_usr=delete_user" --tags=delete_user
     - ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_grp=delete_group" --tags=delete_group
-      ```
+	```
