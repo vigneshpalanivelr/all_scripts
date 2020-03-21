@@ -1,0 +1,49 @@
+---
+
+- name: Pre-Requisite for Jenkins
+  debug:
+    msg: All common packages must be installed
+
+- name: Download jenkins.repo
+  become: yes
+  get_url:
+    url: "{{ repositories.jenkins.repo }}"
+    dest: "{{ yumDir }}/{{ yumRepos.jenkins }}"
+
+- name: Import Jenkins Key
+  become: yes
+  rpm_key:
+    state: present
+    key: "{{ repositories.jenkins.gpgkey }}"
+
+- name: Install Jenkins
+  become: yes
+  yum:
+    name: jenkins
+    state: present
+
+- name: Start & Enable Jenkins
+  become: yes
+  systemd:
+    name: jenkins
+    state: started
+    enabled: true
+
+- name: Sleep for 5 seconds and continue with play
+  wait_for: timeout=5
+
+- name: Find my public ip
+  uri:
+    url: http://ifconfig.me/ip
+    return_content: yes
+  register: publicIP
+
+- name: Display the Jenkins URL
+  debug:
+    msg: Jenkins URL is - http://{{ publicIP.content }}:8080
+
+- name: Initial Password is
+  debug: 
+    var: item
+  with_file:
+    - "{{ repositories.jenkins.pwd }}"
