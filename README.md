@@ -16,17 +16,22 @@
     - ansible-playbook site.yml --extra-vars "ins_pgsql=pgsql_install" --tags=pgsql_install
     - ansible-playbook site.yml --extra-vars "ins_pgsql=pgsql_install uin_pgsql=pgsql_uninstall" --tags=pgsql_install --tags=pgsql_uninstall
     
-    - ansible-playbook site.yml --extra-vars "ins_all=list_install" --tags=list_install
-    - ansible-playbook site.yml --extra-vars "ins_all=list_install uin_all=list_uninstall" --tags=list_install --tags=list_uninstall
+    - ansible-playbook site.yml -i inventory --extra-vars "ins_all=list_install" --tags=list_install
+    - ansible-playbook site.yml -i inventory --extra-vars "uin_all=list_uninstall" --tags=list_uninstall
+
+    - ansible-playbook site.yml -i inventory --extra-vars "ins_packer=packer_install packerVersion=1.5.4" --tags=packer_install
+    - ansible-playbook site.yml -i inventory --extra-vars "uin_packer=packer_uninstall" --tags=packer_uninstall
+
+    - ansible-playbook site.yml -i inventory --extra-vars "ins_tf=terraform_install tfVersion=0.12.7" --tags=terraform_install
+    - ansible-playbook site.yml -i inventory --extra-vars "uin_tf=terraform_uninstall" --tags=terraform_uninstall
     
-    - ansible-playbook site.yml --extra-vars "ins_pgsq=packer_install" --tags=packer_install
-    - ansible-playbook site.yml --extra-vars "ins_pgsq=packer_install uin_packer=packer_uninstall" --tags=packer_install --tags=packer_uninstall
+    - ansible-playbook site.yml -i inventory --extra-vars "ins_jenkins=jenkins_install" --tags=jenkins_install
+    - ansible-playbook site.yml -i inventory --extra-vars "jenkins_plugin=jenkins_plugin" --tags=jenkins_plugin
     
-    - ansible-playbook site.yml --extra-vars "ins_tf=terraform_install" --tags=terraform_install
-    - ansible-playbook site.yml --extra-vars "ins_tf=terraform_install uin_tf=terraform_uninstall" --tags=terraform_install --tags=terraform_uninstall
-    
+    - ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --tags=configure_cw
+    - ansible-playbook site.yml -i inventory --extra-vars "rem_cw=remove_cw" --tags=remove_cw
+
     - ansible-playbook site.yml --extra-vars "mount=mount_volumes" --tags=mount_volumes
-    - ansible-playbook site.yml --extra-vars "cre_cw=configure_cw" --tags=configure_cw
     - ansible-playbook site.yml --extra-vars "set_ci=setup_cloud_init" --tags=setup_cloud_init
 
     - ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group cre_grp=create_group" --tags=create_group
