@@ -67,11 +67,16 @@
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
     state: present
-  register: CWStat
+
+- name: Print CronJobs
+  shell:
+    cmd: cat /var/spool/cron/*
+    warn: False
+  register: crontab
 
 - name: CW cron schedule output
   debug:
-    var: CWStat
+    var: crontab.stdout_lines
 
 #Ref : https://stackoverflow.com/questions/42163232/using-cpanm-module-in-ansible
 #Ref : https://metacpan.org/pod/App::cpanminus
