@@ -1,0 +1,29 @@
+[epel]
+name=Extra Packages for Enterprise Linux OS_VERSION - $basearch
+
+baseurl=http://download.fedoraproject.org/pub/epel/OS_VERSION/$basearch
+metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-OS_VERSION&arch=$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-OS_VERSION
+
+[epel-debuginfo]
+name=Extra Packages for Enterprise Linux OS_VERSION - $basearch - Debug
+
+baseurl=http://download.fedoraproject.org/pub/epel/OS_VERSION/$basearch/debug
+metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-OS_VERSION&arch=$basearch
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-OS_VERSION
+gpgcheck=1
+
+[epel-source]
+name=Extra Packages for Enterprise Linux OS_VERSION - $basearch - Source
+
+baseurl=http://download.fedoraproject.org/pub/epel/OS_VERSION/SRPMS
+metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-source-OS_VERSION&arch=$basearch
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-OS_VERSION
+gpgcheck=1

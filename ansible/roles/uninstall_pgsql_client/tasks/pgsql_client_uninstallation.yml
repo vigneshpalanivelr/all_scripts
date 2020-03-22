@@ -1,7 +1,11 @@
 ---
 
-- name: Step1 - Un-Installing RPMs
+- name: Un-Installing RPMs matches postgresql
   become: yes
   yum:
-    name: postgresql96*
+    name: "{{ item }}*"
     state: absent
+  loop:
+    - "postgresql{{ pg_major }}-libs-{{ PG_MAJOR }}"
+    - "postgresql{{ pg_major }}-{{ PG_MAJOR }}"
+    - "postgresql{{ pg_major }}-server-{{ PG_MAJOR }}"

@@ -1,0 +1,60 @@
+---
+
+- name: Coping Local to Remote Hosts
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    force: yes
+    mode: 0744
+  loop:
+    - "../{{ srcPythonDir }}"
+    - "../{{ srcServicesDir }}"
+    - "../{{ srcRepoDir }}"
+  register: updatedRepos
+
+- name: Find the repos files present
+  become: yes
+  find:
+    paths: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ srcRepoDir }}"
+    recurse: yes
+    patterns: "*repo"
+  register: listOfRepos
+
+- name: Display the details of the repo files
+  debug:
+    var: listOfRepos.files
+
+- name: Coping to "{{ yumDir }}" path
+  become: yes
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ yumDir }}"
+    force: yes
+    mode: 0644
+    remote_src: true
+  loop: "{{ listOfRepos.files }}"
+  when: updatedRepos.changed
+
+- name: Replace OS_VERSION wih RHEL version
+  replace:
+    path: "{{ yumDir }}/{{ item.path | basename }}"
+    regexp: 'OS_VERSION'
+    replace: '{{ RHELver }}'
+  loop: "{{ listOfRepos.files }}"
+  when: updatedRepos.changed
+  register: modifications
+
+- name: List all the repo
+  shell:
+    cmd: yum repolist all | grep epel
+    warn: False
+  register: repolistAll
+
+- name: Display the details of the repo files
+  debug:
+    msg: "{{ repolistAll.stdout.split('\n') }}"
+
+
+#Ref https://access.redhat.com/discussions/3140721
+#Manual : rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
