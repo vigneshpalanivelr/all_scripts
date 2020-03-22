@@ -1,37 +1,18 @@
 ---
 
-- name: Step1 - Download PostgreSQL from PostgreSQL Repos
-  become: yes
-  get_url:
-    url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-8-x86_64/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm
-    #dest: '{{ playbook_dir }}/packages/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
-    dest: '/usr/local/sbin/custom-scripts/rpms/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'
-    mode: 0775
-
-- name: Step2 - Download PostgreSQL Libs from PostgreSQL Repos
-  become: yes
-  get_url:
-    url: https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-8-x86_64/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm
-    #dest: '{{ playbook_dir }}/packages/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
-    dest: '/usr/local/sbin/custom-scripts/rpms/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'
-    mode: 0775
-
-- name: Step3 - Installing RPMs
+- name: Installing RPMs for PostgreSQL version {{ PG_MAJOR }}
   become: yes
   yum:
-    #name: '{{ playbook_dir }}/packages/{{ item.package }}'
-    name: '/usr/local/sbin/custom-scripts/rpms/{{ item.package }}'
+    name: "{{ repositories.postgres }}/{{ PG_MAJOR }}/{{ ansible_distribution | lower }}/rhel-{{ ansible_distribution_version }}-{{ ansible_architecture }}/{{ item }}"
     state: present
   loop:
-    - { package: "postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm"}
-    - { package: "postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm" }
+    - "postgresql{{ pg_major }}-libs-{{ PG_MAJOR }}.1{{ PG_MINOR }}-2PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
+    - "postgresql{{ pg_major }}-{{ PG_MAJOR }}.1{{ PG_MINOR }}-2PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
+    - "postgresql{{ pg_major }}-server-{{ PG_MAJOR }}.1{{ PG_MINOR }}-2PGDG.rhel{{ ansible_distribution_major_version }}.{{ ansible_architecture }}.rpm"
 
-- name: Step4 - Deleting RPMs downloaded in Step1
-  become: yes
-  file:
-    #path: '{{ playbook_dir }}/packages'
-    path: '{{ item.package }}'
-    state: absent
-  loop:
-    - { package: '/usr/local/sbin/custom-scripts/postgresql96-9.6.16-2PGDG.rhel8.x86_64.rpm'}
-    - { package: '/usr/local/sbin/custom-scripts/postgresql96-libs-9.6.16-2PGDG.rhel8.x86_64.rpm'}
+
+
+
+
+# Directory Link : /etc/alternatives
+# Directory : /usr/pgsql-9.6

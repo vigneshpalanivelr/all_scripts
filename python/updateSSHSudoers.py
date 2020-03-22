@@ -83,12 +83,14 @@ if __name__ == '__main__':
 	root_match_exp	= re.compile(r'(PermitRootLogin y.*)')
 	
 	
-	
+        	
 	try:
 		data = userdata_multipart.get_cloud_config_data(URL)
 		# data = userdata_template.get_cloud_config_data(URL)
 		try:
 			ssh_group_line, sudo_group = get_all_groups(['ssh_groups','sudo_groups'])
+                        print 
+                        print ssh_group_line, sudo_group
 			try:
 				change_sshd_config_replace(ssh_config_file,ssh_group_line)
 				# Enable If required
@@ -106,4 +108,4 @@ if __name__ == '__main__':
 			exit(200)
 	except Exception as data_error:
 		print data_error
-		exit(100)
+		exit(1)

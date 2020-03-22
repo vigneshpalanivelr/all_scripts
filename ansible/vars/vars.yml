@@ -10,8 +10,9 @@ scriptHomeDir           : /usr/local/sbin
 scriptsDir              : custom-scripts
 logsDir                 : logs
 rpmDir                  : rpms
-srcPythonDir            : ../python/
-srcServicesDir          : ../services/
+srcPythonDir            : python
+srcServicesDir          : services
+srcRepoDir              : yum-repos-d
 
 common_pks              : ['maven' , 'tree' , 'httpd' , 'telnet' , 'git-core' , 'wget' , 'zip' , 'unzip' , 'java-1.8.0-openjdk' ]
 RHEL_8_cw_pks           : ['ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm','ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-DateTime-0.4305-1.rh7.rf.i386.rpm','perl-Sys-Syslog','perl-LWP-Protocol-https','perl-Digest-SHA','perl-devel']
@@ -26,6 +27,7 @@ repositories  :
   epel_6      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
   maven       : http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
   hashicorp   : https://releases.hashicorp.com
+  postgres    : https://download.postgresql.org/pub/repos/yum
   jenkins     : 
     repo      : http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
     gpgkey    : https://jenkins-ci.org/redhat/jenkins-ci.org.key
@@ -36,6 +38,12 @@ repositories  :
 
 worldAccess   : /usr/bin/
 yumDir        : /etc/yum.repos.d
+yumDirPer     : 0644
+initDir       : /etc/init.d
+initDirPer    : 0755
+systemdDir    : /etc/systemd/system
+systemdDirPer : 0755
+
 yumRepos  :
   maven   : epel-maven.repo
   jenkins : jenkins.repo

@@ -8,13 +8,15 @@
     force: yes
     mode: 0744
   loop:
-    - "{{ srcPythonDir }}"
-    - "{{ srcServicesDir }}"
+    - "../{{ srcPythonDir }}"
+    - "../{{ srcServicesDir }}"
+    - "../{{ srcRepoDir }}"
+  register: updatedServices
 
 - name: Find the service files present
   become: yes
   find:
-    paths: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    paths: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ srcServicesDir }}"
     recurse: yes
     patterns: "*Service"
   register: listOfServices
@@ -23,7 +25,7 @@
   debug:
     var: listOfServices
 
-- name: Coping to init.d path
+- name: Coping to /etc/init.d path if RHEL-6
   become: yes
   copy:
     src: "{{ item.path }}"
@@ -32,6 +34,7 @@
     mode: 0744
     remote_src: true
   loop: "{{ listOfServices.files }}"
+  #when: "{{ RHEL }}" == "6"
 
 - name: Adding Files to the LIST
   vars:
@@ -50,3 +53,8 @@
     name: "{{ item }}"
     enabled: yes
   loop: "{{ Files }}"
+  register: addedServices
+
+- name: Check files stored in list
+  debug:
+    var: addedServices
