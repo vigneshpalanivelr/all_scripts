@@ -38,6 +38,12 @@ repositories  :
 
 worldAccess   : /usr/bin/
 yumDir        : /etc/yum.repos.d
+yumDirPer     : 0644
+initDir       : /etc/init.d
+initDirPer    : 0755
+systemdDir    : /etc/systemd/system
+systemdDirPer : 0755
+
 yumRepos  :
   maven   : epel-maven.repo
   jenkins : jenkins.repo

@@ -108,5 +108,4 @@ if __name__ == '__main__':
 			exit(200)
 	except Exception as data_error:
 		print data_error
-                print 'Exiting code.....'
 		exit(1)
