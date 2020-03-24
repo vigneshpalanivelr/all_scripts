@@ -45,13 +45,13 @@
 case "$1" in
     start)
         # Printing the message
-        echo -e "\nFunction : Start : Starting updateSSHSudoers from Cloud-Init...\n"
+        echo -e "Starting service updateSSHSudoers from Cloud-Init..."
         # every time about starting up instance
         /usr/local/sbin/custom-scripts/python/updateSSHSudoers.py
         if [[ $? -eq 0 ]]; then
-                echo -e "\nFunction : SSHD  : Started\n"
+                echo -e "Successfully Started"
         else
-                echo -e "Service failed"
+                echo -e "Service Failed to Start"
         fi
         /bin/systemctl reload sshd
         ;;
