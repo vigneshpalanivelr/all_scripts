@@ -49,20 +49,20 @@ case "$1" in
         # every time about starting up instance
         /usr/local/sbin/custom-scripts/python/updateSSHSudoers.py
         if [[ $? -eq 0 ]]; then
-                echo -e "Successfully Started"
+                echo -e "Start : Successfully Started"
         else
-                echo -e "Service Failed to Start"
+                echo -e "Fail  : Service Failed to Start"
         fi
         /bin/systemctl reload sshd
         ;;
 
     stop)
-        echo -e "\nFunction : Stop  : This service will run at only Once, Cannot be stopped !!\n"
+        echo -e "Stop  : This service will run at only Once, Cannot be stopped ...!!"
         exit 0
         ;;
 
     status)
-        echo -e "\nFunction : Stat  : This service already ran at boot time.\n\n"
+        echo -e "Stat  : This service already ran at boot time.\n\n"
         ;;
 
     restart)
