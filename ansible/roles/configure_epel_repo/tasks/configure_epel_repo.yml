@@ -55,6 +55,32 @@
   debug:
     msg: "{{ repolistAll.stdout.split('\n') }}"
 
+- name: Setup GPG key
+  shell:
+    cmd: "rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ RHELver }}"
+    warn: False
+
+- name: Yum Update
+  yum:
+    name: "*"
+    state: latest
+    skip_broken: yes
+
+- name: Yum List installed
+  yum:
+    list: installed
+  register: installed
+
+#- name: Adding Files to the LIST
+#  vars:
+#    Pks: []
+#  set_fact:
+#    Pks: "{{ Pks + [  {'name': item.name, 'version': item.version}] }}"
+#  loop: "{{ installed.results }}"
+
+#- name: Display the details of the repo files
+#  debug:
+#    var: Pks
 
 #Ref https://access.redhat.com/discussions/3140721
 #Manual : rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7

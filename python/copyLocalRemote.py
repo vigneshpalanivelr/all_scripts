@@ -14,7 +14,6 @@ import fileinput
 import subprocess
 # import prettytable
 
-
 #import custom modules
 # sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/variables'))
 # sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/packages'))
@@ -23,19 +22,17 @@ import subprocess
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/variables/' )
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/packages/'  )
 import logger
+import global_vars
 # print sys.path
+
+class loadLogDirectory():
+	def __init__(self):
+		if not os.path.exists(logDirectory): os.makedirs(logDirectory)
 
 class CopyExtract(object):
 	def __init__(self):
-		try:
-			with open(YAMLvariable) as var:
-				self.variables =  yaml.safe_load(var)
-		except yaml.YAMLError as yaml_exception:
-			print str(yaml_exception).rstrip()
-			exit(100)
-	
-	def return_variables(self):
-		return self.variables
+		execLog.debug('Object  - Created Class Object')
+		pass
 	
 	def copy_remote(self, allDirs=None, source='../', destination=None):
 		execLog.debug('Action  - Started coping to Remote path')
@@ -78,6 +75,10 @@ class CopyExtract(object):
 			process 		= subprocess.Popen(i, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 			stdout, stderr 	= process.communicate()
 			if 'Executing /sbin/chkconfig' in stderr:
+				execLog.info('Command  - {}'.format(' '.join(i)))
+			elif stderr:
+				execLog.error('Command  - {}'.format(' '.join(i)))
+			else:
 				execLog.info('Command  - {}'.format(' '.join(i)))
 	
 	def copytree(self, src, dst, symlinks = False, ignore = None, permission = None):
@@ -130,6 +131,7 @@ class CopyExtract(object):
 			filedata = file.read()
 			filedata = filedata.replace(textToSearch, textToReplace)
 			file.truncate(0)
+			file.seek(0) 
 			file.write(filedata)
 		execLog.info('Find Re  - {} : {} : {}'.format(filename, textToSearch, textToReplace))
 	
@@ -139,37 +141,33 @@ class CopyExtract(object):
 if __name__ == '__main__':
 	
 	# Argparse Argments and variables defination
-	parser = argparse.ArgumentParser(description='Script to Install Packages using Python YUM Module')
+	parser = argparse.ArgumentParser(description='Copy scripts from local to remote and enable services and repos')
 	parser.add_argument('RHEL'				,action='store_const'		,help='RHEL Major Version'					,const='7'							)
-	parser.add_argument('YAMLvariable'		,action='store_const'		,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'	)
+	parser.add_argument('YAMLvarFile'		,action='store_const'		,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'	)
 	
 	# arguments		= parser.parse_args(['7', '../ansible/vars/vars.yml'])
 	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
-	YAMLvariable	= arguments.YAMLvariable
+	YAMLvarFile		= arguments.YAMLvarFile
+	
+	# Load variables from ansible vars
+	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
+	logDirectory 	= variables['scriptHomeDir']+'/'+variables['scriptsDir']+'/'+variables['logsDir']
+	
+	# Execute a class object to make log dir
+	loadLogDirectory()
+	print 'Created Log Directory : {}'.format(logDirectory)
+	
+	# Define logging module, File Handler & Stream Handler
+	# Define Log file name for later use
+	execLogger		= 'packageExectnLog' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
+	execLog			= logger.setupLogger('YUM INstalation Steps', logDirectory +'/'+ execLogger)
+	execLog.debug('Object  - Successfully Loadded Ansible Vars')
 	
 	# Creating class object
 	copy_extract 	= CopyExtract()
-	variables = copy_extract.return_variables()
-	# print json.dumps(variables, sort_keys=True, indent=2)
 	
-	logDirectory = variables['scriptHomeDir']+'/'+variables['scriptsDir']+'/'+variables['logsDir']
 	
-	# Define logging File & Stream Handlers
-	if not os.path.exists(logDirectory):
-			os.makedirs(logDirectory)
-	
-	# Define Log file name for later use
-	execLogger			= 'CopyExtract'+time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z')+'.log'
-	
-	execLog			= logger.setupLogger(
-		'Copy and Extract Steps' ,
-		logDirectory +'/'+ execLogger
-	)
-	
-	execLog.debug('Object  - Created Class Object : {}'.format(copy_extract.__class__.__name__))
-	execLog.debug('Object  - Successfully Loadded Ansible Vars')
-		
 	copy_extract.copy_remote(
 		allDirs		= [variables['srcPythonDir'],variables['srcRepoDir'],variables['srcServicesDir']], 
 		source 		= '../', 
