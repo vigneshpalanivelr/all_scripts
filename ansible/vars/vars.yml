@@ -14,7 +14,32 @@ srcPythonDir            : python
 srcServicesDir          : services
 srcRepoDir              : yum-repos-d
 
-common_pks              : ['maven' , 'tree' , 'httpd' , 'telnet' , 'git-core' , 'wget' , 'zip' , 'unzip' , 'java-1.8.0-openjdk' ]
+#common_pks              : ['maven' , 'tree' , 'httpd' , 'telnet' , 'git-core' , 'wget' , 'zip' , 'unzip' , 'java-1.8.0-openjdk' ]
+common_pks              : 
+  maven     :
+    name    : apache-maven
+    version : 
+  tree      :
+    name    : tree
+    version : 1.6.0
+  telnet    :
+    name    : telnet
+    version :
+  git-core  :
+    name    : git
+    version :
+  wget      :
+    name    : wget
+    version :
+  zip       :
+    name    : zip
+    version :
+  unzip     :
+    name    : unzip
+    version :
+  java      :
+    name    : java-1.8.0-openjdk
+    version :
 RHEL_8_cw_pks           : ['ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm','ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-DateTime-0.4305-1.rh7.rf.i386.rpm','perl-Sys-Syslog','perl-LWP-Protocol-https','perl-Digest-SHA','perl-devel']
 RHEL_7_cw_pks           : ['ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm','perl-DateTime','perl-Sys-Syslog','perl-LWP-Protocol-https','perl-Digest-SHA','perl-devel']
 RHEL_6_cw_pks           : ['perl-DateTime' , 'perl-CPAN' , 'perl-Net-SSLeay' , 'perl-IO-Socket-SSL' , 'perl-Digest-SHA' , 'gcc' , 'perl-devel']

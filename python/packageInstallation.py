@@ -2,22 +2,32 @@
 import os
 import sys
 import yum
+import yaml
 import json
 import time
-import logger
 import argparse
 import prettytable
 
 #import custom modules
-# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv'))
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv/variables')
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv/packages')
-#print sys.path
+# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/variables'))
+# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/packages'))
+# sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/variables/'))
+# sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/packages/'))
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/variables/' )
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/packages/'  )
+import logger
+import global_vars
+# print sys.path
+
+class loadLogDirectory():
+	def __init__(self):
+		if not os.path.exists(logDirectory): os.makedirs(logDirectory)
 
 class packageInstalation(object):
 	def __init__(self):
 		# YumBase instance is the base class that houses methods and objects required to perform all the package management functions using yum.
 		# For more : http://yum.baseurl.org/download/docs/yum-api/3.2.27/yum.YumBase-class.html#_delRepos
+		execLog.debug('Object  - Created Class Object : {}')
 		try:
 			self.yBase 						= yum.YumBase()
 			self.yBase.preconf.debuglevel 	= 0
@@ -28,8 +38,6 @@ class packageInstalation(object):
 			exit(100)
 	
 	def CleanUp(self):
-		# YumBase instance is the base class that houses methods and objects required to perform all the package management functions using yum.
-		# For more : http://yum.baseurl.org/download/docs/yum-api/3.2.27/yum.YumBase-class.html#_delRepos
 		try:
 			execLog.info('YUM Config File : {}'.format(self.yBase.conf.config_file_path))
 			execLog.info('YUM Log File    : {}'.format(self.yBase.conf.logfile))
@@ -52,7 +60,7 @@ class packageInstalation(object):
 				PrettyTable.add_row(i)
 			PrettyTable.align="l"
 			PrettyTable.padding_width=2
-			execLog.info('Generated Pakgs : {}'.format('PrettyTable'))
+			execLog.info('Generated Pakgs : PrettyTable')
 			return PrettyTable
 		except Exception as generatePrettyTablesError:
 			execLog.error(str(generatePrettyTablesError).rstrip())
@@ -78,29 +86,19 @@ class packageInstalation(object):
 			exit(400)
 	
 	def installPakgs(self, pkg2Install):
+		print pkg2Install
 		try:
-			for pkg,ver in pkg2Install.iteritems():
+			for key,value in pkg2Install.iteritems():
 				try: 
-					if not ver: 
-						ver = None
-						install		= self.yBase.install(name=pkg, version=ver)
-						resolveDep	= self.yBase.resolveDeps()
-						self.yBase.buildTransaction()
-						if install:
-							execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
-						else:
-							execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(pkg, self.pkgCache[pkg]['version'],'AlreadyInstalled...!'))
-					elif self.pkgCache.has_key(pkg):
-						if self.pkgCache[pkg]['version'] == ver:
-							execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(pkg, self.pkgCache[pkg]['version'],'AlreadyInstalled...!'))
+					install		= self.yBase.install(name=value['name'], version=value['version'])
+					resolveDep	= self.yBase.resolveDeps()
+					self.yBase.buildTransaction()
+					if install:
+						execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
 					else:
-						install		= self.yBase.install(name=pkg, version=ver)
-						resolveDep	= self.yBase.resolveDeps()
-						self.yBase.buildTransaction()
-						if install:
-							execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
-				except Exception as pkgInstallationError:
-					execLog.error(str(pkgInstallationError).rstrip() + pkg + str(ver))
+						execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(value['name'], self.pkgCache[value['name']]['version'],'AlreadyInstalled...!'))
+				except yum.Errors.InstallError as pkgInstallationError:
+					execLog.error(str(pkgInstallationError).rstrip() + ' ' + value['name'] + ' ' +str(value['version']) + pkgInstallationError.__class__.__name__)
 			# Real Installation Takes Place
 			self.yBase.processTransaction()
 			return True
@@ -110,29 +108,36 @@ class packageInstalation(object):
 
 if __name__ == '__main__':
 	
-	parser = argparse.ArgumentParser(description='Script to Install Packages using Python YUM Module')
+	parser = argparse.ArgumentParser(description='Read ansible variables in YAML format')
 	
-	parser.add_argument('packageDict'		,action='store'		,type=json.loads	,help='Packages dict to install')
+	parser.add_argument('YAMLvarFile'               ,action='store_const'           ,help='Load Variables from Ansible Vars'        ,const='../ansible/vars/vars.yml' )
 	
-	# Have to provide packageDict in below mentioned str format '""'
-	# arguments	= parser.parse_args(['{  "wget": "1.14",  "tree": "1.6.0",  "telnet": "0.17",  "git": "",  "unzip": "",  "zip": "",  "python": "",  "python3": ""}'])
-	arguments	= parser.parse_args()
-	packageDict		= arguments.packageDict
+	# arguments		= parser.parse_args(['../ansible/vars/vars.yml'])
+	arguments		= parser.parse_args()
+	YAMLvarFile		= arguments.YAMLvarFile
 	
-	# Define Log file names
-	execLogger			= 'packageExectnLog' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
+	# Load variables from ansible vars
+	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
+	logDirectory 	= variables['scriptHomeDir']+'/'+variables['scriptsDir']+'/'+variables['logsDir']
 	
-	# Define logging File & Stream Handlers
-	execLog				= logger.setupLogger('Execution Step' ,execLogger)
+	# Execute a class object to make log dir
+	loadLogDirectory()
+	print 'Created Log Directory : {}'.format(logDirectory)
 	
-	# Creating Class Object
-	pkgInstalled 		= packageInstalation()
+	# Define logging module, File Handler & Stream Handler
+	# Define Log file name for later use
+	execLogger		= 'packageExectnLog' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
+	execLog			= logger.setupLogger('YUM INstalation Steps', logDirectory +'/'+ execLogger)
+	execLog.debug('Object  - Successfully Loadded Ansible Vars')
+	
+	# Creating class object
+	pkgInstalled 	= packageInstalation()
 	
 	# Execution
 	try:
 		if pkgInstalled.installedPackagesInServer():
-			if pkgInstalled.installPakgs(packageDict):
-				print '\n+---------------------------------------------------+---Completed---+------------------------+----------------+\n'
-	except Exception as installedPackagesInServerError:
-		execLog.error(str(installedPackagesInServerError).rstrip())
+			pkgInstalled.installPakgs(variables['common_pks'])
+	except Exception as installedPackages:
+		execLog.error( installedPackages.__class__.__name__ + str(installedPackages).rstrip())
 		exit(1)
+

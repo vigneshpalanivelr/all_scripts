@@ -5,7 +5,7 @@
   yum:
     name: "{{ item }}"
     state: absent
-  loop: "{{ common_pks }}"
+  loop: "{{ common_pks.keys() }}"
   register: listUnInstall
 
 - name: Output for list Un-Install
