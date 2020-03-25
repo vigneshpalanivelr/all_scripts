@@ -38,11 +38,12 @@ repositories  :
 
 worldAccess   : /usr/bin/
 yumDir        : /etc/yum.repos.d
-yumDirPer     : 0644
+yumDirPer     : '0644'
 initDir       : /etc/init.d
-initDirPer    : 0755
+initDirPer    : '0754'
 systemdDir    : /etc/systemd/system
-systemdDirPer : 0755
+systemdDirPer : '0754'
+pythonPer     : '0754'
 
 yumRepos  :
   maven   : epel-maven.repo
