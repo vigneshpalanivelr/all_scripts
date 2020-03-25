@@ -7,14 +7,18 @@
     dest: '{{ yumDir }}/{{ yumRepos.maven }}'
     mode: 0644
 
-- name: Step2 - Installing the Basic Packages
+- name: Step2 - Installing the Basic Packages with specified version
   become: yes
   yum:
-    name: "{{ item }}"
+    name: "{{ item.value.name }}-{{ item.value.version }}*"
     state: present
-  loop: "{{ common_pks }}"
-  register: listInstall
+  when: item.value.version != None
+  loop: "{{ common_pks | dict2items }}"
 
-- name: Output for List Installation
-  debug:
-    var: listInstall
+- name: Step3 - Installing the Basic Packages with latest version
+  become: yes
+  yum:
+    name: "{{ item.value.name }}"
+    state: latest
+  when: item.value.version == None
+  loop: "{{ common_pks | dict2items }}"
