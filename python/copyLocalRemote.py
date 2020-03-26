@@ -65,34 +65,20 @@ class CopyExtract(object):
 				execLog.debug('Action  - Found Service files for RHEL {}'.format(RHEL))
 				for basename, filename in self.find_files(source+i, '*Initd*'):
 					self.copytree(filename , initDir, permission = variables['initDirPer'])
-					self.command_exec([['/sbin/chkconfig', basename, 'on'], ['/bin/systemctl', 'daemon-reload'], ['/bin/systemctl', 'restart', basename]])
 			elif 'service' in i and RHEL == '7':
 				execLog.debug('Action  - Found Service files for RHEL {}'.format(RHEL))
 				for basename, filename in self.find_files(source+i, '*Initd*'):
 					self.copytree(filename , initDir, permission = variables['initDirPer'])
-					self.command_exec([['/bin/systemctl', 'enable', basename], ['/bin/systemctl', 'daemon-reload'], ['/bin/systemctl', 'restart', basename]])
 			elif 'service' in i and RHEL == '8':
 				execLog.debug('Action  - Found Service files for RHEL {}'.format(RHEL))
 				for basename, filename in self.find_files(source+i, '*Services*'):
 					self.copytree(filename , systmdDir, permission = variables['systemdDirPer'])
-					self.command_exec([['/bin/systemctl', 'enable', basename], ['/bin/systemctl', 'daemon-reload'], ['/bin/systemctl', 'restart', basename]])
 			elif 'python' in i:
 				execLog.debug('Action  - Found Python files')
 				for basename, filename in self.find_files(source+i, '*.py*'):
 					self.permission_restore(filename, variables['pythonPer'],)
 					execLog.info('Permisn  - {} : {} : {}'.format(source+i, filename, variables['pythonPer']))
 		execLog.debug('Done    - Completed coping to Destination path')
-	
-	def command_exec(self, commands):
-		for i in commands:
-			process 		= subprocess.Popen(i, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-			stdout, stderr 	= process.communicate()
-			if 'Executing /sbin/chkconfig' in stderr:
-				execLog.info('Command  - {}'.format(' '.join(i)))
-			elif stderr:
-				execLog.error('Command  - {}'.format(' '.join(i)))
-			else:
-				execLog.info('Command  - {}'.format(' '.join(i)))
 	
 	def copytree(self, src, dst, symlinks = False, ignore = None, permission = None):
 		# Ref : https://stackoverflow.com/questions/1868714/how-do-i-copy-an-entire-directory-of-files-into-an-existing-directory-using-pyth
@@ -163,7 +149,7 @@ if __name__ == '__main__':
 	parser.add_argument('RHEL'				,action='store'				,help='RHEL Major Version'					,choices=['6','7','8']				)
 	parser.add_argument('YAMLvarFile'		,action='store_const'		,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'	)
 	
-	# arguments		= parser.parse_args(['7', '../ansible/vars/vars.yml'])
+	# arguments		= parser.parse_args(['7'])
 	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
 	YAMLvarFile		= arguments.YAMLvarFile
@@ -179,7 +165,7 @@ if __name__ == '__main__':
 	# Define logging module, File Handler & Stream Handler
 	# Define Log file name for later use
 	execLogger		= 'packageExectnLog' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
-	execLog			= logger.setupLogger('YUM INstalation Steps', logDirectory +'/'+ execLogger)
+	execLog			= logger.setupLogger('Copy Local to Remote', logDirectory +'/'+ execLogger)
 	execLog.debug('Object  - Successfully Loadded Ansible Vars')
 	
 	# Creating class object
@@ -200,4 +186,5 @@ if __name__ == '__main__':
 		systmdDir	= variables['systemdDir'],
 		RHEL		= RHEL
 	)
+
 
