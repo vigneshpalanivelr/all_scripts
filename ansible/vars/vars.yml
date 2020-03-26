@@ -47,20 +47,26 @@ RHEL_6_cpanm_pks        : ['YAML' , 'LWP::Protocol::https' , 'Sys::Syslog' , 'Sw
 
 repositories  :
   pip         : https://bootstrap.pypa.io/get-pip.py
-  epel_8      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
-  epel_7      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  epel_6      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+#  epel_8      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+#  epel_7      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+#  epel_6      : https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
+  epel        : 
+    repo      : https://dl.fedoraproject.org/pub/epel/
+    gpgurl    : RPM-GPG-KEY-EPEL-
+    gpgkey    : RPM-GPG-KEY-EPEL-
   maven       : http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
   hashicorp   : https://releases.hashicorp.com
   postgres    : https://download.postgresql.org/pub/repos/yum
   jenkins     : 
-    repo      : http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
-    gpgkey    : https://jenkins-ci.org/redhat/jenkins-ci.org.key
+    repo      : https://pkg.jenkins.io/redhat/
+    gpgurl    : jenkins.io.key
+    gpgkey    : RPM-GPG-KEY-JENKINS
     pwd       : /var/lib/jenkins/secrets/initialAdminPassword
     plugins   : ['rebuild' , 'github-pullrequest' , 'claim' , 'view-job-filters' , 'nested-view' , 'job-import-plugin' , 'plugin-usage-plugin' , 'disk-usage' , 'greenballs' , 'embeddable-build-status' , 'job-restrictions' , 'mask-passwords' , 'ansible' , 'ansicolor' , 'build-timeout' , 'workflow-aggregator' , 'terraform' , 'job-dsl' , 'xml-job-to-job-dsl' , 'thinBackup']
     user      : admin
     password  : admin
 
+GPG-KEY-Dir   : /etc/pki/rpm-gpg/
 worldAccess   : /usr/bin/
 yumDir        : /etc/yum.repos.d
 yumDirPer     : '0644'
