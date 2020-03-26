@@ -1,0 +1,6 @@
+[jenkins]
+name=Jenkins
+baseurl=JENKINS_REPO
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/JENKINS_GPGKEY

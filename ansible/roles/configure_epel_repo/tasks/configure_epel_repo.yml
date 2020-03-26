@@ -55,10 +55,12 @@
   debug:
     msg: "{{ repolistAll.stdout.split('\n') }}"
 
-- name: Setup GPG key
-  shell:
-    cmd: "rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ RHELver }}"
-    warn: False
+
+- name: Import GPG Key to {{ GPG-KEY-Dir }}
+  become: yes
+  get_url:
+    url: "{{ repositories.epel }}/RPM-GPG-KEY-EPEL-{{ RHELver }}"
+    dest: "{{ GPG-KEY-Dir }}"
 
 - name: Yum Update
   yum:

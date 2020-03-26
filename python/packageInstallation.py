@@ -34,7 +34,7 @@ class packageInstalation(object):
 			self.yBase.preconf.errorlevel	= 0
 			execLog.info('YUM Base SetUP  : {}'.format('YUM Base SetUp Completed'))
 		except Exception as YumBaseError:
-			execLog.error(str(YumBaseError).rstrip())
+			execLog.error(YumBaseError.__class__.__name__ + ' ' + str(YumBaseError).rstrip())
 			exit(100)
 	
 	def CleanUp(self):
@@ -49,7 +49,7 @@ class packageInstalation(object):
 			execLog.info('YUM CleanUP PKG : {}'.format(self.yBase.cleanPackages()[1][0]))
 			execLog.info('YUM ChacheSetUp : {}'.format(self.yBase.setCacheDir(force=True)))
 		except Exception as YumBaseError:
-			execLog.error(str(YumBaseError).rstrip())
+			execLog.error(YumBaseError.__class__.__name__ + ' ' + str(YumBaseError).rstrip())
 			exit(200)
 	
 	def generatePrettyTables(self, nestedLists,fieldNames):
@@ -63,7 +63,7 @@ class packageInstalation(object):
 			execLog.info('Generated Pakgs : PrettyTable')
 			return PrettyTable
 		except Exception as generatePrettyTablesError:
-			execLog.error(str(generatePrettyTablesError).rstrip())
+			execLog.error(generatePrettyTablesError.__class__.__name__ + ' ' + str(generatePrettyTablesError).rstrip())
 			exit(300)
 	
 	def installedPackagesInServer(self):
@@ -79,42 +79,59 @@ class packageInstalation(object):
 			
 			print '\n' + str(self.generatePrettyTables(pkgDetails ,fieldNames)) + '\n'
 			execLog.info('YUM CleanUp     : Completed')
-			
 			return True
 		except Exception as PrettyTableCallInstalled:
-			execLog.error(str(PrettyTableCallInstalled).rstrip())
+			execLog.error(PrettyTableCallInstalled.__class__.__name__ + ' ' + str(PrettyTableCallInstalled).rstrip())
 			exit(400)
 	
-	def installPakgs(self, pkg2Install):
-		print pkg2Install
+	def pkgCheck(self, pkg2Install):
+		if type(pkg2Install) is dict:
+			self.installPakgsDict(pkg2Install)
+		elif type(pkg2Install) is str:
+			self.installation(pkg2Install)
+		else:
+			raise ValueError('Accepts only Dict or Str values')
+	
+	def installPakgsDict(self, pkg2Install):
 		try:
 			for key,value in pkg2Install.iteritems():
-				try: 
-					install		= self.yBase.install(name=value['name'], version=value['version'])
-					resolveDep	= self.yBase.resolveDeps()
-					self.yBase.buildTransaction()
-					if install:
-						execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
-					else:
-						execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(value['name'], self.pkgCache[value['name']]['version'],'AlreadyInstalled...!'))
-				except yum.Errors.InstallError as pkgInstallationError:
-					execLog.error(str(pkgInstallationError).rstrip() + ' ' + value['name'] + ' ' +str(value['version']) + pkgInstallationError.__class__.__name__)
-			# Real Installation Takes Place
-			self.yBase.processTransaction()
-			return True
+				self.installation(value['name'], version=value['version'])
 		except Exception as pkgInstallationError:
-			execLog.error(str(pkgInstallationError).rstrip())
+			execLog.error(pkgInstallationError.__class__.__name__ + ' ' + str(pkgInstallationError).rstrip())
+			exit(500)
+	
+	def installation(self, package, version=None):
+		try: 
+			try:
+				install		= self.yBase.install(name=package, version=version)
+				resolveDep	= self.yBase.resolveDeps()
+				self.yBase.buildTransaction()
+				if install:
+					execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Installing...'))
+				else:
+					execLog.warning('YUM Package Name : {} \tVersion : {} \tState : {}'.format(package, self.pkgCache[package]['version'],'AlreadyInstalled...!'))
+			except yum.Errors.InstallError as pkgInstallationError:
+				execLog.error(pkgInstallationError.__class__.__name__ + ' ' +str(pkgInstallationError).rstrip() + ' ' + package + ' ' + str(version))
+			# Auto approval and Real Installation Takes Place
+			self.yBase.conf.assumeyes = True
+			self.yBase.processTransaction()
+		except Exception as Error:
+			execLog.error(Error.__class__.__name__ + ' ' + str(pkgInstallationError).rstrip())
 			exit(500)
 
 if __name__ == '__main__':
 	
 	parser = argparse.ArgumentParser(description='Read ansible variables in YAML format')
 	
-	parser.add_argument('YAMLvarFile'               ,action='store_const'           ,help='Load Variables from Ansible Vars'        ,const='../ansible/vars/vars.yml' )
+	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars',const='../ansible/vars/vars.yml'						)
+	parser.add_argument('-t'			,action='store_true'	,help='Set to switch to true'			,dest='custome_install'				,default=False		)
+	parser.add_argument('-a'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
 	
-	# arguments		= parser.parse_args(['../ansible/vars/vars.yml'])
-	arguments		= parser.parse_args()
-	YAMLvarFile		= arguments.YAMLvarFile
+	# arguments			= parser.parse_args(['../ansible/vars/vars.yml','-t','-a','ansible','-a','jenkins'])
+	arguments			= parser.parse_args()
+	YAMLvarFile			= arguments.YAMLvarFile
+	custome_install		= arguments.custome_install
+	custome_packages	= arguments.custome_packages
 	
 	# Load variables from ansible vars
 	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
@@ -136,8 +153,12 @@ if __name__ == '__main__':
 	# Execution
 	try:
 		if pkgInstalled.installedPackagesInServer():
-			pkgInstalled.installPakgs(variables['common_pks'])
+			pkgInstalled.pkgCheck(variables['common_pks'])
+			if custome_install:
+				for i in custome_packages:
+					pkgInstalled.pkgCheck(i)
 	except Exception as installedPackages:
-		execLog.error( installedPackages.__class__.__name__ + str(installedPackages).rstrip())
+		execLog.error( installedPackages.__class__.__name__ + ' ' + str(installedPackages).rstrip())
 		exit(1)
+
 

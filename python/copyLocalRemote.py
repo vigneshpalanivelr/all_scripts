@@ -10,6 +10,7 @@ import stat
 import shutil
 import fnmatch
 import argparse
+import requests
 import fileinput
 import subprocess
 # import prettytable
@@ -47,7 +48,19 @@ class CopyExtract(object):
 				execLog.debug('Action  - Found Repo files')
 				for basename, filename in self.find_files(source+i, '*repo*'):
 					self.copytree(filename , yumDir, permission = variables['yumDirPer'])
-					self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
+					if 'epel' in basename:
+						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
+						self.get_GPG_KEY(
+							variables['repositories']['epel']['repo']+variables['repositories']['epel']['gpgurl']+RHEL,
+							variables['GPG-KEY-Dir']+variables['repositories']['epel']['gpgkey']+RHEL
+						)
+					if 'jenkins' in basename:
+						self.find_replace(yumDir+'/'+basename, 'JENKINS_REPO', variables['repositories']['jenkins']['repo'])
+						self.find_replace(yumDir+'/'+basename, 'JENKINS_GPGKEY', variables['repositories']['jenkins']['gpgkey'])
+						self.get_GPG_KEY(
+							variables['repositories']['jenkins']['repo']+variables['repositories']['jenkins']['gpgurl'],
+							variables['GPG-KEY-Dir']+variables['repositories']['jenkins']['gpgkey']
+						)
 			elif 'service' in i and RHEL == '6':
 				execLog.debug('Action  - Found Service files for RHEL {}'.format(RHEL))
 				for basename, filename in self.find_files(source+i, '*Initd*'):
@@ -137,12 +150,17 @@ class CopyExtract(object):
 	
 	def permission_restore(self, file, permission):
 		subprocess.call(['chmod', permission, file])
+	
+	def get_GPG_KEY(self, url, key_file):
+		with open(key_file, 'w') as gpg_file:
+			gpg_file.write(requests.get(url).text)
+		execLog.info('Set GPG  - {}'.format(key_file))
 
 if __name__ == '__main__':
 	
 	# Argparse Argments and variables defination
 	parser = argparse.ArgumentParser(description='Copy scripts from local to remote and enable services and repos')
-	parser.add_argument('RHEL'				,action='store_const'		,help='RHEL Major Version'					,const='7'							)
+	parser.add_argument('RHEL'				,action='store'				,help='RHEL Major Version'					,choices=['6','7','8']				)
 	parser.add_argument('YAMLvarFile'		,action='store_const'		,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'	)
 	
 	# arguments		= parser.parse_args(['7', '../ansible/vars/vars.yml'])
@@ -182,3 +200,4 @@ if __name__ == '__main__':
 		systmdDir	= variables['systemdDir'],
 		RHEL		= RHEL
 	)
+
