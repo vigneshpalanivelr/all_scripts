@@ -88,7 +88,7 @@ if __name__ == '__main__':
 	
 	# Define logging module, File Handler & Stream Handler
 	# Define Log file name for later use
-	execLogger		= 'enable_services' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
+	execLogger		= 'confgtn-changes-log' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
 	execLog			= logger.setupLogger('Service Restart', logDirectory +'/'+ execLogger)
 	execLog.debug('Object  - Successfully Loadded Ansible Vars')
 	

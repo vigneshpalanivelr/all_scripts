@@ -164,7 +164,7 @@ if __name__ == '__main__':
 	
 	# Define logging module, File Handler & Stream Handler
 	# Define Log file name for later use
-	execLogger		= 'packageExectnLog' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
+	execLogger		= 'cp-local-remote-log' + time.strftime('-%Y-%m-%d-%Hh-%Mm-%Ss-%Z') + '.log'
 	execLog			= logger.setupLogger('Copy Local to Remote', logDirectory +'/'+ execLogger)
 	execLog.debug('Object  - Successfully Loadded Ansible Vars')
 	
