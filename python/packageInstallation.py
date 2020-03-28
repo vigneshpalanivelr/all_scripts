@@ -28,7 +28,7 @@ class packageInstalation(object):
 		# YumBase instance is the base class that houses methods and objects required to perform all the package management functions using yum.
 		# For more : http://yum.baseurl.org/download/docs/yum-api/3.2.27/yum.YumBase-class.html#_delRepos
 		# Ref      : https://linuxhint.com/yum_centos_python/
-		execLog.debug('Object  - Created Class Object : {}')
+		execLog.debug('Object  - Created Class Object')
 		try:
 			self.yBase 						= yum.YumBase()
 			self.yBase.preconf.debuglevel 	= 0

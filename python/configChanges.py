@@ -6,6 +6,7 @@ import json
 import time
 # import stat
 # import shutil
+import urllib2
 import fnmatch
 import argparse
 # import requests
@@ -61,6 +62,12 @@ class enableServices(object):
 				execLog.error('Command  - {}'.format(' '.join(i)))
 			else:
 				execLog.info('Command  - {}'.format(' '.join(i)))
+	def jenkins_sign_up(self, PublicIP, pwdFile):
+		response	= urllib2.urlopen(PublicIP)
+		execLog.info('Jenkins URL is - http://{}:8080'.format(response.read()))
+		with open(pwdFile, 'r') as filedata:
+			password = filedata.read()
+		execLog.info('Jenkins PWD is - {}'.format(password))
 
 if __name__ == '__main__':
 	
@@ -68,14 +75,14 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Copy scripts from local to remote and enable services and repos')
 	parser.add_argument('RHEL'			,action='store'			,help='RHEL Major Version'					,choices=['6','7','8']									)
 	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'						)
-	parser.add_argument('-t'			,action='store_true'	,help='Set to switch to true'				,dest='seart_services'				,default=False		)
+	parser.add_argument('-t'			,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
 	parser.add_argument('-a'			,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
 	
 	# arguments		= parser.parse_args(['7', '-t', '-a', 'SSH', '-a','jenkins'])
 	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
 	YAMLvarFile		= arguments.YAMLvarFile
-	seart_services	= arguments.seart_services
+	start_services	= arguments.start_services
 	services		= arguments.services
 	
 	# Load variables from ansible vars
@@ -95,12 +102,16 @@ if __name__ == '__main__':
 	# Creating class object
 	enable_services 	= enableServices()
 	
-	if seart_services:
-		for i in services:
-			if i:
-				enable_services.service_demon(
-					initDir		= variables['initDir'],
-					systmdDir	= variables['systemdDir'],
-					RHEL		= RHEL,
-					pattern		= i
+	for i in services:
+		if start_services:
+			enable_services.service_demon(
+				initDir		= variables['initDir'],
+				systmdDir	= variables['systemdDir'],
+				RHEL		= RHEL,
+				pattern		= i
+			)
+		if i == 'jenkins' :
+			enable_services.jenkins_sign_up(
+				variables['myPublicIP'],
+				variables['repositories']['jenkins']['pwd']
 				)
