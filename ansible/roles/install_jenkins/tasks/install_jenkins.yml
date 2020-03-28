@@ -4,17 +4,63 @@
   debug:
     msg: All common packages must be installed
 
-- name: Download jenkins.repo
+- name: Coping Local to Remote Hosts
   become: yes
-  get_url:
-    url: "{{ repositories.jenkins.repo }}"
-    dest: "{{ yumDir }}/{{ yumRepos.jenkins }}"
+  copy:
+    src: "../{{ item }}"
+    dest: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    force: yes
+    mode: 0744
+  loop:
+    - "{{ srcPythonDir }}"
+    - "{{ srcServicesDir }}"
+    - "{{ srcRepoDir }}"
+  register: updatedRepos
 
-- name: Import Jenkins Key
+- name: Find the repos files present
   become: yes
-  rpm_key:
-    state: present
-    key: "{{ repositories.jenkins.gpgkey }}"
+  find:
+    paths: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ srcRepoDir }}"
+    recurse: yes
+    patterns: "jenkins*"
+  register: listOfRepos
+
+- name: Display the details of the repo files
+  debug:
+    var: listOfRepos.files
+
+- name: Coping to "{{ yumDir }}" path
+  become: yes
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ yumDir }}"
+    force: yes
+    mode: 0644
+    remote_src: true
+  loop: "{{ listOfRepos.files }}"
+  when: updatedRepos.changed
+
+- name: Replace JENKINS_REPO
+  replace:
+    path: "{{ yumDir }}/{{ item.path | basename }}"
+    regexp: 'JENKINS_REPO'
+    replace: '{{ repositories.jenkins.repo }}'
+  loop: "{{ listOfRepos.files }}"
+  when: updatedRepos.changed
+
+- name: Replace JENKINS_GPGKEY
+  replace:
+    path: "{{ yumDir }}/{{ item.path | basename }}"
+    regexp: 'JENKINS_GPGKEY'
+    replace: '{{ repositories.jenkins.gpgkey }}'
+  loop: "{{ listOfRepos.files }}"
+  when: updatedRepos.changed
+
+#- name: Import Jenkins Key
+#  become: yes
+#  rpm_key:
+#    state: present
+#    key: "{{ repositories.jenkins.gpgkey }}"
 
 - name: Install Jenkins
   become: yes
@@ -34,7 +80,7 @@
 
 - name: Find my public ip
   uri:
-    url: http://ifconfig.me/ip
+    url: "{{ myPublicIP }}"
     return_content: yes
   register: publicIP
 

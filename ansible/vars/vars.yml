@@ -14,7 +14,6 @@ srcPythonDir            : python
 srcServicesDir          : services
 srcRepoDir              : yum-repos-d
 
-#common_pks              : ['maven' , 'tree' , 'httpd' , 'telnet' , 'git-core' , 'wget' , 'zip' , 'unzip' , 'java-1.8.0-openjdk' ]
 common_pks              : 
   maven     :
     name    : apache-maven
@@ -40,6 +39,16 @@ common_pks              :
   java      :
     name    : java-1.8.0-openjdk
     version :
+  py2-pip   :
+    name    : python2-pip
+    version : 
+  python3   :
+    name    : python3
+    version : 
+  py3-pip   :
+    name    : python3-pip
+    version : 
+
 RHEL_8_cw_pks           : ['ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm','ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-DateTime-0.4305-1.rh7.rf.i386.rpm','perl-Sys-Syslog','perl-LWP-Protocol-https','perl-Digest-SHA','perl-devel']
 RHEL_7_cw_pks           : ['ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/perl-Switch-2.14-1.rh7.rf.noarch.rpm','perl-DateTime','perl-Sys-Syslog','perl-LWP-Protocol-https','perl-Digest-SHA','perl-devel']
 RHEL_6_cw_pks           : ['perl-DateTime' , 'perl-CPAN' , 'perl-Net-SSLeay' , 'perl-IO-Socket-SSL' , 'perl-Digest-SHA' , 'gcc' , 'perl-devel']
@@ -66,7 +75,13 @@ repositories  :
     user      : admin
     password  : admin
 
-GPG-KEY-Dir   : /etc/pki/rpm-gpg/
+pyModules     :
+  gitpython
+  psycopg2-binary
+  PTable
+
+myPublicIP    : http://ifconfig.me/ip 
+GPG_KEY_Dir   : /etc/pki/rpm-gpg/
 worldAccess   : /usr/bin/
 yumDir        : /etc/yum.repos.d
 yumDirPer     : '0644'

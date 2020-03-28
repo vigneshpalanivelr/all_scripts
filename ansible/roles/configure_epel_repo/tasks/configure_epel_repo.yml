@@ -3,14 +3,14 @@
 - name: Coping Local to Remote Hosts
   become: yes
   copy:
-    src: "{{ item }}"
+    src: "../{{ item }}"
     dest: "{{ scriptHomeDir }}/{{ scriptsDir }}"
     force: yes
     mode: 0744
   loop:
-    - "../{{ srcPythonDir }}"
-    - "../{{ srcServicesDir }}"
-    - "../{{ srcRepoDir }}"
+    - "{{ srcPythonDir }}"
+    - "{{ srcServicesDir }}"
+    - "{{ srcRepoDir }}"
   register: updatedRepos
 
 - name: Find the repos files present
@@ -55,34 +55,33 @@
   debug:
     msg: "{{ repolistAll.stdout.split('\n') }}"
 
-
-- name: Import GPG Key to {{ GPG-KEY-Dir }}
+- name: Copy GPG Key to "{{ GPG_KEY_Dir }}"
   become: yes
   get_url:
-    url: "{{ repositories.epel }}/RPM-GPG-KEY-EPEL-{{ RHELver }}"
-    dest: "{{ GPG-KEY-Dir }}"
+    url: "{{ repositories.epel.repo }}/{{ repositories.epel.gpgkey }}{{ RHELver }}"
+    dest: "{{ GPG_KEY_Dir }}"
 
-- name: Yum Update
-  yum:
-    name: "*"
-    state: latest
-    skip_broken: yes
-
-- name: Yum List installed
-  yum:
-    list: installed
-  register: installed
-
+#- name: Yum Update
+#  yum:
+#    name: "*"
+#    state: latest
+#    skip_broken: yes
+#
+#- name: Yum List installed
+#  yum:
+#    list: installed
+#  register: installed
+#
 #- name: Adding Files to the LIST
 #  vars:
 #    Pks: []
 #  set_fact:
 #    Pks: "{{ Pks + [  {'name': item.name, 'version': item.version}] }}"
 #  loop: "{{ installed.results }}"
-
+#
 #- name: Display the details of the repo files
 #  debug:
 #    var: Pks
-
+#
 #Ref https://access.redhat.com/discussions/3140721
 #Manual : rpm --import http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
