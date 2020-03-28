@@ -8,6 +8,7 @@ import time
 # import shutil
 import urllib2
 import fnmatch
+import requests
 import argparse
 # import requests
 # import fileinput
@@ -17,8 +18,8 @@ import subprocess
 #import custom modules
 # sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/variables'))
 # sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/packages'))
-#sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/variables/'))
-#sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/packages/'))
+# sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/variables/'))
+# sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/packages/'))
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/variables/' )
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/packages/'  )
 import logger
@@ -62,12 +63,42 @@ class enableServices(object):
 				execLog.error('Command  - {}'.format(' '.join(i)))
 			else:
 				execLog.info('Command  - {}'.format(' '.join(i)))
-	def jenkins_sign_up(self, PublicIP, pwdFile):
-		response	= urllib2.urlopen(PublicIP)
-		execLog.info('Jenkins URL is - http://{}:8080'.format(response.read()))
-		with open(pwdFile, 'r') as filedata:
-			password = filedata.read()
-		execLog.info('Jenkins PWD is - {}'.format(password))
+	
+	def jenkins_url(self, PublicIP, pwdFile):
+		response		= urllib2.urlopen(PublicIP)
+		JenkinsURL		= 'http://{}:8080'.format(response.read())
+		execLog.info('Jenk URL - {}'.format(JenkinsURL))
+		self.jenkins_sign_up(JenkinsURL, pwdFile)
+	
+	def jenkins_sign_up(self, url, pwdFile):
+		sec = 0
+		while True:
+			try:
+				request_status = requests.get(url)
+				if request_status.status_code == 403:
+					execLog.info('   Jenkins is Up and Running after : {}secs'.format(sec))
+					with open(pwdFile, 'r') as filedata:
+						password = filedata.read()
+						execLog.info('Jenk PWD - {}'.format(password))
+					break
+			except requests.exceptions.ConnectionError as Error:
+				pass
+			sec = sec + 5
+			execLog.warning('Waiting for jenkins to come up  : {}secs'.format(sec))
+			time.sleep(5)
+	
+	def py_modules(self, modules):
+		index = 0
+		for module in modules:
+			try:
+				index = index + 1
+				if subprocess.check_call([sys.executable, '-m', 'pip', 'install', module]) == 0:
+					execLog.info('Installed Module  : {} : {}'.format(index, module))
+			except subprocess.CalledProcessError as ModuleError:
+				if subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', module]) == 0:
+					execLog.info('Installed Module  : {} : {}'.format(index, module))
+			except Exception as Error:
+				execLog.error('Module Installation Error : '+ Error.__class__.__name__ +' '+str(Error).rstrip())
 
 if __name__ == '__main__':
 	
@@ -75,15 +106,17 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Copy scripts from local to remote and enable services and repos')
 	parser.add_argument('RHEL'			,action='store'			,help='RHEL Major Version'					,choices=['6','7','8']									)
 	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'						)
-	parser.add_argument('-t'			,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
-	parser.add_argument('-a'			,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
+	parser.add_argument('-start'		,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
+	parser.add_argument('-service'		,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
+	parser.add_argument('-py_module'	,action='store_true'	,help='Set to switch to true'				,dest='py_module'					,default=False		)
 	
-	# arguments		= parser.parse_args(['7', '-t', '-a', 'SSH', '-a','jenkins'])
+	# arguments		= parser.parse_args(['7', '-py_module' ,'-start', '-service', 'SSH', '-service','jenkins'])
 	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
 	YAMLvarFile		= arguments.YAMLvarFile
 	start_services	= arguments.start_services
 	services		= arguments.services
+	py_module		= arguments.py_module
 	
 	# Load variables from ansible vars
 	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
@@ -111,7 +144,9 @@ if __name__ == '__main__':
 				pattern		= i
 			)
 		if i == 'jenkins' :
-			enable_services.jenkins_sign_up(
+			enable_services.jenkins_url(
 				variables['myPublicIP'],
 				variables['repositories']['jenkins']['pwd']
 				)
+	if py_module:
+		enable_services.py_modules(variables['pyModules'])

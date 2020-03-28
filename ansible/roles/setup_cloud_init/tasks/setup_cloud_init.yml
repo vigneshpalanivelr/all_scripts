@@ -3,14 +3,14 @@
 - name: Coping Local to Remote Hosts
   become: yes
   copy:
-    src: "{{ item }}"
+    src: "../{{ item }}"
     dest: "{{ scriptHomeDir }}/{{ scriptsDir }}"
     force: yes
     mode: 0744
   loop:
-    - "../{{ srcPythonDir }}"
-    - "../{{ srcServicesDir }}"
-    - "../{{ srcRepoDir }}"
+    - "{{ srcPythonDir }}"
+    - "{{ srcServicesDir }}"
+    - "{{ srcRepoDir }}"
   register: updatedServices
 
 - name: Find the service files present
@@ -18,20 +18,20 @@
   find:
     paths: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ srcServicesDir }}"
     recurse: yes
-    patterns: "*Service"
+    patterns: "*Initd"
   register: listOfServices
 
 - name: Display the details of the service files
   debug:
     var: listOfServices
 
-- name: Coping to /etc/init.d path if RHEL-6
+- name: Coping to "{{ initDirPer }}" path if RHEL-6
   become: yes
   copy:
     src: "{{ item.path }}"
-    dest: /etc/init.d
+    dest: "{{ initDir }}"
     force: yes
-    mode: 0744
+    mode: "{{ initDirPer }}"
     remote_src: true
   loop: "{{ listOfServices.files }}"
   #when: "{{ RHEL }}" == "6"
