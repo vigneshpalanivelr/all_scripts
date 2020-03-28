@@ -126,10 +126,10 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Read ansible variables in YAML format')
 	
 	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars',const='../ansible/vars/vars.yml'						)
-	parser.add_argument('-t'			,action='store_true'	,help='Set to switch to true'			,dest='custome_install'				,default=False		)
-	parser.add_argument('-a'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
+	parser.add_argument('-install'		,action='store_true'	,help='Set to switch to true'			,dest='custome_install'				,default=False		)
+	parser.add_argument('-pkg'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
 	
-	# arguments			= parser.parse_args(['../ansible/vars/vars.yml','-t','-a','ansible','-a','jenkins'])
+	# arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
 	arguments			= parser.parse_args()
 	YAMLvarFile			= arguments.YAMLvarFile
 	custome_install		= arguments.custome_install

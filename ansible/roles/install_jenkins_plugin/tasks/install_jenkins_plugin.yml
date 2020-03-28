@@ -2,7 +2,7 @@
 
 - name: Find my public ip
   uri:
-    url: http://ifconfig.me/ip
+    url: "{{ myPublicIP }}"
     return_content: yes
   register: publicIP
 

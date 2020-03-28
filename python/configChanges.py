@@ -63,7 +63,7 @@ class enableServices(object):
 			else:
 				execLog.info('Command  - {}'.format(' '.join(i)))
 	def jenkins_sign_up(self, PublicIP, pwdFile):
-		response	= urllib2.urlopen(PublicIP)
+		response		= urllib2.urlopen(PublicIP)
 		execLog.info('Jenkins URL is - http://{}:8080'.format(response.read()))
 		with open(pwdFile, 'r') as filedata:
 			password = filedata.read()
@@ -75,10 +75,10 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Copy scripts from local to remote and enable services and repos')
 	parser.add_argument('RHEL'			,action='store'			,help='RHEL Major Version'					,choices=['6','7','8']									)
 	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'						)
-	parser.add_argument('-t'			,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
-	parser.add_argument('-a'			,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
+	parser.add_argument('-start'		,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
+	parser.add_argument('-service'		,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
 	
-	# arguments		= parser.parse_args(['7', '-t', '-a', 'SSH', '-a','jenkins'])
+	# arguments		= parser.parse_args(['7', '-start', '-service', 'SSH', '-service','jenkins'])
 	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
 	YAMLvarFile		= arguments.YAMLvarFile
@@ -115,3 +115,4 @@ if __name__ == '__main__':
 				variables['myPublicIP'],
 				variables['repositories']['jenkins']['pwd']
 				)
+
