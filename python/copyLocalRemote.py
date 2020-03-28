@@ -52,14 +52,14 @@ class CopyExtract(object):
 						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
 						self.get_GPG_KEY(
 							variables['repositories']['epel']['repo']+variables['repositories']['epel']['gpgurl']+RHEL,
-							variables['GPG-KEY-Dir']+variables['repositories']['epel']['gpgkey']+RHEL
+							variables['GPG_KEY_Dir']+variables['repositories']['epel']['gpgkey']+RHEL
 						)
 					if 'jenkins' in basename:
 						self.find_replace(yumDir+'/'+basename, 'JENKINS_REPO', variables['repositories']['jenkins']['repo'])
 						self.find_replace(yumDir+'/'+basename, 'JENKINS_GPGKEY', variables['repositories']['jenkins']['gpgkey'])
 						self.get_GPG_KEY(
 							variables['repositories']['jenkins']['repo']+variables['repositories']['jenkins']['gpgurl'],
-							variables['GPG-KEY-Dir']+variables['repositories']['jenkins']['gpgkey']
+							variables['GPG_KEY_Dir']+variables['repositories']['jenkins']['gpgkey']
 						)
 			elif 'service' in i and RHEL == '6':
 				execLog.debug('Action  - Found Service files for RHEL {}'.format(RHEL))
