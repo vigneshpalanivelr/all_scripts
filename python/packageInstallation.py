@@ -34,6 +34,8 @@ class packageInstalation(object):
 			self.yBase.preconf.debuglevel 	= 0
 			self.yBase.preconf.errorlevel	= 0
 			execLog.info('YUM Base SetUP  : {}'.format('YUM Base SetUp Completed'))
+			execLog.info('YUM CleanUp     : In Progress...')
+			self.CleanUp()
 		except Exception as YumBaseError:
 			execLog.error('Yum Base Object : '+YumBaseError.__class__.__name__ + ' ' + str(YumBaseError).rstrip())
 			exit(100)
@@ -49,6 +51,14 @@ class packageInstalation(object):
 			execLog.info('YUM CleanUP SQL : {}'.format(self.yBase.cleanSqlite()[1][0]))
 			execLog.info('YUM CleanUP PKG : {}'.format(self.yBase.cleanPackages()[1][0]))
 			execLog.info('YUM ChacheSetUp : {}'.format(self.yBase.setCacheDir(force=True)))
+			
+			self.packages		= self.yBase.doPackageLists()
+			pkgDetails			= [[i.Name ,i.version ,i.release ,i.arch] for i in sorted(self.packages['installed'])]
+			
+			fieldNames			= ["NAME", "VERSION", "RELEASE", "ARCHETECTURE"]
+			print '\n' + str(self.generatePrettyTables(pkgDetails ,fieldNames)) + '\n'
+			execLog.info('YUM CleanUp     : Completed')
+			
 		except Exception as YumBaseError:
 			execLog.error('Yum Base CleanUp : '+YumBaseError.__class__.__name__ + ' ' + str(YumBaseError).rstrip())
 			exit(200)
@@ -68,18 +78,9 @@ class packageInstalation(object):
 			exit(300)
 	
 	def installedPackagesInServer(self):
-		try:
-			execLog.info('YUM CleanUp     : In Progress...')
-			self.CleanUp()
-			fieldNames			= ["NAME", "VERSION", "RELEASE", "ARCHETECTURE"]
-			
+		try:			
 			self.packages		= self.yBase.doPackageLists()
 			self.pkgCache		= {i.Name: {'version' : i.version} for i in sorted(self.packages['installed'])}
-			pkgDetails			= [[i.Name ,i.version ,i.release ,i.arch] for i in sorted(self.packages['installed'])]
-			
-			print '\n' + str(self.generatePrettyTables(pkgDetails ,fieldNames)) + '\n'
-			execLog.info('YUM CleanUp     : Completed')
-			return True
 		except Exception as PrettyTableCallInstalled:
 			execLog.error('Pretty Table : '+PrettyTableCallInstalled.__class__.__name__ + ' ' + str(PrettyTableCallInstalled).rstrip())
 			exit(400)
@@ -99,6 +100,7 @@ class packageInstalation(object):
 	def installation(self, package, version=None):
 		try:
 			start		= False
+			self.installedPackagesInServer()
 			install		= self.yBase.install(name=package, version=version)
 			resolveDep	= self.yBase.resolveDeps()
 			self.yBase.buildTransaction()
@@ -130,7 +132,7 @@ if __name__ == '__main__':
 	parser.add_argument('-pkg'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
 	
 	# arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
-	arguments			= parser.parse_args()
+	arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
 	YAMLvarFile			= arguments.YAMLvarFile
 	custome_install		= arguments.custome_install
 	custome_packages	= arguments.custome_packages
@@ -153,8 +155,8 @@ if __name__ == '__main__':
 	pkgInstalled 	= packageInstalation()
 	
 	# Execution
-	if pkgInstalled.installedPackagesInServer():
-		pkgInstalled.pkgCheck(variables['common_pks'])
-		if custome_install:
-			for i in custome_packages:
-				pkgInstalled.pkgCheck(i)
+	pkgInstalled.pkgCheck(variables['common_pks'])
+	if custome_install:
+		for i in custome_packages:
+			pkgInstalled.pkgCheck(i)
+

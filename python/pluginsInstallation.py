@@ -55,6 +55,36 @@ class installPlugins():
 		for plugins in self.server.get_plugins().values():
 			index = index + 1
 			execLog.info('Availab Jenkins PlugIn : {} : {}'.format(index,plugins.shortName))
+        
+	# def __init__(self, PublicIP, username, password):
+		# execLog.debug('Object  - Created Class Object')
+		
+		# response	= urllib2.urlopen(PublicIP)
+		# JenkinsURL	= 'http://{}:8080'.format(response)
+		# execLog.info('Jenks URL- {}'.format(JenkinsURL))
+		# self.server	= jenkins.Jenkins(JenkinsURL, username=username, password=password)
+		
+		# version 	= server.get_version()
+		# execLog.info('Jenkins Server Version is : %s' % (version))
+		
+		# user 		= server.get_whoami()
+		# execLog.info('Logged in to Jenkins as   : %s' % (user['fullName']))
+	
+	# def install_plugins(self,pluginsList)
+		# for i in pluginsList:
+			# install_status = server.run_script('Jenkins.instance.updateCenter.getPlugin("{}").getNeededDependencies().each\{it.deploy()\};Jenkins.instance.updateCenter.getPlugin("{}").deploy();'.format(i))
+			# if install_status == ')]}':
+				# execLog.info('Installed Plug-In {}\t is : {}'.format(i.index+1,i))
+				# index = i.index+1
+		# execLog.info('Total {} has been installed' % (i.index+1,i))
+	
+	# def restart_jenkis(self):
+		
+		
+	# def list_plugins(self):
+		# plugin_info	= server.get_plugins_info()
+		# plugins		= sorted([i['shortName'] for i in plugin_info])
+		# print plugins
 
 if __name__ == '__main__':
 	
