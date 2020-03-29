@@ -55,7 +55,19 @@ class installPlugins():
 		for plugins in self.server.get_plugins().values():
 			index = index + 1
 			execLog.info('Availab Jenkins PlugIn : {} : {}'.format(index,plugins.shortName))
-        
+	
+	def add_cred(self, descrptn, username, password):
+		cred_dict = {
+			'description'	: descrptn,
+			'userName'		: username,
+			'password'		: password
+		}
+		try:
+			self.server.credentials[descrptn] = jenkinsapi.credential.UsernamePasswordCredential(cred_dict)
+			execLog.info('Added Global Credentials : {}'.format(descrptn))
+		except Exception as Error:
+			execLog.error('Add Credentials Error : '+Error.__class__.__name__ +' '+str(Error).rstrip())
+	
 	# def __init__(self, PublicIP, username, password):
 		# execLog.debug('Object  - Created Class Object')
 		
@@ -90,15 +102,22 @@ if __name__ == '__main__':
 	
 	parser = argparse.ArgumentParser(description='Read ansible variables in YAML format')
 	
-	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars',const='../ansible/vars/vars.yml'						)
-	parser.add_argument('-install'		,action='store_true'	,help='Set to switch to true'			,dest='install'						,default=False		)
-	parser.add_argument('-list'			,action='store_true'	,help='Set to switch to true'			,dest='list'						,default=False		)
+	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'					)
+	parser.add_argument('-install'		,action='store_true'	,help='Set to switch to true'				,dest='install'					,default=False		)
+	parser.add_argument('-list'			,action='store_true'	,help='Set to switch to true'				,dest='list'					,default=False		)
+	parser.add_argument('-cred'			,action='store_true'	,help='Set to switch to true'				,dest='cred'					,default=False		)
+	parser.add_argument('-descrptn'		,action='store'			,help='Description for Jenkins Creds'		,dest='descrptn'									)
+	parser.add_argument('-username'		,action='store'			,help='Username to add in Jenkins Cred'		,dest='username'									)
+	parser.add_argument('-password'		,action='store'			,help='Password to add in Jenkins Cred'		,dest='password'									)
 	
-	# arguments			= parser.parse_args(['-install','-list'])
+	# arguments			= parser.parse_args(['-install','-list','-descrptn', 'gitCreds','-username','vignesh','-password','vignesh'])
 	arguments			= parser.parse_args()
 	YAMLvarFile			= arguments.YAMLvarFile
 	install				= arguments.install
 	list				= arguments.list
+	descrptn			= arguments.descrptn
+	username			= arguments.username
+	password			= arguments.password
 	
 	# Load variables from ansible vars
 	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
@@ -126,5 +145,9 @@ if __name__ == '__main__':
 		install_plugins.install_plugins(variables['repositories']['jenkins']['plugins'])
 	if list:
 		install_plugins.list_plugins()
+	if descrptn:
+		install_plugins.add_cred(descrptn, username, password)
 
 # Ref : https://github.com/pycontribs/jenkinsapi/blob/master/jenkinsapi/jenkins.py
+# Ref : https://github.com/pycontribs/jenkinsapi/tree/master/examples
+
