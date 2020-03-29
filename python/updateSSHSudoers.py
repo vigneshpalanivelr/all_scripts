@@ -6,12 +6,15 @@ import argparse
 import fileinput
 
 #import custom modules
-# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv'))
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv/variables')
-sys.path.append(os.path.dirname(os.path.realpath(__file__))+'/pySetenv/packages')
-#print sys.path
-import userdata_template
+# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/variables'))
+# sys.path.append(os.path.dirname('/var/lib/jenkins/workspace/playbook-provisioning-job/all_scripts/python/pySetenv/packages'))
+# sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/variables/'))
+# sys.path.append(os.path.dirname('/root/all_scripts/python/pySetenv/packages/'))
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/variables/' )
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/pySetenv/packages/'  )
+# import userdata_template
 import userdata_multipart
+# print sys.path
 
 def get_all_groups(groups):
 	for i in groups:
@@ -57,10 +60,11 @@ def change_sudoers(sudoers_file, ssh_group_line):
 def add_sudo_file(sudoers_dir, sudo_group):
 	if not os.path.exists(sudoers_dir):
 		os.mkdir(sudoers_dir)
-	for item in sudo_group:
-		with open(sudoers_dir+'/my-sudoers-config', 'a+') as sudoers:
-			if not any("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item) == x for x in sudoers):
-				sudoers.write("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item))
+	if sudo_group:
+		for item in sudo_group:
+			with open(sudoers_dir+'/my-sudoers-config', 'a+') as sudoers:
+				if not any("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item) == x for x in sudoers):
+					sudoers.write("%{item} \tALL=(ALL) \tNOPASSWD: ALL\n".format(item=item))
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Script to Update ssh and sudoers from User-Data')
@@ -81,31 +85,28 @@ if __name__ == '__main__':
 	passwd_no	= re.compile(r'(PasswordAuthentication n.*)')
 	passwd_yes	= re.compile(r'(#PasswordAuthentication y.*)')
 	root_match_exp	= re.compile(r'(PermitRootLogin y.*)')
+	ssh_group_line	= ''
+	sudo_group		= None
 	
-	
-        	
 	try:
 		data = userdata_multipart.get_cloud_config_data(URL)
 		# data = userdata_template.get_cloud_config_data(URL)
 		try:
 			ssh_group_line, sudo_group = get_all_groups(['ssh_groups','sudo_groups'])
-                        print 
-                        print ssh_group_line, sudo_group
-			try:
-				change_sshd_config_replace(ssh_config_file,ssh_group_line)
-				# Enable If required
-				# change_sudoers(sudoers_file, ssh_group_line)
-				try:
-					add_sudo_file(sudoers_dir, sudo_group)
-				except Exception as change_sudoers_error:
-					print change_sudoers_error
-					exit(400)
-			except Exception as change_sshd_config_error:
-				print change_sshd_config_error
-				exit(300)
 		except Exception as get_groups_error:
 			print get_groups_error
-			exit(200)
 	except Exception as data_error:
 		print data_error
-		exit(1)
+	
+	try:
+		change_sshd_config_replace(ssh_config_file,ssh_group_line)
+		# Enable If required
+		# change_sudoers(sudoers_file, ssh_group_line)
+		try:
+			add_sudo_file(sudoers_dir, sudo_group)
+		except Exception as change_sudoers_error:
+			print change_sudoers_error
+			exit(400)
+	except Exception as change_sshd_config_error:
+		print change_sshd_config_error
+		exit(300)
