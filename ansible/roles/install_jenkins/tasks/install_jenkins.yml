@@ -15,7 +15,6 @@
     - "{{ srcPythonDir }}"
     - "{{ srcServicesDir }}"
     - "{{ srcRepoDir }}"
-  register: updatedRepos
 
 - name: Find the repos files present
   become: yes
@@ -38,7 +37,7 @@
     mode: 0644
     remote_src: true
   loop: "{{ listOfRepos.files }}"
-  when: updatedRepos.changed
+  register: updatedRepos
 
 - name: Replace JENKINS_REPO
   replace:
@@ -93,3 +92,4 @@
     var: item
   with_file:
     - "{{ repositories.jenkins.pwd }}"
+  ignore_errors: yes
