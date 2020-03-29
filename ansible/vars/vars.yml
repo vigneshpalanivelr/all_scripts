@@ -75,10 +75,7 @@ repositories  :
     user      : admin
     password  : admin
 
-pyModules     :
-  gitpython
-  psycopg2-binary
-  PTable
+pyModules     : ['ansible', 'argparse', 'babel', 'backports.ssl-match-hostname', 'cffi', 'chardet', 'cloud-init', 'configobj', 'cryptography', 'decorator', 'email', 'enum34', 'ethtool', 'gitdb', 'gitpython', 'httplib2', 'idna', 'iniparse', 'ipaddr', 'ipaddress', 'ipy', 'javapackages', 'jenkinsapi', 'jinja2', 'jmespath', 'jsonpatch', 'jsonpointer', 'kitchen', 'logging', 'lxml', 'm2crypto', 'magic-file-extensions', 'markupsafe', 'paramiko', 'pciutils', 'perf', 'pip', 'ply', 'policycoreutils-default-encoding', 'prettytable', 'psycopg2-binary', 'ptable', 'pyasn1', 'pycparser', 'pycurl', 'pygobject', 'pygpgme', 'pyinotify', 'pyliblzma', 'pyopenssl', 'pyserial', 'python', 'python-dateutil', 'python-dmidecode', 'python-linux-procfs', 'pytz', 'pyudev', 'pyxattr', 'pyyaml', 'requests', 'rhnlib', 'schedutils', 'seobject', 'sepolicy', 'setuptools', 'six', 'smmap', 'subscription-manager', 'syspurpose', 'urlgrabber', 'urllib3', 'wsgiref', 'yum-metadata-parser']
 
 myPublicIP    : http://ifconfig.me/ip 
 GPG_KEY_Dir   : /etc/pki/rpm-gpg/

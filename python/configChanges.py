@@ -86,6 +86,19 @@ class enableServices(object):
 			sec = sec + 5
 			execLog.warning('Waiting for jenkins to come up  : {}secs'.format(sec))
 			time.sleep(5)
+	
+	def py_modules(self, modules):
+		index = 0
+		for module in modules:
+			try:
+				index = index + 1
+				if subprocess.check_call([sys.executable, '-m', 'pip', 'install', module]) == 0:
+					execLog.info('Installed Module  : {} : {}'.format(index, module))
+			except subprocess.CalledProcessError as ModuleError:
+				if subprocess.check_call([sys.executable, '-m', 'pip', 'install', '--upgrade', module]) == 0:
+					execLog.info('Installed Module  : {} : {}'.format(index, module))
+			except Exception as Error:
+				execLog.error('Module Installation Error : '+ Error.__class__.__name__ +' '+str(Error).rstrip())
 
 if __name__ == '__main__':
 	
@@ -95,13 +108,15 @@ if __name__ == '__main__':
 	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'						)
 	parser.add_argument('-start'		,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
 	parser.add_argument('-service'		,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
+	parser.add_argument('-py_module'	,action='store_true'	,help='Set to switch to true'				,dest='py_module'					,default=False		)
 	
-	# arguments		= parser.parse_args(['7', '-start', '-service', 'SSH', '-service','jenkins'])
-	arguments		= parser.parse_args(['7', '-start', '-service', 'SSH', '-service','jenkins'])
+	# arguments		= parser.parse_args(['7', '-py_module' ,'-start', '-service', 'SSH', '-service','jenkins'])
+	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
 	YAMLvarFile		= arguments.YAMLvarFile
 	start_services	= arguments.start_services
 	services		= arguments.services
+	py_module		= arguments.py_module
 	
 	# Load variables from ansible vars
 	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
@@ -133,3 +148,5 @@ if __name__ == '__main__':
 				variables['myPublicIP'],
 				variables['repositories']['jenkins']['pwd']
 				)
+	if py_module:
+		enable_services.py_modules(variables['pyModules'])
