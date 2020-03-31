@@ -28,11 +28,13 @@ def get_all_groups(init_groups=[]):
 
 def change_sshd_config_replace(ssh_config_file, ssh_group=[]):
 	group_exp_replaced,passwd_yes_replaced,passwd_no_replaced,root_match_exp_replaced = False,False,False,False
-	ssh_group_line 	= 'AllowGroups ' + ' '.join(ssh_group)
+	ssh_group_line 	= ''
 	for line in fileinput.input(ssh_config_file, inplace=True):
+		if ssh_group:
+			ssh_group_line 	= 'AllowGroups ' + ' '.join(ssh_group)
 		if ssh_group and group_exp.match(line):
-			exsisting_grp	= line.strip().replace('AllowGroups ', '').split(',')
-			ssh_group_line 	= 'AllowGroups ' + ' '.join(list(set(ssh_group + exsisting_grp)))
+			exsisting_grp	= line.strip().replace('AllowGroups ', '').split(' ')
+			ssh_group_line 	= 'AllowGroups ' + ' '.join(sorted(list(set(ssh_group + exsisting_grp))))
 			line = re.sub(r'(AllowGroups .*)',ssh_group_line,line)
 			group_exp_replaced = True
 		if passwd_no.match(line):
@@ -106,19 +108,17 @@ if __name__ == '__main__':
 		print data_error
 	
 	############################### This will work even Empty CI #############################
-	if ssh_group:
-		try:
-			change_sshd_config_replace(ssh_config_file,ssh_group)
-		except Exception as change_sshd_config_error:
-			print change_sshd_config_error
-			exit(300)
+	try:
+		change_sshd_config_replace(ssh_config_file,ssh_group)
+	except Exception as change_sshd_config_error:
+		print change_sshd_config_error
+		exit(300)
 	
-	if sudo_group:
-		try:
-			add_sudo_file(sudoers_file_ops, sudo_group)
-		except Exception as change_sudoers_error:
-			print change_sudoers_error
-			exit(400)
+	try:
+		add_sudo_file(sudoers_file_ops, sudo_group)
+	except Exception as change_sudoers_error:
+		print change_sudoers_error
+		exit(400)
 	##########################################################################################
 	############################### Custom Add SSH & Sudo ####################################
 	##########################################################################################
@@ -134,4 +134,3 @@ if __name__ == '__main__':
 			add_sudo_file(sudoers_file, sudo)
 		except Exception as change_sshd_config_error:
 			print change_sshd_config_error
-
