@@ -1,23 +1,43 @@
+```
+##################################################################################################################
+#	Python				Ansible				Action
+##################################################################################################################
+#	copyLocalRemote.py		enable_epel_repo		Enable All Repos(EPEL, Jenkins,) Maven
+#	copyLocalRemote.py		setup_cloud_init		SetUP Cloud Init(Not Starting)
+#	packageInstallation.py		list_install			Install All Default 
+#	packageInstallation.py		jenkins_install			Install All Jenkins 
+#	packageInstallation.py						Install All Ansible
+#	configChanges.py		setup_cloud_init		Enable Services(Enables & Starting)
+#	configChanges.py		python_modules			Install Python Modules
+#	pluginsInstallation.py		jenkins_plugin			Install Jenkins Plugins
+#	pluginsInstallation.py						Add Credential to Jenkins
+#	createUserGroup.py		create_group			Create Group
+#	createUserGroup.py		create_user			Create Users
+#	updateSSHSudoers.py						Add SSH File
+#	updateSSHSudoers.py		add_sudoers			Add Sudoers File
+##################################################################################################################
+```
+
 # Scripts Usage
 - Ansible Gather Facts
-        ```
-        - ansible hostgroup -m setup
-        ```
+    ```
+    ansible hostgroup -m setup
+    ```
 
 - Configuration file for Ansible
-	```
-	- /etc/ansible/ansible.cfg
-	```
+    ```
+    /etc/ansible/ansible.cfg
+    ```
 
 - Change the logging directory to playbook directory
-	```
-    - remote_tmp        = /tmp
-    - host_key_checking = False
-    - log_path          = /root/python_sql_scripts/ansible/logs/ansible-playbook.log
-	```
+    ```
+    1) remote_tmp        = /tmp
+    2) host_key_checking = False
+    3) log_path          = /root/python_sql_scripts/ansible/logs/ansible-playbook.log
+    ```
 
 - Manual Commands to execute
-	```
+    ```
     - ansible-playbook site.yml -i inventory --extra-vars "ins_pgsql=pgsql_install PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_install
     - ansible-playbook site.yml -i inventory --extra-vars "uin_pgsql=pgsql_uninstall PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_uninstall
 

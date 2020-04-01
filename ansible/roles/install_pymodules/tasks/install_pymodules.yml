@@ -1,0 +1,9 @@
+---
+
+- name: Installing Python Modules
+  become: True
+  pip:
+    name: "{{ item }}"
+    umask: "0022"
+    state: present
+  loop: "{{ pyModules }}"
