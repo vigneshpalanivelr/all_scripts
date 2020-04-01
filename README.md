@@ -10,7 +10,7 @@
 | copyLocalRemote | setup_cloud_init | SetUP Cloud Init(Not Starting)|
 | packageInstallation | list_install | Install All Default Packages | 
 | packageInstallation | jenkins_install | Install Jenkins |
-| packageInstallation | ![#f03c15](`Yet To Create`) | Ansible |
+| packageInstallation | `Yet To Create` | Ansible |
 | configChanges | setup_cloud_init | Enable Services(Enables & Starting) |
 | configChanges | python_modules | Install Python Modules |
 | pluginsInstallation | jenkins_plugin | Install Jenkins Plugins |
