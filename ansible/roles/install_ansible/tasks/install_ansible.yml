@@ -5,6 +5,7 @@
     state: present
 
 - name: Update host_key_checking to False
+  become: yes
   replace:
     path: "{{ ansible.conf_file }}"
     regexp: "{{ ansible.host_key.check }}"
