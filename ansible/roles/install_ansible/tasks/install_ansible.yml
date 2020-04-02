@@ -1,0 +1,12 @@
+- name: Install Ansible
+  become: yes
+  yum:
+    name: ansible
+    state: present
+
+- name: Update host_key_checking to False
+  become: yes
+  replace:
+    path: "{{ ansible.conf_file }}"
+    regexp: "{{ ansible.host_key.check }}"
+    replace: "{{ ansible.host_key.value }}"

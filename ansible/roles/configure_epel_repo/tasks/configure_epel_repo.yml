@@ -37,12 +37,12 @@
   when: updatedRepos.changed
 
 - name: Replace OS_VERSION wih RHEL version
+  become: yes
   replace:
     path: "{{ yumDir }}/{{ item.path | basename }}"
     regexp: 'OS_VERSION'
     replace: '{{ RHELver }}'
   loop: "{{ listOfRepos.files }}"
-  when: updatedRepos.changed
   register: modifications
 
 - name: List all the repo

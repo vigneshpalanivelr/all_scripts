@@ -115,7 +115,7 @@ class packageInstalation(object):
 			try:
 				# Auto approval and Real Installation Takes Place
 				self.yBase.conf.assumeyes = True
-				self.yBase.processTransaction()
+				self.yBase.processTransaction(rpmDisplay=yum.rpmtrans.NoOutputCallBack())
 				if install:
 					execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Completed'))
 				self.yBase.closeRpmDB()
@@ -132,7 +132,7 @@ if __name__ == '__main__':
 	parser.add_argument('-pkg'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
 	
 	# arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
-	arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
+	arguments			= parser.parse_args()
 	YAMLvarFile			= arguments.YAMLvarFile
 	custome_install		= arguments.custome_install
 	custome_packages	= arguments.custome_packages

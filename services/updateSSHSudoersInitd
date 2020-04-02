@@ -48,8 +48,9 @@ case "$1" in
         echo -e "Starting service updateSSHSudoers from Cloud-Init..."
         # every time about starting up instance
         /usr/local/sbin/custom-scripts/python/updateSSHSudoers.py
+        /bin/systemctl reload sshd
         if [[ $? -eq 0 ]]; then
-                echo -e "Start : Successfully Started"
+                echo -e "Start : Successfully Started and Re-Loaded SSHD"
         else
                 echo -e "Fail  : Service Failed to Start"
         fi

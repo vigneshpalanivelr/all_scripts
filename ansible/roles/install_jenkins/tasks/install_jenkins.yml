@@ -40,20 +40,20 @@
   register: updatedRepos
 
 - name: Replace JENKINS_REPO
+  become: yes
   replace:
     path: "{{ yumDir }}/{{ item.path | basename }}"
     regexp: 'JENKINS_REPO'
     replace: '{{ repositories.jenkins.repo }}'
   loop: "{{ listOfRepos.files }}"
-  when: updatedRepos.changed
 
 - name: Replace JENKINS_GPGKEY
+  become: yes
   replace:
     path: "{{ yumDir }}/{{ item.path | basename }}"
     regexp: 'JENKINS_GPGKEY'
     replace: '{{ repositories.jenkins.gpgkey }}'
   loop: "{{ listOfRepos.files }}"
-  when: updatedRepos.changed
 
 #- name: Import Jenkins Key
 #  become: yes
@@ -91,7 +91,7 @@
     timeout: 5
   register: jenkins_service_status
   # Keep on trying for 50 sec in 5 sec intervals
-  retries: 10
+  retries: 5
   delay: 5
   until: >
     'status' in jenkins_service_status
@@ -102,9 +102,12 @@
   debug:
     msg: Jenkins URL is - http://{{ publicIP.content }}:8080
 
+- name: Read file
+  become: yes
+  slurp:
+    src: "{{ repositories.jenkins.pwd }}"
+  register: paswordFile
+
 - name: Initial Password is
-  debug: 
-    var: item
-  with_file:
-    - "{{ repositories.jenkins.pwd }}"
-  ignore_errors: yes
+  debug:
+    msg: "{{ paswordFile['content'] | b64decode }}"
