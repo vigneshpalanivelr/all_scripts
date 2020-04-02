@@ -10,7 +10,7 @@
 | copyLocalRemote | setup_cloud_init | SetUP Cloud Init(Not Starting)|
 | packageInstallation | list_install | Install All Default Packages | 
 | packageInstallation | jenkins_install | Install Jenkins |
-| packageInstallation | `Yet To Create` | Ansible |
+| packageInstallation | ansible_install | Install Ansible |
 | configChanges | setup_cloud_init | Enable Services(Enables & Starting) |
 | configChanges | python_modules | Install Python Modules |
 | pluginsInstallation | jenkins_plugin | Install Jenkins Plugins |
@@ -34,6 +34,7 @@ Install the Dependencies and start the server.
 ```sh
 /bin/yum install git-core -y
 /bin/yum install python2 -y
+/bin/git clone https://github.com/vigneshpalanivelr/all_scripts.git
 ```
 
 ### Python Usage
@@ -43,7 +44,6 @@ Provided that below assumptions were made
 3) Group Name
 
 ```sh
-/bin/git clone https://github.com/vigneshpalanivelr/all_scripts.git
 cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install -pkg ansible -pkg jenkins
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -py_module -start -service SSH -service jenkins
@@ -65,34 +65,35 @@ Provided that below assumptions were made
 6) PostgreSQL Version
 
 ```sh
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "set_epel=set_epel_repo RHEL=7" --tags=enable_epel_repo
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --tags=setup_cloud_init
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "ins_all=list_install" --tags=list_install
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_epel=set_epel_repo RHEL=7" --tags=enable_epel_repo
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --tags=setup_cloud_init
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_all=list_install" --tags=list_install
 
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "ins_jenkins=jenkins_install" --tags=jenkins_install
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "jenkins_plugin=jenkins_plugin" --tags=jenkins_plugin
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_jenkins=jenkins_install" --tags=jenkins_install
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "jenkins_plugin=jenkins_plugin" --tags=jenkins_plugin
 
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "python_modules=python_modules" --tags=python_modules
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "python_modules=python_modules" --tags=python_modules
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_ansible=ansible_install" --tags=ansible_install
 
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group cre_grp=create_group" --tags=create_group
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "username=vignesh password=vignesh group_name=root_group tag_group=yes cre_usr=create_user userComment='Root User'" --tags=create_user
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group add_sudo=add_sudoers" --tags=add_sudoers
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group cre_grp=create_group" --tags=create_group
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "username=vignesh password=vignesh group_name=root_group tag_group=yes cre_usr=create_user userComment='Root User'" --tags=create_user
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group add_sudo=add_sudoers" --tags=add_sudoers
 
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "ins_tf=terraform_install tfVersion=0.12.7" --tags=terraform_install
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "ins_packer=packer_install packerVersion=1.5.4" --tags=packer_install
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "ins_pgsql=pgsql_install PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_install
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --tags=configure_cw
-cd /root/all_scripts/python/ && ansible-playbook site.yml --extra-vars "mount=mount_volumes" --tags=mount_volumes
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_tf=terraform_install tfVersion=0.12.7" --tags=terraform_install
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_packer=packer_install packerVersion=1.5.4" --tags=packer_install
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_pgsql=pgsql_install PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_install
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --tags=configure_cw
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml --extra-vars "mount=mount_volumes" --tags=mount_volumes
 
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "uin_all=list_uninstall" --tags=list_uninstall
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_sudo=remove_sudoers" --tags=remove_sudoers
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "username=vignesh del_usr=delete_user" --tags=delete_user
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_grp=delete_group" --tags=delete_group
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_all=list_uninstall" --tags=list_uninstall
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_sudo=remove_sudoers" --tags=remove_sudoers
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "username=vignesh del_usr=delete_user" --tags=delete_user
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_grp=delete_group" --tags=delete_group
 
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "uin_tf=terraform_uninstall" --tags=terraform_uninstall
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "uin_packer=packer_uninstall" --tags=packer_uninstall
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "uin_pgsql=pgsql_uninstall PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_uninstall
-cd /root/all_scripts/python/ && ansible-playbook site.yml -i inventory --extra-vars "rem_cw=remove_cw" --tags=remove_cw
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_tf=terraform_uninstall" --tags=terraform_uninstall
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_packer=packer_uninstall" --tags=packer_uninstall
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_pgsql=pgsql_uninstall PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_uninstall
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "rem_cw=remove_cw" --tags=remove_cw
 ```
 
 ### Todos
