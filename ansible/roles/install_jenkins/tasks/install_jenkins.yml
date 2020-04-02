@@ -40,20 +40,20 @@
   register: updatedRepos
 
 - name: Replace JENKINS_REPO
+  become: yes
   replace:
     path: "{{ yumDir }}/{{ item.path | basename }}"
     regexp: 'JENKINS_REPO'
     replace: '{{ repositories.jenkins.repo }}'
   loop: "{{ listOfRepos.files }}"
-  when: updatedRepos.changed
 
 - name: Replace JENKINS_GPGKEY
+  become: yes
   replace:
     path: "{{ yumDir }}/{{ item.path | basename }}"
     regexp: 'JENKINS_GPGKEY'
     replace: '{{ repositories.jenkins.gpgkey }}'
   loop: "{{ listOfRepos.files }}"
-  when: updatedRepos.changed
 
 #- name: Import Jenkins Key
 #  become: yes
@@ -103,8 +103,11 @@
     msg: Jenkins URL is - http://{{ publicIP.content }}:8080
 
 - name: Initial Password is
-  debug: 
-    var: item
-  with_file:
-    - "{{ repositories.jenkins.pwd }}"
-  ignore_errors: yes
+  become: yes
+  slurp:
+    src: "{{ repositories.jenkins.pwd }}"
+  register: paswordFile
+
+- name: Read file
+  debug:
+    msg: "{{ paswordFile['content'] | b64decode }}"
