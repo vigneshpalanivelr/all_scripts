@@ -74,14 +74,29 @@
     state: started
     enabled: true
 
-- name: Sleep for 5 seconds and continue with play
-  wait_for: timeout=5
-
 - name: Find my public ip
   uri:
     url: "{{ myPublicIP }}"
     return_content: yes
   register: publicIP
+  
+- name: Wait for Jenkins to start up
+  uri:
+    url: "http://{{ publicIP.content }}:8080"
+    method: GET
+    user: "{{ repositories.jenkins.user }}"
+    password: "{{ repositories.jenkins.password }}"
+    force_basic_auth: yes
+    status_code: [200,401]
+    timeout: 5
+  register: jenkins_service_status
+  # Keep on trying for 50 sec in 5 sec intervals
+  retries: 10
+  delay: 5
+  until: >
+    'status' in jenkins_service_status
+    and
+    ( jenkins_service_status['status'] == 200 or jenkins_service_status['status'] == 401 )
 
 - name: Display the Jenkins URL
   debug:
