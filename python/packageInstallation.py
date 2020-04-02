@@ -115,7 +115,7 @@ class packageInstalation(object):
 			try:
 				# Auto approval and Real Installation Takes Place
 				self.yBase.conf.assumeyes = True
-				self.yBase.processTransaction()
+				self.yBase.processTransaction(rpmDisplay=yum.rpmtrans.NoOutputCallBack())
 				if install:
 					execLog.info('YUM Package Name : {} \tVersion : {} \tState : {}'.format(install[0].name, install[0].version, 'Completed'))
 				self.yBase.closeRpmDB()
