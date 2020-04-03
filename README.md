@@ -13,6 +13,7 @@
 | packageInstallation | ansible_install | Install Ansible |
 | configChanges | setup_cloud_init | Enable Services(Enables & Starting) |
 | configChanges | python_modules | Install Python Modules |
+| configChanges | ansible_install | Ansible Config Changes |
 | pluginsInstallation | jenkins_plugin | Install Jenkins Plugins |
 | pluginsInstallation | `Yet To Create` | Add Credential to Jenkins |
 | createUserGroup | create_group | Create Group |
@@ -49,13 +50,15 @@ Provided that below assumptions were made
 
 ```sh
 cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
+
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg ansible 
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg jenkins
-cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service jenkins
 
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -py_module 
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -ansible
 cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -install 
 cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -descrptn gitCreds -username vigneshpalanivelr -password <password>
 cd /root/all_scripts/python/ && /bin/python createUserGroup.py group create --group_name root_group
@@ -80,6 +83,13 @@ Provided that below assumptions were made
 6) PostgreSQL Version
 
 ```sh
+groupadd root_group
+useradd -p "vignesh" vignesh
+
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
+cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_sudo -sudo root_group
+
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_epel=set_epel_repo RHEL=7" --tags=enable_epel_repo
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --tags=setup_cloud_init
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_all=list_install" --tags=list_install

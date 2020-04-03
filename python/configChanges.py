@@ -87,6 +87,18 @@ class enableServices(object):
 			execLog.warning('Waiting for jenkins to come up  : {}secs'.format(sec))
 			time.sleep(5)
 	
+	def configure_ansible(self, config_file):
+		self.find_replace(config_file, '#host_key_checking = False', 'host_key_checking = False')
+	
+	def find_replace(self, filename, textToSearch, textToReplace):
+		with open(filename,'r+') as file:
+			filedata = file.read()
+			filedata = filedata.replace(textToSearch, textToReplace)
+			file.truncate(0)
+			file.seek(0) 
+			file.write(filedata)
+		execLog.info('Find Re  - {} : {} : {}'.format(filename, textToSearch, textToReplace))
+	
 	def py_modules(self, modules):
 		index = 0
 		for module in modules:
@@ -109,6 +121,7 @@ if __name__ == '__main__':
 	parser.add_argument('-start'		,action='store_true'	,help='Set to switch to true'				,dest='start_services'				,default=False		)
 	parser.add_argument('-service'		,action='append'		,help='Add list of pkgs'					,dest='services'					,default=[]			)
 	parser.add_argument('-py_module'	,action='store_true'	,help='Set to switch to true'				,dest='py_module'					,default=False		)
+	parser.add_argument('-ansible'		,action='store_true'	,help='Set to switch to true'				,dest='ansible'						,default=False		)
 	
 	# arguments		= parser.parse_args(['7', '-py_module' ,'-start', '-service', 'SSH', '-service','jenkins'])
 	arguments		= parser.parse_args()
@@ -117,6 +130,7 @@ if __name__ == '__main__':
 	start_services	= arguments.start_services
 	services		= arguments.services
 	py_module		= arguments.py_module
+	ansible			= arguments.ansible
 	
 	# Load variables from ansible vars
 	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
@@ -150,3 +164,8 @@ if __name__ == '__main__':
 				)
 	if py_module:
 		enable_services.py_modules(variables['pyModules'])
+	
+	if ansible :
+		enable_services.configure_ansible(
+			variables['ansible']['conf_file']
+			)
