@@ -18,6 +18,7 @@
 | createUserGroup | create_group | Create Group |
 | createUserGroup | create_user | Create Users |
 | updateSSHSudoers | `Yet To Create` | Add SSH File |
+| updateSSHSudoers | add_sudoers | Add Sudo File |
 | `Yet To Create` | terraform_install | Install Terraform |
 | `Yet To Create` | packer_install | Install Packer |
 | `Yet To Create` | pgsql_install | Install PostgreSQL |
@@ -26,15 +27,16 @@
 
 ###  Requirements and Installation
 Requirments
-1) [Git](https://github.com/) : To clone the project
-2) [Python](https://www.python.org/) : To execute the codes
+|[Git](https://github.com/) | To clone the project |
+|[Python](https://www.python.org/) | To execute the codes |
 
 Install the Dependencies and start the server.
 
 ```sh
 /bin/yum install git-core -y
-/bin/yum install python2 -y
 /bin/git clone https://github.com/vigneshpalanivelr/all_scripts.git
+
+#/bin/yum install python2 -y
 ```
 
 ### Python Usage
@@ -45,12 +47,23 @@ Provided that below assumptions were made
 
 ```sh
 cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
-cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install -pkg ansible -pkg jenkins
-cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -py_module -start -service SSH -service jenkins
-cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -install -list 
+cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install
+cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg ansible 
+cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg jenkins
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service jenkins
+
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -py_module 
+cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -install 
 cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -descrptn gitCreds -username vigneshpalanivelr -password <password>
-cd /root/all_scripts/python/ && /bin/python createUserGroup.py group create --group_name root_group --user_name jenkins --add_to_grp
+cd /root/all_scripts/python/ && /bin/python createUserGroup.py group create --group_name root_group
+cd /root/all_scripts/python/ && /bin/python createUserGroup.py user  create --user_name  vignesh --user_pwd vignesh
+cd /root/all_scripts/python/ && /bin/python createUserGroup.py map add --user_name jenkins --group_name root_group --add_to_grp
+cd /root/all_scripts/python/ && /bin/python createUserGroup.py map add --user_name vignesh --group_name root_group --add_to_grp
 cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_sudo -sudo root_group
+
+# cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -list
+# cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_ssh  -ssh root_group
 
 systemctl status updateSSHSudoersInitd
 ```
@@ -68,10 +81,9 @@ Provided that below assumptions were made
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_epel=set_epel_repo RHEL=7" --tags=enable_epel_repo
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --tags=setup_cloud_init
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_all=list_install" --tags=list_install
-
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_jenkins=jenkins_install" --tags=jenkins_install
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "jenkins_plugin=jenkins_plugin" --tags=jenkins_plugin
 
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "jenkins_plugin=jenkins_plugin" --tags=jenkins_plugin
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "python_modules=python_modules" --tags=python_modules
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_ansible=ansible_install" --tags=ansible_install
 
