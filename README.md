@@ -27,6 +27,8 @@
 
 ###  Requirements and Installation
 Requirments
+| Links | Action |
+| ------ | ------ |
 |[Git](https://github.com/) | To clone the project |
 |[Python](https://www.python.org/) | To execute the codes |
 
