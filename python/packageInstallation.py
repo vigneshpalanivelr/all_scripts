@@ -132,7 +132,7 @@ if __name__ == '__main__':
 	parser.add_argument('-pkg'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
 	
 	# arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
-	arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
+	arguments			= parser.parse_args()
 	YAMLvarFile			= arguments.YAMLvarFile
 	custome_install		= arguments.custome_install
 	custome_packages	= arguments.custome_packages
