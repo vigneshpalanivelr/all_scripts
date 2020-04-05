@@ -20,7 +20,7 @@ common_pks              :
     version : 
   tree      :
     name    : tree
-    version : 1.6.0
+    version :
   telnet    :
     name    : telnet
     version :
