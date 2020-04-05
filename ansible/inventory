@@ -2,6 +2,6 @@
 #127.0.0.1 ansible_connection=local
 
 [test_instance]
-172.31.42.237 ansible_connection=ssh ansible_user=vignesh ansible_ssh_pass=vignesh
+172.31.34.143 ansible_connection=ssh ansible_user=vignesh ansible_ssh_pass=vignesh
 #172.31.42.49 ansible_connection=ssh
 #172.31.44.174 ansible_connection=ssh

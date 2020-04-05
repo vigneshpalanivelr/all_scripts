@@ -89,11 +89,11 @@ Provided that below assumptions were made
 
 ```sh
 groupadd root_group
-useradd -p "vignesh" vignesh
+useradd --password $(openssl passwd vignesh) vignesh -G root_group
 
 cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
-cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_sudo -sudo root_group
+cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_epel=set_epel_repo RHEL=7" --tags=enable_epel_repo
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --tags=setup_cloud_init

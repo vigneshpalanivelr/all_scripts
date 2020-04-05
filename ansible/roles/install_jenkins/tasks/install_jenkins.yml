@@ -91,7 +91,7 @@
     timeout: 5
   register: jenkins_service_status
   # Keep on trying for 50 sec in 5 sec intervals
-  retries: 10
+  retries: 5
   delay: 5
   until: >
     'status' in jenkins_service_status
@@ -102,12 +102,12 @@
   debug:
     msg: Jenkins URL is - http://{{ publicIP.content }}:8080
 
-- name: Initial Password is
+- name: Read file
   become: yes
   slurp:
     src: "{{ repositories.jenkins.pwd }}"
   register: paswordFile
 
-- name: Read file
+- name: Initial Password is
   debug:
     msg: "{{ paswordFile['content'] | b64decode }}"
