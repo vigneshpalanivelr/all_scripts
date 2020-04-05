@@ -2,6 +2,7 @@
 import re
 import os
 import sys
+import crypt
 import argparse
 import fileinput
 import subprocess
@@ -60,7 +61,8 @@ def group_actions(action, group_name):
 
 def user_actions(action, user_name, user_pwd=None):
 	if action == 'create': 
-		if exec_command(['useradd' ,'-p' ,'"'+ user_pwd +'"' ,user_name]):
+		encrypted_passwd = crypt.crypt(user_pwd)
+		if exec_command(['useradd' ,'--password' ,encrypted_passwd ,user_name]):
 			print "Created : User  : {}".format(user_name)
 	elif action == 'delete':
 		if exec_command(['userdel',user_name]):

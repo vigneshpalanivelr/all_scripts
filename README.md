@@ -65,12 +65,14 @@ cd /root/all_scripts/python/ && /bin/python createUserGroup.py group create --gr
 cd /root/all_scripts/python/ && /bin/python createUserGroup.py user  create --user_name  vignesh --user_pwd vignesh
 cd /root/all_scripts/python/ && /bin/python createUserGroup.py map add --user_name jenkins --group_name root_group --add_to_grp
 cd /root/all_scripts/python/ && /bin/python createUserGroup.py map add --user_name vignesh --group_name root_group --add_to_grp
+
 cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_sudo -sudo root_group
+/bin/systemctl reload sshd
 
 # cd /root/all_scripts/python/ && /bin/python pluginsInstallation.py -list
 # cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_ssh  -ssh root_group
 
-systemctl status updateSSHSudoersInitd
+/bin/systemctl status updateSSHSudoersInitd
 ```
 
 ### Ansible Usage
@@ -81,6 +83,9 @@ Provided that below assumptions were made
 4) TF Version
 5) Packer Version
 6) PostgreSQL Version
+
+### Aditional Information
+1) sudo su - jenkins -s/bin/bash
 
 ```sh
 groupadd root_group
