@@ -1,13 +1,23 @@
 ---
 
-- name: Step1 -Remove  Schedule cronjob for CloudWatch metric every 5mins
+- name: Remove  Schedule cronjob for CloudWatch metric every 5mins
   become: yes
   cron:
     minute: '*/{{ AWS_cw_script.cw_cron }}'
-    name: CloudWatch Custom Metric for every 5mins
+    name: CloudWatch Custom Metric - Every 5mins - Memory - Root
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
     state: absent
+
+- name: Remove  Schedule cronjob for CloudWatch metric every 5mins
+  become: yes
+  cron:
+    minute: '*/{{ AWS_cw_script.cw_cron }}'
+    name: CloudWatch Custom Metric - Every 5mins - Disk - {{item.value.mount_point}}
+    job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --disk-space-util --disk-path={{item.value.mount_point}} --from-cron"
+    user: root
+    state: absent
+  loop: '{{ block_volumes.not_mounted | dict2items }}'
 
 - name: Print CronJobs
   shell:

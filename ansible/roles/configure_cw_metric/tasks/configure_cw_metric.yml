@@ -1,14 +1,6 @@
 ---
 
-- name: Step1 - Install common packages
-  become: yes
-  yum:
-    name: "{{ item }}"
-    state: present
-    skip_broken: yes
-  loop: "{{ common_pks }}"
-
-- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-8
+- name: Installing Pre-Requestics for CW Metric Configuration for RHEL-8
   become: yes
   yum:
     name: "{{ item }}"
@@ -17,7 +9,7 @@
   when: RHELver == "8"
   ignore_errors: yes
 
-- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-7
+- name: Installing Pre-Requestics for CW Metric Configuration for RHEL-7
   become: yes
   yum:
     name: "{{ item }}"
@@ -26,7 +18,7 @@
   when: RHELver == "7"
   ignore_errors: yes
 
-- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Preq for CPANM
+- name: Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Preq for CPANM
   become: yes
   yum:
     name: "{{ item }}"
@@ -34,13 +26,13 @@
   loop: "{{ RHEL_6_cw_pks }}"
   when: RHELver == "6"
 
-- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Installing CPANM
+- name: Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Installing CPANM
   shell:
     cmd: curl -L http://cpanmin.us | perl - --sudo App::cpanminus
     warn: False
   when: RHELver == "6"
 
-- name: Step2 -Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Installing Perl Modules
+- name: Installing Pre-Requestics for CW Metric Configuration for RHEL-6 - Installing Perl Modules
   become: yes
   cpanm:
     name: "{{ item }}"
@@ -52,21 +44,31 @@
     path: "{{ scriptHomeDir }}/{{ scriptsDir }}"
     state: directory
 
-- name: Step3 - Download and Unzip Monitoring Script from AWS
+- name: Download and Unzip Monitoring Script from AWS
   become: yes
   unarchive:
     src: "{{ AWS_cw_script.url }}"
     dest: "{{ scriptHomeDir }}/{{ scriptsDir }}/"
     remote_src: True
 
-- name: Step4 - Schedule cronjob for CloudWatch metric every 5mins
+- name: Schedule cronjob for CloudWatch Custom Metric - Every 5mins - Memory - Root
   become: yes
   cron:
     minute: '*/{{ AWS_cw_script.cw_cron }}'
-    name: CloudWatch Custom Metric for every 5mins
+    name: CloudWatch Custom Metric - Every 5mins - Memory - Root
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --mem-used-incl-cache-buff --mem-util --disk-space-util --disk-path=/ --from-cron"
     user: root
     state: present
+
+- name: Schedule cronjob for CloudWatch Custom Metric - Every 5mins - Disk
+  become: yes
+  cron:
+    minute: '*/{{ AWS_cw_script.cw_cron }}'
+    name: CloudWatch Custom Metric - Every 5mins - Disk - {{item.value.mount_point}}
+    job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --disk-space-util --disk-path={{item.value.mount_point}} --from-cron"
+    user: root
+    state: present
+   loop: '{{ block_volumes.not_mounted | dict2items }}'
 
 - name: Print CronJobs
   shell:

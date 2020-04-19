@@ -54,8 +54,13 @@
 
 - name: Re-mount mount point
   become: yes
-  script: "remount_volume.sh {{ item.value.mp_name }} {{ item.value.mount_point }}"
+  script: 
+    cmd: remount_volumes.sh {{ item.value.mp_name }} {{ item.value.mount_point }}
   loop: '{{ block_volumes.not_mounted | dict2items }}'
+  register: remount
+
+- debug:
+    var: remount
 
 - name: unmask tmp.mount
   become: yes
