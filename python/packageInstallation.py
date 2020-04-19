@@ -128,13 +128,13 @@ if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description='Read ansible variables in YAML format')
 	
 	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars',const='../ansible/vars/vars.yml'						)
-	parser.add_argument('-install'		,action='store_true'	,help='Set to switch to true'			,dest='custome_install'				,default=False		)
+	parser.add_argument('-install'		,action='store_true'	,help='Set to switch to true'			,dest='common_install'				,default=False		)
 	parser.add_argument('-pkg'			,action='append'		,help='Add list ofpkgs'					,dest='custome_packages'			,default=[]			)
 	
 	# arguments			= parser.parse_args(['-install','-pkg','ansible','-pkg','jenkins'])
 	arguments			= parser.parse_args()
 	YAMLvarFile			= arguments.YAMLvarFile
-	custome_install		= arguments.custome_install
+	common_install		= arguments.common_install
 	custome_packages	= arguments.custome_packages
 	
 	# Load variables from ansible vars
@@ -155,8 +155,9 @@ if __name__ == '__main__':
 	pkgInstalled 	= packageInstalation()
 	
 	# Execution
-	pkgInstalled.pkgCheck(variables['common_pks'])
-	if custome_install:
+	if common_install:
+		pkgInstalled.pkgCheck(variables['common_pks'])
+	if custome_packages:
 		for i in custome_packages:
 			pkgInstalled.pkgCheck(i)
 

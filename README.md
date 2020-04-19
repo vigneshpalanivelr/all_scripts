@@ -4,42 +4,44 @@
 
 
 ###  Available Scripts and Usages
-| Python | Ansible | Action |
-| ------ | ------ | ------ |
-| copyLocalRemote | enable_epel_repo | Enable All Repos(EPEL, Jenkins,) Maven |
-| copyLocalRemote | setup_cloud_init | SetUP Cloud Init(Not Starting)|
-| packageInstallation | list_install | Install All Default Packages | 
-| packageInstallation | jenkins_install | Install Jenkins |
-| packageInstallation | ansible_install | Install Ansible |
-| configChanges | setup_cloud_init | Enable Services(Enables & Starting) |
-| configChanges | python_modules | Install Python Modules |
-| configChanges | ansible_install | Ansible Config Changes |
-| pluginsInstallation | jenkins_plugin | Install Jenkins Plugins |
-| pluginsInstallation | `Yet To Create` | Add Credential to Jenkins |
-| createUserGroup | create_group | Create Group |
-| createUserGroup | create_user | Create Users |
-| updateSSHSudoers | `Yet To Create` | Add SSH File |
-| updateSSHSudoers | add_sudoers | Add Sudo File |
-| `Yet To Create` | terraform_install | Install Terraform |
-| `Yet To Create` | packer_install | Install Packer |
-| `Yet To Create` | pgsql_install | Install PostgreSQL |
-| `Yet To Create` | configure_cw | Configure CW for EC2 |
-| `Yet To Create` | mount_volumes | Mount Volumes on EC2 |
+| Python 				| Ansible 				| Action 									|
+| --------------------- | --------------------- | ----------------------------------------- |
+| copyLocalRemote 		| enable_epel_repo 		| Enable All Repos(EPEL, Jenkins,) Maven 	|
+| copyLocalRemote 		| setup_cloud_init 		| SetUP Cloud Init(Not Starting) 			|
+| packageInstallation 	| list_install 			| Install All Default Packages 				|
+| packageInstallation 	| jenkins_install 		| Install Jenkins 							|
+| packageInstallation 	| ansible_install 		| Install Ansible 							|
+| configChanges 		| setup_cloud_init 		| Enable Services(Enables & Starting) 		|
+| configChanges 		| python_modules 		| Install Python Modules 					|
+| configChanges 		| ansible_install 		| Ansible Config Changes 					|
+| pluginsInstallation 	| jenkins_plugin 		| Install Jenkins Plugins 					|
+| pluginsInstallation 	| `Yet To Create` 		| Add Credential to Jenkins 				|
+| createUserGroup 		| create_group 			| Create Group 								|
+| createUserGroup 		| create_user 			| Create Users 								|
+| updateSSHSudoers 		| `Yet To Create` 		| Add SSH File 								|
+| updateSSHSudoers 		| add_sudoers 			| Add Sudo File 							|
+| `Yet To Create` 		| terraform_install 	| Install Terraform 						|
+| `Yet To Create` 		| packer_install 		| Install Packer 							|
+| `Yet To Create` 		| pgsql_install 		| Install PostgreSQL 						|
+| `Yet To Create` 		| configure_cw 			| Configure CW for EC2 						|
+| `Yet To Create` 		| mount_volumes 		| Mount Volumes on EC2 						|
 
 ###  Requirements and Installation
 Requirments
-| Links | Action |
-| ------ | ------ |
-|[Git](https://github.com/) | To clone the project |
-|[Python](https://www.python.org/) | To execute the codes |
+| Links 							| Action 				|
+| --------------------------------- | --------------------- |
+|[Git](https://github.com/) 		| To clone the project	|
+|[Python](https://www.python.org/) 	| To execute the codes 	|
 
 Install the Dependencies and start the server.
 
 ```sh
-/bin/yum install git-core -y
-/bin/git clone https://github.com/vigneshpalanivelr/all_scripts.git
+# Common
+yum install git-core -y
+git clone https://vigneshpalanivelr@github.com/vigneshpalanivelr/all_scripts.git
 
-#/bin/yum install python2 -y
+# RHEL-6
+yum install python2 -y
 ```
 
 ### Python Usage
@@ -53,8 +55,8 @@ cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install
-cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg ansible 
-cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg jenkins
+cd /root/all_scripts/python/ && /bin/python yum_operations.py -auto_install -list_version ansible -yum_install ansible
+cd /root/all_scripts/python/ && /bin/python yum_operations.py -auto_install -list_version jenkins -yum_install jenkins
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service jenkins
 
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -py_module 
@@ -112,7 +114,7 @@ cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_packer=packer_install packerVersion=1.5.4" --tags=packer_install
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_pgsql=pgsql_install PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_install
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --tags=configure_cw
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml --extra-vars "mount=mount_volumes" --tags=mount_volumes
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "mount=mount_volumes" --tags=mount_volumes
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_all=list_uninstall" --tags=list_uninstall
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_sudo=remove_sudoers" --tags=remove_sudoers

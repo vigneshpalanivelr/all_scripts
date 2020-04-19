@@ -66,8 +66,8 @@ class yum_operations():
 		self.disto			= platform.dist()[0]
 		self.major_version 	= platform.dist()[1].split('.')[0]
 		
-		execLog.info('Distro           - {}'.format(self.disto))
-		execLog.info('OS Major Version - {}'.format(self.major_version))
+		execLog.info('Distro           - {0}'.format(self.disto))
+		execLog.info('OS Major Version - {0}'.format(self.major_version))
 		
 		try:
 			self.yb						= yum.YumBase()
@@ -76,17 +76,17 @@ class yum_operations():
 			self.auto_install			= auto_install
 			
 			setattr(self.yb.conf, 'skip_broken', 	skip_broken)
-			execLog.info('Set Skip Broken  - {}'.format(skip_broken))
+			execLog.info('Set Skip Broken  - {0}'.format(skip_broken))
 			
 			setattr(self.yb.conf, 'assumeyes',		auto_install)
-			execLog.info('Set Assume Yes   - {}'.format(auto_install))
+			execLog.info('Set Assume Yes   - {0}'.format(auto_install))
 			
 			if gpg_verify:
 				setattr(self.yb.conf, 'gpgcheck', 	gpg_verify)
-				execLog.info('Set GPG Check    - {}'.format(gpg_verify))
+				execLog.info('Set GPG Check    - {0}'.format(gpg_verify))
 			else:
 				setattr(self.yb.conf, 'gpgcheck', 	not gpg_verify)
-				execLog.info('Set GPG Check    - {}'.format(not gpg_verify))
+				execLog.info('Set GPG Check    - {0}'.format(not gpg_verify))
 			
 			if refresh_db:
 				self.refresh_db()
@@ -94,14 +94,14 @@ class yum_operations():
 			if enable_repo:
 				for repo in enable_repo:
 					self.yb.repos.enableRepo(repo)
-					execLog.info('Enabled  Repo    - {}'.format(repo))
+					execLog.info('Enabled  Repo    - {0}'.format(repo))
 			
 			if disable_repo:
 				for repo in disable_repo:
 					self.yb.repos.disableRepo(repo)
-					execLog.info('Disabled Repo    - {}'.format(repo))
+					execLog.info('Disabled Repo    - {0}'.format(repo))
 			
-			execLog.info('YUM Base SetUP   - {}'.format('YUM Base SetUp Completed'))
+			execLog.info('YUM Base SetUP   - {0}'.format('YUM Base SetUp Completed'))
 		except Exception as YumBaseError:
 			execLog.error('Yum Base Object - ' + YumBaseError.__class__.__name__ + ' ' + str(YumBaseError).rstrip())
 			exit(100)
@@ -116,15 +116,15 @@ class yum_operations():
 		'''
 		try:
 			execLog.info('YUM CleanUp      - CleanUp In Progress...')
-			execLog.info('YUM Config File  - {}'.format(self.yb.conf.config_file_path))
-			execLog.info('YUM Log File     - {}'.format(self.yb.conf.logfile))
-			execLog.info('YUM Error Level  - {}'.format(self.yb.conf.errorlevel))
-			execLog.info('YUM CleanUp RPM  - {}'.format(self.yb.cleanRpmDB()[1][0]))
-			execLog.info('YUM CleanUp Cha  - {}'.format(self.yb.cleanExpireCache()[1][0]))
-			execLog.info('YUM CleanUp MD   - {}'.format(self.yb.cleanMetadata()[1][0]))
-			execLog.info('YUM CleanUP SQL  - {}'.format(self.yb.cleanSqlite()[1][0]))
-			execLog.info('YUM CleanUP PKG  - {}'.format(self.yb.cleanPackages()[1][0]))
-			execLog.info('YUM ChacheSetUp  - {}'.format(self.yb.setCacheDir(force=True)))
+			execLog.info('YUM Config File  - {0}'.format(self.yb.conf.config_file_path))
+			execLog.info('YUM Log File     - {0}'.format(self.yb.conf.logfile))
+			execLog.info('YUM Error Level  - {0}'.format(self.yb.conf.errorlevel))
+			execLog.info('YUM CleanUp RPM  - {0}'.format(self.yb.cleanRpmDB()[1][0]))
+			execLog.info('YUM CleanUp Cha  - {0}'.format(self.yb.cleanExpireCache()[1][0]))
+			execLog.info('YUM CleanUp MD   - {0}'.format(self.yb.cleanMetadata()[1][0]))
+			execLog.info('YUM CleanUP SQL  - {0}'.format(self.yb.cleanSqlite()[1][0]))
+			execLog.info('YUM CleanUP PKG  - {0}'.format(self.yb.cleanPackages()[1][0]))
+			execLog.info('YUM ChacheSetUp  - {0}'.format(self.yb.setCacheDir(force=True)))
 			execLog.info('YUM CleanUp      - CleanUp Completed')
 		except Exception as YumBaseError:
 			execLog.error('Yum Base CleanUp : '+YumBaseError.__class__.__name__ + ' ' + str(YumBaseError).rstrip())
@@ -380,9 +380,9 @@ class yum_operations():
 		for pkg in pkgs:
 			try:
 				self.yb.install(name=pkg)
-				execLog.info('Installing Pkg   - {}'.format(pkg))
+				execLog.info('Installing Pkg   - {0}'.format(pkg))
 			except yum.Errors.InstallError:
-				execLog.info('Install Error on - {}'.format(pkg))
+				execLog.info('Install Error on - {0}'.format(pkg))
 				# log.error('Package {0} failed to install'.format(pkg))
 				print 'Error'
 				pass
@@ -429,9 +429,9 @@ class yum_operations():
 			for pkg in pkgs:
 				try:
 					self.yb.update(name=pkg)
-					execLog.info('Upgrading  Pkg   - {}'.format(pkg))
+					execLog.info('Upgrading  Pkg   - {0}'.format(pkg))
 				except yum.Errors.InstallError:
-					execLog.info('Upgrade Fail for - {}'.format(pkg))
+					execLog.info('Upgrade Fail for - {0}'.format(pkg))
 					# log.error('Package {0} failed to install'.format(pkg))
 					print 'Error'
 					pass
@@ -484,9 +484,9 @@ class yum_operations():
 		for pkg in pkgs:
 			try:
 				self.yb.remove(name=pkg)
-				execLog.info('Removing the pkg - {}'.format(pkg))
+				execLog.info('Removing the pkg - {0}'.format(pkg))
 			except yum.Errors.InstallError:
-				execLog.info('Remove Failure   - {}'.format(pkg))
+				execLog.info('Remove Failure   - {0}'.format(pkg))
 		
 		self.yb.resolveDeps()
 		self.yb.buildTransaction()
@@ -517,7 +517,7 @@ if __name__ == '__main__':
 	parser.add_argument('YAMLvarFile'		,action='store_const'	,help='Load Variables from Ansible'	,const='../ansible/vars/vars.yml'	)
 	parser.add_argument('-auto_install'		,action='store_true'	,help='It will enable Assume Yes'	,default=False	,dest='auto_install')
 	parser.add_argument('-skip_broken'		,action='store_true'	,help='Will skip if any failures'	,default=False	,dest='skip_broken'	)
-	parser.add_argument('-gpg_verify'		,action='store_true'	,help='Skip the GPG verification'	,default=True	,dest='gpg_verify'	)
+	parser.add_argument('-gpg_verify'		,action='store_true'	,help='Skip the GPG verification'	,default=False	,dest='gpg_verify'	)
 	parser.add_argument('-refresh_db'		,action='store_true'	,help='Clean out the yum database'	,default=False	,dest='refresh_db'	)
 	parser.add_argument('-enable_repo'		,action='append'		,help='Enable the repository'		,default=[]		,dest='enable_repo'	)
 	parser.add_argument('-disable_repo'		,action='append'		,help='Disable the repository'		,default=[]		,dest='disable_repo')
@@ -530,11 +530,17 @@ if __name__ == '__main__':
 	parser.add_argument('-yum_update_all'	,action='store_true'	,help='List all pkgs To Install'	,default=False	,dest='yum_upd_all'	)
 	parser.add_argument('-yum_remove'		,action='append'		,help='List of pkgs To Un-Install'	,default=[]		,dest='yum_remove'	)
 	
-	# arguments			= parser.parse_args(['auto_install','skip_broken','gpg_verify','refresh_db'])
 	# Disable Repo
 	# arguments			= parser.parse_args(['-auto_install','-skip_broken','-gpg_verify','-refresh_db','-disable_repo','jenkins'])
-	# arguments			= parser.parse_args(['-auto_install','-skip_broken','-gpg_verify','-refresh_db','-list_version','python','-list_version','pythonn','-list_upgrade','python','-list_upgrade_all','-yum_install','jenkins','-yum_install','ansible'])
-	arguments			= parser.parse_args(['-auto_install','-skip_broken','-gpg_verify','-refresh_db','-list_version','python','-list_version','pythonn','-list_upgrade','python','-list_upgrade_all','-yum_install','jenkins','-yum_install','ansible','-yum_update','python','-yum_update_all','-yum_remove','jenkins','-yum_remove','ansible'])
+	
+	# Check and Upgrade
+	# arguments			= parser.parse_args(['-list_version','python','-list_upgrade','python'])
+	# arguments			= parser.parse_args(['-auto_install','-list_version','python','-list_upgrade','python','-yum_update','python'])
+	
+	# Everything
+	# arguments			= parser.parse_args(['-auto_install','-skip_broken','-gpg_verify','-refresh_db','-list_version','python','-list_version','pythonn','-list_upgrade','python','-list_upgrade_all','-yum_install','jenkins','-yum_install','ansible','-yum_update','python','-yum_update_all','-yum_remove','jenkins','-yum_remove','ansible'])
+	
+	arguments			= parser.parse_args()
 	YAMLvarFile			= arguments.YAMLvarFile
 	auto_install		= arguments.auto_install
 	skip_broken			= arguments.skip_broken
@@ -559,7 +565,7 @@ if __name__ == '__main__':
 	
 	# Execute a class object to make log dir
 	loadLogDirectory()
-	print 'Created Log Directory : {}'.format(logDirectory)
+	print 'Created Log Directory : {0}'.format(logDirectory)
 	
 	# Define logging module, File Handler & Stream Handler
 	# Define Log file name for later use
