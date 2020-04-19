@@ -26,7 +26,6 @@ def get_cloud_config_data(URL):
                         if each_part.get_content_maintype() in ['multipart','text']:
                                 if each_part.get_content_subtype() in ['cloud-config','plain']:
                                         result_data = each_part.get_payload(decode=True)
-                                        print result_data
                                         try:
                                                 data = yaml.load(result_data,yaml.SafeLoader)
                                                 return data
