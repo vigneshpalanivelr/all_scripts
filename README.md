@@ -114,7 +114,7 @@ cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_packer=packer_install packerVersion=1.5.4" --tags=packer_install
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_pgsql=pgsql_install PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_install
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --tags=configure_cw
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml --extra-vars "mount=mount_volumes" --tags=mount_volumes
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "mount=mount_volumes" --tags=mount_volumes
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_all=list_uninstall" --tags=list_uninstall
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group del_sudo=remove_sudoers" --tags=remove_sudoers
