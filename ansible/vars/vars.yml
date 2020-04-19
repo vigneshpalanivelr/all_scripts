@@ -37,7 +37,7 @@ common_pks              :
     name    : unzip
     version :
   java      :
-    name    : java-1.8.0-openjdk
+    name    : java-1.8.0-openjdk-devel
     version :
   py2-pip   :
     name    : python2-pip
@@ -105,10 +105,10 @@ AWS_cw_script :
   cw_cron     : 5
 
 block_volumes :
-  mounted     :
-    root      :
-      mount_point : /
-      mp_name     : /dev/xvda
+#  mounted     :
+#    root      :
+#      mount_point : /
+#      mp_name     : /dev/xvda
   not_mounted :
     home      :
       mp_name     : /dev/xvdb

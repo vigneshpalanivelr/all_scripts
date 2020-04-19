@@ -16,13 +16,14 @@
     dev: '{{ item.value.mp_name }}'
   loop: '{{ block_volumes.not_mounted | dict2items }}'
 
-- name: Format Exsisting Volumes
-  become: yes
-  filesystem:
-    fstype: xfs
-    dev: '{{ item.value.mp_name }}'
-  loop: '{{ block_volumes.mounted | dict2items }}'
-  ignore_errors: yes
+# Do not try to format root
+#- name: Format Exsisting Volumes
+#  become: yes
+#  filesystem:
+#    fstype: xfs
+#    dev: '{{ item.value.mp_name }}'
+#  loop: '{{ block_volumes.mounted | dict2items }}'
+#  ignore_errors: yes
 
 - name: Mount BlockDevices
   become: yes
@@ -50,6 +51,19 @@
     dest: /etc/fstab
     line: '{{ block_volumes.swap.mp_name }} swap swap defaults 0 0'
     state: present
+
+- name: Re-mount mount point
+  become: yes
+  script: "./scripts/remount_volume.sh" {{ item.value.mp_name }} {{ item.value.mount_point }}
+  loop: '{{ block_volumes.not_mounted }}'
+
+- name: unmask tmp.mount
+  become: yes
+  command: systemctl unmask tmp.mount
+
+- name: enable tmp.mount
+  become: yes
+  command: systemctl enable tmp.mount
 
 - name: Current Time
   become: yes

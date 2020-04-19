@@ -59,6 +59,7 @@ class installPlugins():
 	def add_cred(self, descrptn, username, password):
 		cred_dict = {
 			'description'	: descrptn,
+			'credential_id'	: descrptn,
 			'userName'		: username,
 			'password'		: password
 		}
