@@ -78,5 +78,5 @@
 		"osVersion"		: "8",
 		"archetecture"	: "noarch",
 		"package"		: "epel-release-latest-8.noarch.rpm"
-	},
+	}
 ]
