@@ -1,35 +1,35 @@
 [
 	{
 		"Description"	: "PostgreSQL-Libpq",
-		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
+		"downloadURL"	: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7.7-x86_64/",
 		"releaseDate" 	: "2020-02-20",
 		"osVersion"		: "any",
 		"archetecture"	: "system",
-		"package"		: "libpqxx-5.0.1-2"
+		"package"		: "libpqxx-5.0.1-2.rhel7.x86_64.rpm"
 	},
 	{
 		"Description"	: "PostgreSQL-Library",
-		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
-		"archetecture"	: "system",
-		"osVersion"		: "any",
+		"downloadURL"	: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7.7-x86_64/",
 		"releaseDate" 	: "2020-02-20",
-		"package"		: "postgresql96-libs-9.6.16-1pgdg"
+		"osVersion"		: "any",
+		"archetecture"	: "system",
+		"package"		: "postgresql96-libs-9.6.16-1PGDG.rhel7.x86_64.rpm"
 	},
 	{
 		"Description"	: "PostgreSQL-Database",
-		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
+		"downloadURL"	: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7.7-x86_64/",
 		"releaseDate" 	: "2020-02-20",
 		"osVersion"		: "any",
 		"archetecture"	: "system",
-		"package"		: "postgresql96-9.6.16-2PGDG"
+		"package"		: "postgresql96-9.6.16-2PGDG.rhel7.x86_64.rpm"
 	},
 	{
 		"Description"	: "PostgreSQL-Server",
-		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
+		"downloadURL"	: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-7.7-x86_64/",
 		"releaseDate" 	: "2020-02-20",
 		"osVersion"		: "any",
 		"archetecture"	: "system",
-		"package"		: "postgresql96-server-9.6.16-2PGDG"
+		"package"		: "postgresql96-server-9.6.16-2PGDG.rhel7.x86_64.rpm"
 	},
 	{
 		"Description"	: "Jenkins-Server",
