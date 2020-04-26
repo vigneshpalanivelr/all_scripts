@@ -41,26 +41,40 @@ class CopyExtract(object):
 			self.copytree(source+i, destination+i)
 		execLog.debug('Done    - Completed coping to Remote path')
 	
-	def copy_destination(self, allDirs=None, source=None, yumDir=None, initDir=None, systmdDir=None, RHEL=None):
+	def copy_destination(self, allDirs=None, source=None, yumDir=None, initDir=None, systmdDir=None, RHEL=None, repos=None):
 		execLog.debug('Action  - Started coping to Destination path')
 		for i in allDirs:
 			if 'repo' in i:
 				execLog.debug('Action  - Found Repo files')
 				for basename, filename in self.find_files(source+i, '*repo*'):
 					self.copytree(filename , yumDir, permission = variables['yumDirPer'])
-					if 'epel' in basename:
+					if 'epel' in basename and 'epel' in repos:
 						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
 						self.get_GPG_KEY(
 							variables['repositories']['epel']['repo']+variables['repositories']['epel']['gpgurl']+RHEL,
 							variables['GPG_KEY_Dir']+variables['repositories']['epel']['gpgkey']+RHEL
 						)
-					if 'jenkins' in basename:
+					if 'jenkins' in basename and 'jenkins' in repos:
 						self.find_replace(yumDir+'/'+basename, 'JENKINS_REPO', variables['repositories']['jenkins']['repo'])
 						self.find_replace(yumDir+'/'+basename, 'JENKINS_GPGKEY', variables['repositories']['jenkins']['gpgkey'])
 						self.get_GPG_KEY(
 							variables['repositories']['jenkins']['repo']+variables['repositories']['jenkins']['gpgurl'],
 							variables['GPG_KEY_Dir']+variables['repositories']['jenkins']['gpgkey']
 						)
+					if 'artifactory' in basename and 'artifactory' in repos:
+						self.find_replace(yumDir+'/'+basename, 'ARTIFACTORY_REPO', variables['repositories']['artifactory']['repo'])
+					if 'jfrog-cw' in basename and 'jfrog-cw' in repos:
+						self.find_replace(yumDir+'/'+basename, 'CW_LOCAL_REPO', variables['repositories']['jfrog-cw']['repo'])
+						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
+					if 'jfrog-epel' in basename and 'jfrog-epel' in repos:
+						self.find_replace(yumDir+'/'+basename, 'EPEL_LOCAL_REPO', variables['repositories']['jfrog-epel']['repo'])
+						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
+					if 'jfrog-jenkins' in basename and 'jfrog-jenkins' in repos:
+						self.find_replace(yumDir+'/'+basename, 'JENKINS_LOCAL_REPO', variables['repositories']['jfrog-jenkins']['repo'])
+						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
+					if 'jfrog-postgresql' in basename and 'jfrog-postgresql' in repos:
+						self.find_replace(yumDir+'/'+basename, 'POSTGRESQL_LOCAL_REPO', variables['repositories']['jfrog-postgresql']['repo'])
+						self.find_replace(yumDir+'/'+basename, 'OS_VERSION', RHEL)
 			elif 'service' in i and RHEL == '6':
 				execLog.debug('Action  - Found Service files for RHEL {}'.format(RHEL))
 				for basename, filename in self.find_files(source+i, '*Initd*'):
@@ -146,13 +160,15 @@ if __name__ == '__main__':
 	
 	# Argparse Argments and variables defination
 	parser = argparse.ArgumentParser(description='Copy scripts from local to remote and enable services and repos')
-	parser.add_argument('RHEL'				,action='store'				,help='RHEL Major Version'					,choices=['6','7','8']				)
-	parser.add_argument('YAMLvarFile'		,action='store_const'		,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'	)
+	parser.add_argument('RHEL'			,action='store'			,help='RHEL Major Version'					,choices=['6','7','8']							)
+	parser.add_argument('YAMLvarFile'	,action='store_const'	,help='Load Variables from Ansible Vars'	,const='../ansible/vars/vars.yml'				)
+	parser.add_argument('-repos'		,action='append'		,help='Add list of repos to enable'			,dest='repos'						,default=[]	)
 	
-	# arguments		= parser.parse_args(['7'])
+	# arguments		= parser.parse_args(['7','-repos','epel','-repos','jenkins','-repos','artifactory'])
 	arguments		= parser.parse_args()
 	RHEL			= arguments.RHEL
 	YAMLvarFile		= arguments.YAMLvarFile
+	repos			= arguments.repos
 	
 	# Load variables from ansible vars
 	variables 		= global_vars.get_ansible_vars(YAMLvarFile)
@@ -184,7 +200,8 @@ if __name__ == '__main__':
 		yumDir		= variables['yumDir'],
 		initDir		= variables['initDir'],
 		systmdDir	= variables['systemdDir'],
-		RHEL		= RHEL
+		RHEL		= RHEL,
+		repos		= repos
 	)
 
 

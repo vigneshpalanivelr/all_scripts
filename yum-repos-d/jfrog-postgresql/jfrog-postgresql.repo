@@ -1,0 +1,6 @@
+[jfrog-postgresql-local]
+name=jfrog-postgresql-local
+baseurl=POSTGRESQL_LOCAL_REPO
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
