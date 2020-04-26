@@ -1,0 +1,6 @@
+[jfrog-jenkins-local]
+name=jfrog-jenkins-local
+baseurl=JENKINS_LOCAL_REPO
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
