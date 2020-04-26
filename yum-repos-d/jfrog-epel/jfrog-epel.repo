@@ -1,0 +1,6 @@
+[jfrog-epel-local]
+name=jfrog-epel-local
+baseurl=EPEL_LOCAL_REPO
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0

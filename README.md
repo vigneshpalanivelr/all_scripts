@@ -55,8 +55,11 @@ cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install
+cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg ansible
+cd /root/all_scripts/python/ && /bin/python packageInstallation.py -pkg jenkins
 cd /root/all_scripts/python/ && /bin/python yum_operations.py -auto_install -list_version ansible -yum_install ansible
 cd /root/all_scripts/python/ && /bin/python yum_operations.py -auto_install -list_version jenkins -yum_install jenkins
+
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service jenkins
 
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -py_module 
