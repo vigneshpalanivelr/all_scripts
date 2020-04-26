@@ -6,7 +6,7 @@
 		"osVersion"		: "any",
 		"archetecture"	: "system",
 		"package"		: "libpqxx-5.0.1-2"
-	}
+	},
 	{
 		"Description"	: "PostgreSQL-Library",
 		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
@@ -14,7 +14,7 @@
 		"osVersion"		: "any",
 		"releaseDate" 	: "2020-02-20",
 		"package"		: "postgresql96-libs-9.6.16-1pgdg"
-	}
+	},
 	{
 		"Description"	: "PostgreSQL-Database",
 		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
@@ -22,7 +22,7 @@
 		"osVersion"		: "any",
 		"archetecture"	: "system",
 		"package"		: "postgresql96-9.6.16-2PGDG"
-	}
+	},
 	{
 		"Description"	: "PostgreSQL-Server",
 		"downloadURL"	: "https://download.postgresql.org/pub/repos/",
@@ -30,7 +30,7 @@
 		"osVersion"		: "any",
 		"archetecture"	: "system",
 		"package"		: "postgresql96-server-9.6.16-2PGDG"
-	}
+	},
 	{
 		"Description"	: "Jenkins-Server",
 		"downloadurl"	: "https://pkg.jenkins.io/redhat/",
@@ -38,7 +38,7 @@
 		"osVersion"		: "any",
 		"archetecture"	: "noarch",
 		"package"		: "jenkins-2.222.1-1.1"
-	}
+	},
 	{
 		"Description"	: "CloudWatch-Perl",
 		"downloadurl"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
@@ -46,7 +46,7 @@
 		"osVersion"		: "7,8",
 		"archetecture"	: "noarch",
 		"package"		: "perl-Switch-2.14-1.rh7.rf.noarch.rpm"
-	}
+	},
 	{
 		"Description"	: "CloudWatch-Perl",
 		"downloadurl"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
@@ -54,7 +54,7 @@
 		"osVersion"		: "7,8",
 		"archetecture"	: "noarch",
 		"package"		: "perl-DateTime-0.4305-1.rh7.rf.i386.rpm"
-	}
+	},
 	{
 		"Description"	: "EPEL",
 		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
@@ -62,7 +62,7 @@
 		"osVersion"		: "6",
 		"archetecture"	: "noarch",
 		"package"		: "epel-release-latest-6.noarch.rpm"
-	}
+	},
 	{
 		"Description"	: "EPEL",
 		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
@@ -70,7 +70,7 @@
 		"osVersion"		: "7",
 		"archetecture"	: "noarch",
 		"package"		: "epel-release-latest-7.noarch.rpm"
-	}
+	},
 	{
 		"Description"	: "EPEL",
 		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
@@ -78,5 +78,5 @@
 		"osVersion"		: "8",
 		"archetecture"	: "noarch",
 		"package"		: "epel-release-latest-8.noarch.rpm"
-	}
+	},
 ]
