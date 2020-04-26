@@ -63,6 +63,8 @@ repositories  :
     repo      : https://dl.fedoraproject.org/pub/epel/
     gpgurl    : RPM-GPG-KEY-EPEL-
     gpgkey    : RPM-GPG-KEY-EPEL-
+  artifactory :
+    repo      : https://jfrog.bintray.com/artifactory-rpms
   maven       : http://repos.fedorapeople.org/repos/dchen/apache-maven/epel-apache-maven.repo
   hashicorp   : https://releases.hashicorp.com
   postgres    : https://download.postgresql.org/pub/repos/yum
@@ -112,7 +114,7 @@ block_volumes :
   not_mounted :
     home      :
       mp_name     : /dev/xvdb
-      mount_point : /home
+      mount_point : /tmp
     audit     :
       mp_name     : /dev/xvdc
       mount_point : /var/log/audit
