@@ -33,7 +33,7 @@
 	},
 	{
 		"Description"	: "Jenkins-Server",
-		"downloadurl"	: "https://pkg.jenkins.io/redhat/",
+		"downloadURL"	: "https://pkg.jenkins.io/redhat/",
 		"releaseDate" 	: "2020-02-19",
 		"osVersion"		: "any",
 		"archetecture"	: "noarch",
@@ -41,7 +41,7 @@
 	},
 	{
 		"Description"	: "CloudWatch-Perl",
-		"downloadurl"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
+		"downloadURL"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
 		"releaseDate" 	: "2020-02-21",
 		"osVersion"		: "7,8",
 		"archetecture"	: "noarch",
@@ -49,7 +49,7 @@
 	},
 	{
 		"Description"	: "CloudWatch-Perl",
-		"downloadurl"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
+		"downloadURL"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
 		"releaseDate" 	: "2020-03-20",
 		"osVersion"		: "7,8",
 		"archetecture"	: "noarch",
@@ -57,7 +57,7 @@
 	},
 	{
 		"Description"	: "EPEL",
-		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
+		"downloadURL"	: "https://dl.fedoraproject.org/pub/epel/",
 		"releaseDate" 	: "2020-01-20",
 		"osVersion"		: "6",
 		"archetecture"	: "noarch",
@@ -65,7 +65,7 @@
 	},
 	{
 		"Description"	: "EPEL",
-		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
+		"downloadURL"	: "https://dl.fedoraproject.org/pub/epel/",
 		"releaseDate" 	: "2020-12-20",
 		"osVersion"		: "7",
 		"archetecture"	: "noarch",
@@ -73,7 +73,7 @@
 	},
 	{
 		"Description"	: "EPEL",
-		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
+		"downloadURL"	: "https://dl.fedoraproject.org/pub/epel/",
 		"releaseDate" 	: "2020-02-20",
 		"osVersion"		: "8",
 		"archetecture"	: "noarch",
