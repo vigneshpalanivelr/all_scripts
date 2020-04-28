@@ -34,7 +34,7 @@
 	{
 		"Description"	: "Jenkins-Server",
 		"downloadurl"	: "https://pkg.jenkins.io/redhat/",
-		"releaseDate" 	: "2020-02-20",
+		"releaseDate" 	: "2020-02-19",
 		"osVersion"		: "any",
 		"archetecture"	: "noarch",
 		"package"		: "jenkins-2.222.1-1.1"
@@ -42,7 +42,7 @@
 	{
 		"Description"	: "CloudWatch-Perl",
 		"downloadurl"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
-		"releaseDate" 	: "2020-02-20",
+		"releaseDate" 	: "2020-02-21",
 		"osVersion"		: "7,8",
 		"archetecture"	: "noarch",
 		"package"		: "perl-Switch-2.14-1.rh7.rf.noarch.rpm"
@@ -50,7 +50,7 @@
 	{
 		"Description"	: "CloudWatch-Perl",
 		"downloadurl"	: "ftp://ftp.pbone.net/mirror/apt.sw.be/redhat/7.3/en/i386/rpmforge/RPMS/",
-		"releaseDate" 	: "2020-02-20",
+		"releaseDate" 	: "2020-03-20",
 		"osVersion"		: "7,8",
 		"archetecture"	: "noarch",
 		"package"		: "perl-DateTime-0.4305-1.rh7.rf.i386.rpm"
@@ -58,7 +58,7 @@
 	{
 		"Description"	: "EPEL",
 		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
-		"releaseDate" 	: "2020-02-20",
+		"releaseDate" 	: "2020-01-20",
 		"osVersion"		: "6",
 		"archetecture"	: "noarch",
 		"package"		: "epel-release-latest-6.noarch.rpm"
@@ -66,7 +66,7 @@
 	{
 		"Description"	: "EPEL",
 		"downloadurl"	: "https://dl.fedoraproject.org/pub/epel/",
-		"releaseDate" 	: "2020-02-20",
+		"releaseDate" 	: "2020-12-20",
 		"osVersion"		: "7",
 		"archetecture"	: "noarch",
 		"package"		: "epel-release-latest-7.noarch.rpm"
