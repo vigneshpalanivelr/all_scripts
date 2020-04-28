@@ -33,7 +33,7 @@
 	},
 	{
 		"Description"	: "Jenkins-Server",
-		"downloadURL"	: "https://pkg.jenkins.io/redhat/",
+		"downloadURL"	: "https://pkg.jenkins.io/redhat-stable/",
 		"releaseDate" 	: "2020-02-19",
 		"osVersion"		: "any",
 		"archetecture"	: "noarch",
