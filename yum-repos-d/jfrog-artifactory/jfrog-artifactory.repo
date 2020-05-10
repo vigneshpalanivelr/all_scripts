@@ -1,0 +1,6 @@
+[jfrog-artifactory-local]
+name=jfrog-artifactory-local
+baseurl=ARTIFACTORY_LOCAL_REPO
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
