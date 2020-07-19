@@ -22,8 +22,8 @@
     url_password: "{{ repositories.jenkins.password }}"
   register: plugin_result
   until: plugin_result is success
-  retries: 10
-  delay: 2
+  retries: 15
+  delay: 60
   loop: "{{ repositories.jenkins.plugins }}"
 
 - name: Check if Re-Start is required 

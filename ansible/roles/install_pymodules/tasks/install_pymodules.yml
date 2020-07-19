@@ -1,9 +1,17 @@
 ---
 
+- name: Separate facts
+  set_fact:
+    py_executable: "{{ py_executables.split(',') }}"
+
 - name: Installing Python Modules
   become: True
   pip:
-    name: "{{ item }}"
+    name: "{{ item[0] }}"
+    executable: "{{ item[1] }}"
     umask: "0022"
     state: present
-  loop: "{{ pyModules }}"
+  with_nested:
+    - "{{ pyModules }}"
+    - "{{ py_executable }}"
+  ignore_errors: yes

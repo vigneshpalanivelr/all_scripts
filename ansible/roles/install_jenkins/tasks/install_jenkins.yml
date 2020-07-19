@@ -15,6 +15,7 @@
     - "{{ srcPythonDir }}"
     - "{{ srcServicesDir }}"
     - "{{ srcRepoDir }}"
+  when: type == "ansible"
 
 - name: Find the repos files present
   become: yes
@@ -55,11 +56,11 @@
     replace: '{{ repositories.jenkins.gpgkey }}'
   loop: "{{ listOfRepos.files }}"
 
-#- name: Import Jenkins Key
-#  become: yes
-#  rpm_key:
-#    state: present
-#    key: "{{ repositories.jenkins.gpgkey }}"
+- name: Import Jenkins Key
+  become: yes
+  rpm_key:
+    state: present
+    key: "{{ repositories.jenkins.repo}}/{{ repositories.jenkins.gpgurl }}"
 
 - name: Install Jenkins
   become: yes
@@ -80,14 +81,26 @@
     return_content: yes
   register: publicIP
   
+- name: Check Jenkins Response
+  uri:
+    url: "http://{{ ansible_eth0['ipv4']['address'] }}:8080"
+    method: GET
+    return_content: yes
+  register: metadata
+  ignore_errors: yes
+
+- name: Display Jenkins Response
+  debug:
+    msg: "{{ metadata }}"
+
 - name: Wait for Jenkins to start up
   uri:
-    url: "http://{{ publicIP.content }}:8080"
+    url: "http://{{ ansible_eth0['ipv4']['address'] }}:8080"
     method: GET
     user: "{{ repositories.jenkins.user }}"
     password: "{{ repositories.jenkins.password }}"
     force_basic_auth: yes
-    status_code: [200,401]
+    status_code: [200,401,403]
     timeout: 5
   register: jenkins_service_status
   # Keep on trying for 50 sec in 5 sec intervals
@@ -96,17 +109,17 @@
   until: >
     'status' in jenkins_service_status
     and
-    ( jenkins_service_status['status'] == 200 or jenkins_service_status['status'] == 401 )
-
-- name: Display the Jenkins URL
-  debug:
-    msg: Jenkins URL is - http://{{ publicIP.content }}:8080
+    ( jenkins_service_status['status'] == 200 or jenkins_service_status['status'] == 401 or jenkins_service_status['status'] == 403 )
 
 - name: Read file
   become: yes
   slurp:
     src: "{{ repositories.jenkins.pwd }}"
   register: paswordFile
+
+- name: Display the Jenkins URL
+  debug:
+    msg: Jenkins URL is - http://{{ publicIP.content }}:8080
 
 - name: Initial Password is
   debug:

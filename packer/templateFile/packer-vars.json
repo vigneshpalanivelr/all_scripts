@@ -1,0 +1,12 @@
+{
+  "aws_region"      : "ap-south-1",
+  "packer_ssh_user" : "ec2-user",
+  "iam_profile"     : "ec2_instance_profile",
+  "scriptsDir"      : "/usr/local/sbin/custom-scripts/",
+  "type"            : "packer",
+  "Team"            : "terraform-services-india",
+  "CCPC"            : "123456789",
+  "DL"              : "Vignesh_Palanivel@aws.com",
+  "Owner"           : "Vignesh Palanivel",
+  "Name"            : "Packer-Build-EC2"
+}

@@ -12,6 +12,7 @@
   register: addSudoers
 
 - name: Restart sshd service for new user to be added
+  become: yes
   service:
     name: sshd
     state: reloaded

@@ -1,5 +1,20 @@
 ---
 
+- name: Coping Local to Remote Hosts
+  become: yes
+  copy:
+    src: "../{{ item }}"
+    dest: "{{ scriptHomeDir }}/{{ scriptsDir }}"
+    force: yes
+    mode: 0744
+    remote_src: yes
+  loop:
+    - "{{ srcPythonDir }}"
+    - "{{ srcServicesDir }}"
+    - "{{ srcRepoDir }}"
+  register: updatedRepos
+  when: type == "ansible"
+
 - name: Installing Pre-Requestics for CW Metric Configuration for RHEL-8
   become: yes
   yum:
@@ -68,9 +83,10 @@
     job: "{{ scriptHomeDir }}/{{ scriptsDir }}/{{ AWS_cw_script.dir }}/{{ AWS_cw_script.put_met }} --disk-space-util --disk-path={{item.value.mount_point}} --from-cron"
     user: root
     state: present
-   loop: '{{ block_volumes.not_mounted | dict2items }}'
+  loop: '{{ block_volumes.not_mounted | dict2items }}'
 
 - name: Print CronJobs
+  become: yes
   shell:
     cmd: cat /var/spool/cron/*
     warn: False

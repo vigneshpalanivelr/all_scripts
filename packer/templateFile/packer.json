@@ -1,0 +1,172 @@
+{
+  "variables" : {
+    "aws_region"            : "",
+    "iam_profile"           : "",
+    "packer_ami_name"       : "",
+    "packer_instance_type"  : "",
+    "packer_ssh_user"       : "",
+    "security_group_name"   : "",
+    "source_ami_name"       : "",
+    "source_ami_owner"      : "",
+    "subnet_name"           : "",
+    "vpc_name"              : "",
+    "scriptsDir"            : "",
+    "type"                  : "",
+    "Team"                  : "",
+    "CCPC"                  : "",
+    "DL"                    : "",
+    "Owner"                 : "",
+    "Name"                  : "",
+    "RHEL"                  : "{{user `RHEL`}}",
+    "gitUser"               : "{{user `STASH_USERNAME`}}",
+    "gitPass"               : "{{user `STASH_PASSWORD`}}",
+    "gitRepo"               : "{{user `gitRepo`}}",
+    "gitBranch"             : "{{user `gitBranch`}}",
+    "pipModules"            : "{{user `pipModules`}}",
+    "PG_MAJOR"              : "{{user `PG_MAJOR`}}",
+    "PG_MINOR"              : "{{user `PG_MINOR`}}",
+    "packerVersion"         : "{{user `packerVersion`}}",
+    "tfVersion"             : "{{user `tfVersion`}}",
+    "group_name"            : "{{user `group_name`}}",
+    "username"              : "{{user `username`}}",
+    "password"              : "{{user `password`}}",
+	"ins_pgsql"             : "{{user `ins_pgsql`}}",
+	"ins_packer"            : "{{user `ins_packer`}}",
+	"ins_tf"                : "{{user `ins_tf`}}",
+	"cre_cw"                : "{{user `cre_cw`}}",
+	"set_ci"                : "{{user `set_ci`}}",
+	"ins_jenkins"           : "{{user `ins_jenkins`}}",
+	"jenkins_plugin"        : "{{user `jenkins_plugin`}}",
+	"python_modules"        : "{{user `python_modules`}}",
+	"cre_grp"               : "{{user `cre_grp`}}",
+	"cre_usr"               : "{{user `cre_usr`}}",
+	"add_sudo"              : "{{user `add_sudo`}}"
+  },
+  "builders": [
+    {
+      "ami_name"                     : "{{user `packer_ami_name`}}-{{isotime \"2006-01-02 03-04-05\"}}",
+      "associate_public_ip_address"  : "true",
+      "iam_instance_profile"         : "{{user `iam_profile`}}",
+      "instance_type"                : "{{user `packer_instance_type`}}",
+      "region"                       : "{{user `aws_region`}}",
+      "run_tags"               : {
+        "CCPC"                       : "{{user `CCPC`}}",
+        "DL"                         : "{{user `DL`}}",
+        "Owner"                      : "{{user `Owner`}}",
+        "Team"                       : "{{user `Team`}}",
+        "Name"                       : "{{user `Name`}}"
+      },
+      "security_group_filter"  : {
+        "filters"                 : {
+          "tag:Name"                 : "{{user `security_group_name`}}"
+        }
+      },
+      "source_ami_filter"      : {
+        "owners"               : ["{{user `source_ami_owner`}}"],
+        "most_recent"          : true,
+        "filters"                 : {
+          "name"                     : "{{user `source_ami_name`}}*",
+          "root-device-type"         : "ebs",
+          "virtualization-type"      : "hvm"
+        }
+      },
+      "ssh_interface"          : "private_ip",
+      "ssh_pty"                : "true",
+      "ssh_timeout"            : "10m",
+      "ssh_username"           : "{{user `packer_ssh_user`}}",
+      "subnet_filter"          : {
+        "random"               : false,
+        "filters"                : {
+          "tag:Name"                : "{{user `subnet_name`}}"
+        }
+      },
+      "tags"                   : {
+        "CCPC"                      : "{{user `CCPC`}}",
+        "DL"                        : "{{user `DL`}}",
+        "Owner"                     : "{{user `Owner`}}",
+        "SourceAMI"                 : "{{user `source_ami_name`}}",
+        "Team"                      : "{{user `Team`}}",
+        "Name"                      : "{{user `packer_ami_name`}}"
+      },
+      "type"                   : "amazon-ebs",
+      "vpc_filter"             : {
+        "filters"                : {
+          "isDefault"               : "true",
+          "tag:Name"                : "{{user `vpc_name`}}"
+        }
+      }
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "environment_vars": ["RHEL={{user `RHEL`}}"],
+      "inline": [
+        "yum install -y tree",
+        "yum install -y telnet",
+        "yum install -y git",
+        "yum install -y wget",
+        "yum install -y zip",
+        "yum install -y unzip",
+        "yum install -y java-1.8.0-openjdk-devel",
+        "yum install -y python2",
+        "yum install -y python3",
+        "yum install -y python3-pip",
+        "yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-${RHEL}.noarch.rpm",
+        "yum install -y ansible",
+        "yum install -y python2-pip",
+        "yum install -y apache-maven",
+        "yum update  -y",
+        "/usr/bin/sed   -i 's|rotate|keep_logs|g' /etc/audit/auditd.conf"
+      ],
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    },
+    {
+      "type": "shell",	
+      "environment_vars": ["gitUser={{user `gitUser`}}", "gitPass={{user `gitPass`}}", "gitRepo={{user `gitRepo`}}", "gitBranch={{user `gitBranch`}}", "scriptsDir={{user `scriptsDir`}}"],
+      "inline": [
+        "gitPass=$(echo ${gitPass} | sed \"s|@|%40|g\")",
+        "repoURL=$(echo ${gitRepo} | sed \"s|https://|&${gitUser}:${gitPass}@|g\")",
+        "sudo /usr/bin/mkdir -p ${scriptsDir}",
+        "sudo /usr/bin/git clone -q -b ${gitBranch} --recursive ${repoURL} ${scriptsDir}"
+      ],
+      "execute_command": "{{ .Vars }} sudo -E -S sh '{{ .Path }}'"
+    },
+    {
+    "type"            : "ansible-local",
+    "playbook_file"   : "../../ansible/site.yml",
+    "playbook_dir"    : "../../ansible/",
+    "extra_arguments" : [ "--extra-vars", "ins_pgsql={{user `ins_pgsql`}}", "--extra-vars", "PG_MAJOR={{user `PG_MAJOR`}}", "--extra-vars", "PG_MINOR={{user `PG_MINOR`}}", "--tags", "pgsql_install" ]
+    },
+    {
+    "type"            : "ansible-local",
+    "playbook_file"   : "../../ansible/site.yml",
+    "playbook_dir"    : "../../ansible/",
+    "extra_arguments" : [ "--extra-vars", "ins_packer={{user `ins_packer`}}", "--extra-vars", "ins_tf={{user `ins_tf`}}", "--extra-vars", "packerVersion={{user `packerVersion`}}", "--extra-vars", "tfVersion={{user `tfVersion`}}", "--tags", "packer_install", "--tags", "terraform_install" ]
+    },
+    {
+    "type"            : "ansible-local",
+    "playbook_file"   : "../../ansible/site.yml",
+    "playbook_dir"    : "../../ansible/",
+    "extra_arguments" : [ "--extra-vars", "cre_cw={{user `cre_cw`}}", "--extra-vars", "set_ci={{user `set_ci`}}", "--extra-vars", "RHEL={{user `RHEL`}}", "--extra-vars", "type={{user `type`}}", "--tags", "configure_cw", "--tags", "setup_cloud_init" ]
+    },
+    {
+    "type"            : "ansible-local",
+    "playbook_file"   : "../../ansible/site.yml",
+    "playbook_dir"    : "../../ansible/",
+    "extra_arguments" : [ "--extra-vars", "ins_jenkins={{user `ins_jenkins`}}", "--extra-vars", "jenkins_plugin={{user `jenkins_plugin`}}", "--extra-vars", "RHEL={{user `RHEL`}}", "--extra-vars", "type={{user `type`}}", "--tags", "jenkins_install", "--tags", "jenkins_plugin" ]
+    },
+    {
+    "type"            : "ansible-local",
+    "playbook_file"   : "../../ansible/site.yml",
+    "playbook_dir"    : "../../ansible/",
+    "extra_arguments" : [ "--extra-vars", "python_modules={{user `python_modules`}}", "--extra-vars", "py_executables={{user `pipModules`}}", "--tags", "python_modules" ]
+    },
+    {
+    "type"            : "ansible-local",
+    "playbook_file"   : "../../ansible/site.yml",
+    "playbook_dir"    : "../../ansible/",
+    "extra_arguments" : [ "--extra-vars", "cre_grp={{user `cre_grp`}}", "--extra-vars", "cre_usr={{user `cre_usr`}}", "--extra-vars", "add_sudo={{user `add_sudo`}}", "--extra-vars", "group_name={{user `group_name`}}", "--extra-vars", "username={{user `username`}}", "--extra-vars", "password={{user `password`}}", "--extra-vars", "tag_group=yes", "--extra-vars", "userComment='Root User'",  "--tags", "create_group", "--tags", "create_user", "--tags", "add_sudoers" ]
+    }
+  ]
+}

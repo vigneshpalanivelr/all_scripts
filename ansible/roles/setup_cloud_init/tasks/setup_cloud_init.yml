@@ -12,6 +12,7 @@
     - "{{ srcServicesDir }}"
     - "{{ srcRepoDir }}"
   register: updatedServices
+  when: type == "ansible"
 
 - name: Find the service files present
   become: yes

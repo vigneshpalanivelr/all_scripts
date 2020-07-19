@@ -39,6 +39,7 @@ Install the Dependencies and start the server.
 # Common
 yum install git-core -y
 git clone https://vigneshpalanivelr@github.com/vigneshpalanivelr/all_scripts.git
+git checkout testing
 
 # RHEL-6
 yum install python2 -y
@@ -51,7 +52,9 @@ Provided that below assumptions were made
 3) Group Name
 
 ```sh
-cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7 -repos epel 
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7 -repos jenkins 
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7 -repos artifactory
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 
 cd /root/all_scripts/python/ && /bin/python packageInstallation.py -install
@@ -93,20 +96,23 @@ Provided that below assumptions were made
 1) sudo su - jenkins -s/bin/bash
 
 ```sh
+yum install -y ansible
 groupadd root_group
 useradd --password $(openssl passwd vignesh) vignesh -G root_group
 
-cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7 -repos epel 
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7 -repos jenkins 
+cd /root/all_scripts/python/ && /bin/python copyLocalRemote.py 7 -repos artifactory
 cd /root/all_scripts/python/ && /bin/python updateSSHSudoers.py -add_sudo -sudo root_group
 cd /root/all_scripts/python/ && /bin/python configChanges.py 7 -start -service SSH 
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_epel=set_epel_repo RHEL=7" --tags=enable_epel_repo
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --tags=setup_cloud_init
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "set_ci=setup_cloud_init RHEL=7" --extra-vars "type=ansible" --tags=setup_cloud_init
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_all=list_install" --tags=list_install
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_jenkins=jenkins_install" --tags=jenkins_install
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_jenkins=jenkins_install" --extra-vars "type=ansible" --tags=jenkins_install
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "jenkins_plugin=jenkins_plugin" --tags=jenkins_plugin
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "python_modules=python_modules" --tags=python_modules
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "python_modules=python_modules" --extra-vars "py_executables="pip,pip2,pip2.7,pip3,pip3.6" --tags=python_modules
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_ansible=ansible_install" --tags=ansible_install
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "group_name=root_group cre_grp=create_group" --tags=create_group
@@ -116,7 +122,7 @@ cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_tf=terraform_install tfVersion=0.12.7" --tags=terraform_install
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_packer=packer_install packerVersion=1.5.4" --tags=packer_install
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "ins_pgsql=pgsql_install PG_MAJOR=9.6 PG_MINOR=6" --tags=pgsql_install
-cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --tags=configure_cw
+cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "cre_cw=configure_cw RHEL=8" --extra-vars "type=ansible" --tags=configure_cw
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "mount=mount_volumes" --tags=mount_volumes
 
 cd /root/all_scripts/ansible/ && ansible-playbook site.yml -i inventory --extra-vars "uin_all=list_uninstall" --tags=list_uninstall

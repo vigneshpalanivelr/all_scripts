@@ -1,15 +1,13 @@
 ---
 
 - hosts: all
-  connection: test_instance
   gather_facts: yes
   vars:
-    ec2_user_name		: "{{ username }}"
-    ec2_user_password	: "{{ password }}"
-    ec2_group_name		: "{{ group_name }}"
-    tag_role			: "{{ tag_group }}"
+    ec2_user_name       : "{{ username }}"
+    ec2_user_password   : "{{ password }}"
+    ec2_group_name      : "{{ group_name }}"
+    tag_role            : "{{ tag_group }}"
     pg_major            : "{{ PG_MAJOR | regex_replace('[^\\w]', '') }}"
-#    RHELv                       : "{{ RHEL }}"
   vars_files:
     - 'vars/vars.yml'
 
@@ -17,22 +15,22 @@
     - { role: install_pgsql_client         ,tags: ['pgsql_install']         ,when: ins_pgsql == "pgsql_install"         }
     - { role: install_list_of_packages     ,tags: ['list_install']          ,when: ins_all == "list_install"            }
     - { role: install_packer_package       ,tags: ['packer_install']        ,when: ins_packer == "packer_install"       }
-    - { role: install_terraform_package    ,tags: ['terraform_install']	    ,when: ins_tf == "terraform_install"        }
-    - { role: uninstall_pgsql_client       ,tags: ['pgsql_uninstall']	    ,when: uin_pgsql == "pgsql_uninstall"       }
-    - { role: uninstall_list_of_packages   ,tags: ['list_uninstall']	    ,when: uin_all == "list_uninstall"          }
-    - { role: uninstall_packer_package     ,tags: ['packer_uninstall']	    ,when: uin_packer == "packer_uninstall"     }
+    - { role: install_terraform_package    ,tags: ['terraform_install']     ,when: ins_tf == "terraform_install"        }
+    - { role: uninstall_pgsql_client       ,tags: ['pgsql_uninstall']       ,when: uin_pgsql == "pgsql_uninstall"       }
+    - { role: uninstall_list_of_packages   ,tags: ['list_uninstall']        ,when: uin_all == "list_uninstall"          }
+    - { role: uninstall_packer_package     ,tags: ['packer_uninstall']      ,when: uin_packer == "packer_uninstall"     }
     - { role: uninstall_terraform_package  ,tags: ['terraform_uninstall']   ,when: uin_tf == "terraform_uninstall"      }
     - { role: mount_volumes                ,tags: ['mount_volumes']         ,when: mount == "mount_volumes"             }
     - { role: configure_cw_metric          ,tags: ['configure_cw']          ,when: cre_cw == "configure_cw"             ,RHELver : "{{ RHEL }}" }
     - { role: remove_cw_metric             ,tags: ['remove_cw']             ,when: rem_cw == "remove_cw"                }
     - { role: configure_epel_repo          ,tags: ['enable_epel_repo']      ,when: set_epel == "set_epel_repo"          ,RHELver : "{{ RHEL }}" }
-    - { role: setup_cloud_init             ,tags: ['setup_cloud_init']	    ,when: set_ci == "setup_cloud_init"         }
+    - { role: setup_cloud_init             ,tags: ['setup_cloud_init']      ,when: set_ci == "setup_cloud_init"         }
     - { role: install_jenkins              ,tags: ['jenkins_install']       ,when: ins_jenkins == "jenkins_install"     }
     - { role: install_jenkins_plugin       ,tags: ['jenkins_plugin']        ,when: jenkins_plugin == "jenkins_plugin"   }
     - { role: install_ansible              ,tags: ['ansible_install']       ,when: ins_ansible == "ansible_install"     }
-    - { role: install_pymodules	           ,tags: ['python_modules']        ,when: python_modules == "python_modules"   }
+    - { role: install_pymodules            ,tags: ['python_modules']        ,when: python_modules == "python_modules"   }
     - { role: create_group                 ,tags: ['create_group']          ,when: cre_grp == "create_group"            ,group_name : "{{ ec2_group_name }}"   }
-    - { role: create_user                  ,tags: ['create_user']           ,when: cre_usr == "create_user"             ,password   : "{{ ec2_user_password }}" ,	username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}"}
+    - { role: create_user                  ,tags: ['create_user']           ,when: cre_usr == "create_user"             ,password   : "{{ ec2_user_password }}" , username: "{{ ec2_user_name }}", group_name: "{{ ec2_group_name }}", assign_role: "{{ tag_group }}"}
     - { role: add_sudoers                  ,tags: ['add_sudoers']           ,when: add_sudo == "add_sudoers"            ,group_name : "{{ ec2_group_name }}"   }
     - { role: delete_user                  ,tags: ['delete_user']           ,when: del_usr == "delete_user"             ,username   : "{{ ec2_user_name }}"    }
     - { role: delete_group                 ,tags: ['delete_group']          ,when: del_grp == "delete_group"            ,group_name : "{{ ec2_group_name }}"   }
